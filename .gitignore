@@ -6,5 +6,6 @@ __pycache__/
 !.env.example
 .local/
 reports/
+_site/
 *.pem
 *.key

@@ -5,6 +5,7 @@
 ## 真源与执行范围
 
 - `README.md` 管中文读者入口与能力声明，`README.en.md` 是对应英文入口；`docs/` 管解释和 runbook；`agents/` 管可复用工单；`examples/` 管合成输入；`tools/` 与 `tests/` 管可执行行为。
+- `site/` 管独立阅读站的排版、路由与构建；正文仍由上面的 Markdown 管理。`site/pages.json` 与 `site/build.py` 的显式白名单定义 Pages 发布范围；`_site/` 是忽略的派生输出，不能手改、提交或扩大为整个仓库的复制。站点规则与预览命令见 `site/README.md`。
 - 示例使用 `example.com`、文档 IP、合成身份和占位符。OS 标准路径可用于教学；真实使用者的私人主机、账号、路径、凭据和笔记不得进入仓库。
 - 写教程不授权操作真实服务器、修改账号、购买、迁移、防火墙、SSH 或删除数据。编写和验证期间不执行教程中的真实环境变更命令。
 - 分开报告 source、测试、安装、service activation、网络可达性与真实客户端验收。只写实际验证过的结果。
@@ -23,5 +24,7 @@ git diff --check
 ```
 
 按 `tools/README.md` 运行合成 health 例子，检查新 JSON 与 HTML。单元测试覆盖合成采集与渲染；文档检查验证相对链接／章节锚点、shell 静态语法与 JSON 示例。真实 Linux、SSH、cloud 和账号验收是独立层级。
+
+阅读站变更使用安装了 `site/requirements.txt` 的 Python 3.10+ 运行 `python -m unittest discover -s site -p 'test_*.py' -v` 与 `python site/build.py`；交互改动检查 `node --check site/site.js` 并做实际浏览器验收。Pages workflow 在 PR 只构建测试，在 main 推送后发布白名单产物；这不授予任何教程涉及的真实基础设施操作权限。
 
 修改读者能力或入口时同步两份 README。架构图模型、可编辑源与导出关系见 `docs/diagrams/README.md`；修改图后重新生成并实际查看。修改操作步骤时，同步相关教程、工单、示例与 README 导航；改变 health 契约时同步工具说明、fixture 和行为测试。验证状态记录在 `docs/sources-and-maintenance.md`。私人 working continuity 留在仓库外，不能写入文档或提交。

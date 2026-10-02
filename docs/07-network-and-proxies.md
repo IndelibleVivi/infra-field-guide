@@ -4,6 +4,30 @@
 
 本章使用 `app.example.com`、`192.0.2.10` 和 `2001:db8::10` 等文档示例；不是可直接使用的部署地址。命令用于你有权测试的服务，执行前替换目标。协议仅讨论管理自有系统、访问经授权网络与应用的用途；网络协议和出口 IP 都不能保证 AI 平台账号不受限制。
 
+## 住宅代理选项：Proxy-Cheap Dedicated
+
+**作者体验。** 作者购买的是 Proxy-Cheap 静态住宅产品中的 **Dedicated** 档，反馈这次拿到的 IP 测试结果很好，可用于访问官方 Claude 网页 / app。这是一次购买的使用体验，不能推广为整个 IP 池的质量。不同 ISP、分配地址与测试时间可能有差异，不能保证每个 IP 都有好分数；最终以自己的客户端与用途验收。
+
+**[使用作者的 Proxy-Cheap referral](https://app.proxy-cheap.com/r/3zNHbA)**，或打开[不带 referral 的产品页](https://www.proxy-cheap.com/services/static-residential-proxies)。符合[商家 referral 规则](https://www.proxy-cheap.com/referrals)的注册与购买，可能为作者带来佣金或账户奖励；这里不承诺额外折扣。不要把推荐链接当成必须购买的步骤。
+
+### 先分清产品用语
+
+官方页面查阅日期：**2026-10-02**。官网把这一类列为 **Static Residential (ISP)**，静态住宅产品页列有 **Basic / Dedicated / Premium** 档位；作者购买的 Dedicated 是其中的产品选择。[Proxy-Cheap 官网](https://www.proxy-cheap.com/)、[Static Residential 产品页](https://www.proxy-cheap.com/services/static-residential-proxies)
+
+| 用语 | 在这里怎样理解 | 不应推导出的保证 |
+| --- | --- | --- |
+| Static | 相对轮换池，使用较固定的代理 IP；保留与续费条件按订单确认 | 永久不变、不会被回收 |
+| Residential / ISP | 商家对 IP 来源与产品类别的描述 | 代理机器一定放在真实家庭宽带后面 |
+| Dedicated | 官方列出的档位；下单时确认所选产品的独享分配条件 | IP 测试分数、目标平台放行或账号安全 |
+
+官方 [ISP 产品说明](https://www.proxy-cheap.com/services/isp-proxies)明确提到其 premium ISP proxies 在数据中心托管。因而不能只看“住宅”或 Dedicated 一词，就把所有产品视为同一种物理接入。下单前确认具体类型、国家、ISP、协议、账期、续费与退款条件；不要把网页上的档位名称或体验描述扩展成未写入订单的承诺。
+
+### 海外 VPS 不需要常规再套一层
+
+海外地区的 VPS 默认直接使用自身出口，**不需要把静态住宅代理作为标配，本指南也不推荐常规叠加**。先用实际应用确认 VPS 到目标的路径；多加代理会增加费用、延迟、凭据管理和故障点，不会自动改善所有访问问题。只有自己的任务确有单独出口需求时，再评估这一层。
+
+浏览器、官方 app、CLI 和后台 worker 是否使用某个代理，需要分别验证；配置了浏览器代理并不证明所有程序都生效。访问 Claude 等服务仍须满足其地区、账户与使用规则。作者的体验不是 Proxy-Cheap 或目标平台的兼容性承诺，IP 分数也不能代替真实客户端验收。
+
 ## 1. 从域名到一次 HTTPS 请求
 
 假设你访问 `https://app.example.com/`。客户端先解析域名，选择一个可用地址，连接目标端口，再完成 TLS 验证，然后才发送 HTTP 请求。任何一步都可能失败；DNS 返回一个地址不代表那个地址的 HTTPS 服务可用。
@@ -153,3 +177,4 @@ curl --noproxy '' --connect-timeout 5 --max-time 15 \
 - [OpenSSH ssh(1)](https://man.openbsd.org/ssh)、[WireGuard protocol](https://www.wireguard.com/protocol/)：转发与 VPN 机制。
 - [Trojan protocol](https://trojan-gfw.github.io/trojan/protocol)、[VLESS inbound configuration](https://xtls.github.io/en/config/inbounds/vless.html)、[VLESS protocol explanation](https://xtls.github.io/en/development/protocols/vless.html)、[Hysteria 2 protocol](https://v2.hysteria.network/docs/developers/Protocol/)：协议差异与版本边界。
 - [curl manual](https://curl.se/docs/manpage.html)：`--resolve`、`--proxy`、超时与 SOCKS DNS 行为。
+- [Proxy-Cheap Static Residential](https://www.proxy-cheap.com/services/static-residential-proxies)、[ISP proxies](https://www.proxy-cheap.com/services/isp-proxies)、[referral program](https://www.proxy-cheap.com/referrals)：产品档位、托管用语与推荐奖励规则；不作为作者 IP 测试体验的证明。

@@ -32,7 +32,7 @@
 
 “unit tests通过”仅表示在运行测试的系统上通过相应夹具；“合成看板可用”不表示Linux真实采集已经验证；“文档命令已审查”不表示真的改过SSH、firewall、swap或DNS。
 
-本仓库不会自动安装监控、创建VPS、部署网站或修改账号。真实机器验证、公开远程仓库、CI执行与owner验收应分别记录，不互相替代。
+教程与 health 工具不会自动安装监控、创建 VPS 或修改账号。仓库的 `Reading site` workflow 会在 main 推送验证通过后发布独立阅读站；这是文档发布，不会部署教程描述的服务。真实机器验证、公开远程仓库、CI 执行与 owner 验收应分别记录，不互相替代。
 
 ## 验证记录（2026-10-02）
 
@@ -48,3 +48,11 @@
 功能代码、测试及配置示例使用 SUL-1.0；原创说明文字、agent 工单文字与图示使用 CC BY-NC-SA 4.0。范围与第三方边界以 [LICENSING.md](../LICENSING.md) 为准，不将本仓库称为 OSI 开源。引用的一手资料仍适用其原始权利，链接不转移其版权。
 
 第 01 章的 GreenCloud referral 是 Faye 的推荐链接；购买符合商家规则时可能带来佣金或账户奖励。同章提供普通商品入口，套餐与条款直接链接官方页面，并标记查阅日期。推荐基于个人使用与明确用途，不是商家排名或服务保证。
+
+第 07 章另列作者的 [Proxy-Cheap referral](https://app.proxy-cheap.com/r/3zNHbA) 与普通产品入口。作者购买 Dedicated、所购 IP 测试结果很好及用于官方 Claude 网页／app，是作者自述的使用体验，没有独立复测或推广为所有 ISP／IP 的保证。[官方产品页](https://www.proxy-cheap.com/services/static-residential-proxies)、[ISP 说明](https://www.proxy-cheap.com/services/isp-proxies)与 [referral 规则](https://www.proxy-cheap.com/referrals)于 2026-10-02 查阅，分别支持产品术语与奖励关系，不证明单次 IP 体验。海外 VPS 不推荐常规叠加静态住宅代理。
+
+## 独立阅读站的维护
+
+[阅读站](https://indeliblevivi.github.io/infra-field-guide/)从同一批 Markdown 生成，入口、响应式排版、分节搜索和构建说明见 [site/README.md](../site/README.md)。中文为正文版，English introduction 仍是英文入口说明，没有声称全书已翻译。站点不采集或上传 health 报告。
+
+2026-10-02 的阅读站变更在本地通过 20 项原有测试与 5 项生成站点测试，覆盖全站内部链接／锚点、搜索目标、发布白名单和关键 Markdown 结构；独立审查逐字比对 132 个 fenced code block，渲染后的命令文本与源文件一致。已在浏览器检查 1280px 桌面与 390px 手机排版、搜索与空结果、目录跳转、代码复制、Escape／焦点返回及架构原图入口；未发现横向整页溢出或浏览器 console 错误。这些是工程验收，不代替读者设备或作者审美验收。线上发布结果按 [Reading site workflow](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/pages.yml) 的对应 commit 查看。

@@ -116,3 +116,5 @@ node scripts/render-diagrams.mjs --png \
 本次使用已有 Node.js 24.19.0、Playwright 1.62.1 与 Chromium 155.0.8059.12 headless，对六个 SVG 逐一渲染为 PNG；查看实际图像后修正长文本和截图问题。最终六图的卡片内文字边界检查通过，并已逐张检查箭头方向、文字、重叠、裁切和颜色。SVG 使用系统中文字体回退，其他机器的字体可能改变字宽；随附 PNG 保留本次查看的版面。
 
 这项验证只覆盖**图源、导出与图像呈现**。没有连接真实 VPS、Mac、Tailnet、Cloudflare 或外部 API，也没有验证 health HTML 的浏览器布局。真实环境的操作和验收仍按相关章节分别进行。
+
+独立阅读站是以上公共 Markdown 与图示的派生阅读界面，不是业务服务部署：正文与选定素材 → `site/build.py` → 静态 HTML／搜索索引 → GitHub Pages。第六张图聚焦教程、工单与 health 工具的关系；阅读站的文件职责、发布白名单和验收说明见 [site/README.md](../site/README.md)。

@@ -10,6 +10,8 @@ For people choosing their first VPS, moving a local service online, or replacing
 
 [Reading paths](#start-with-your-task) · [Architecture atlas](docs/architecture.md) · [Agent entry](agents/README.md) · [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
+**[Open the reading site →](https://indeliblevivi.github.io/infra-field-guide/)** with chapter navigation, in-browser search, mobile layouts and the architecture atlas. It renders the same Markdown sources; the full guide remains in Chinese. See [site/README.md](site/README.md) for building and maintenance.
+
 ## Start with your task
 
 | Task | Read | Result |
@@ -54,9 +56,15 @@ This demo uses a fixed synthetic fixture. It does not SSH, access accounts, inst
 
 [Open the full-size overview SVG](docs/diagrams/infrastructure-overview.svg). The [architecture atlas](docs/architecture.md) includes overview, control access, public ingress, outbound access, migration state and repository/health data flow. Editable source and rendered diagrams are included. Deployment nodes are illustrative options; the repository does not provision them. Administration, incoming service traffic and outgoing application traffic have different routing and authentication boundaries.
 
-## Faye's VPS recommendation
+## The author's service choices and referrals
 
-After moving from Hetzner to GreenCloud, Faye recommends looking at **Budget KVM Sale** for small personal services and remote workers. Chapter 01 includes the [referral, ordinary product link and dated plan comparison](docs/01-vps-basics.md#猫的实际选择greencloud-budget-kvm-sale). Qualifying referral purchases may reward Faye; choose based on your region, workload and billing commitment. Prices, resources and stock must be checked at purchase time.
+**VPS: GreenCloud Budget KVM Sale.** After moving from Hetzner to GreenCloud, the author recommends considering this annual plan for small personal services and remote workers. Chapter 01 retains the [GreenCloud referral, ordinary product link and dated plan comparison](docs/01-vps-basics.md#作者选择greencloud-budget-kvm-sale). Choose based on your region, workload and billing commitment; check prices, resources and stock at purchase time.
+
+**Residential proxy: Proxy-Cheap Dedicated.** The author purchased the **Dedicated** tier of its static residential product, reports very good IP test results for the address received, and says it is usable for accessing the official Claude website / app. This is the author's experience with that purchase, not a promise about every IP's score or availability. Results can vary by ISP, assigned address and test time. Use the [author's Proxy-Cheap referral](https://app.proxy-cheap.com/r/3zNHbA), or start with the [ordinary product page](https://www.proxy-cheap.com/services/static-residential-proxies) and the [terminology and experience notes](docs/07-network-and-proxies.md#住宅代理选项proxy-cheap-dedicated).
+
+An overseas VPS should use its own egress by default: **a static residential proxy is not a standard requirement, and this guide does not recommend routinely chaining the two.** Access must still meet the target service's region, account and usage requirements; a proxy does not guarantee eligibility or account safety.
+
+Qualifying purchases through either referral may reward the author with a commission or account credit. No additional discount is promised. Ordinary product links are provided so you can compare and choose independently.
 
 ## What belongs on a VPS
 

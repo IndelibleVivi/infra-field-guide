@@ -6,8 +6,11 @@ Copyright © 2026 Faye Fang and contributors. 下列授权只覆盖本项目原�
 | --- | --- |
 | `tools/health.py`、`scripts/`、`tests/`、`examples/`、`.github/` 中的功能代码、配置与数据 fixture | [Sustainable Use License 1.0](LICENSE)（`SUL-1.0`） |
 | Markdown 中可执行的代码与配置片段 | [SUL-1.0](LICENSE) |
+| `site/` 的构建器、模板功能结构、CSS、JavaScript、配置与测试 | [SUL-1.0](LICENSE)；模板中的原创说明文字与独立视觉素材适用下面的 CC 范围 |
 | README、AGENTS、贡献说明、教程、工具说明和 `agents/` 的原创说明／工单文字 | [CC BY-NC-SA 4.0](LICENSE-DOCUMENTATION.md) |
 | 原创 banner、架构图、图的语义模型／布局源及导出文件 | [CC BY-NC-SA 4.0](LICENSE-DOCUMENTATION.md)；生成这些图的通用脚本属于上面的 SUL-1.0 范围 |
+
+阅读站由这些源文件生成，HTML 输出不改变各组成部分的许可。首页原创文案、favicon 与装饰图形属于 CC BY-NC-SA 4.0 的说明／视觉材料；阅读器的功能实现属于 SUL-1.0。构建依赖 Python-Markdown 适用其自身许可，未 vendored，也不作为浏览器运行代码分发。
 
 SUL-1.0 允许个人非商业使用和自身内部业务使用等其条款列明的用途，对分发、商业化与提供他人服务设有限制。CC BY-NC-SA 4.0 要求署名、非商业使用，并对改编采用相同许可。请以两份完整许可为准；这里的简述不增加或缩减授权。
 

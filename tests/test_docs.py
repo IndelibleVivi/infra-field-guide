@@ -12,7 +12,7 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 BASH = shutil.which('bash')
-DOCUMENTS = sorted(ROOT.glob('*.md')) + sorted(ROOT.glob('docs/**/*.md')) + sorted(ROOT.glob('agents/*.md')) + [ROOT / 'tools/README.md']
+DOCUMENTS = sorted(ROOT.glob('*.md')) + sorted(ROOT.glob('docs/**/*.md')) + sorted(ROOT.glob('agents/*.md')) + [ROOT / 'tools/README.md', ROOT / 'site/README.md']
 
 
 def prose(text):

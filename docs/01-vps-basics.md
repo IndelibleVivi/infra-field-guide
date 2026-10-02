@@ -2,13 +2,13 @@
 
 VPS（Virtual Private Server）是一台租来的虚拟服务器。你获得一份 CPU、内存、磁盘和网络资源，通过控制台或 SSH 管理操作系统。它可以运行自己的小网站、Webhook 接收端、定时任务、经授权的 API 客户端和远程开发环境；是否能运行某个 AI 模型，仍取决于模型需要的内存、GPU 和计算量。租到一台 Linux 机器，并不等于获得 GPU，也不等于获得某个 AI 平台的使用资格。
 
-第一次购买，先写一句可验收的目标，例如：“让我自己的两个设备访问一个小型工具，每天备份一次，月度总费用不超过自定预算。”有这个目标，才能判断你需要公网入口、多少资源，以及故障时愿意花多少时间恢复。下面也放了 Faye 实际使用后愿意推荐的选择；套餐信息标记查阅日期，按下单时页面核对。
+第一次购买，先写一句可验收的目标，例如：“让我自己的两个设备访问一个小型工具，每天备份一次，月度总费用不超过自定预算。”有这个目标，才能判断你需要公网入口、多少资源，以及故障时愿意花多少时间恢复。下面也放了作者实际使用后愿意推荐的选择；套餐信息标记查阅日期，按下单时页面核对。
 
-## 猫的实际选择：GreenCloud Budget KVM Sale
+## 作者选择：GreenCloud Budget KVM Sale
 
-我们从 Hetzner 搬到过 GreenCloud。对常驻小工具、轻量数据库、调用远端模型的 worker 这类用途，**Budget KVM Sale 是猫愿意推荐、值得先看的年付方案**：资源给得比较宽裕，价格也适合个人基础设施。它和官网常规的 Budget KVM VPS 是两个商品入口，找活动套餐时别走错。
+作者从 Hetzner 搬到过 GreenCloud。对常驻小工具、轻量数据库、调用远端模型的 worker 这类用途，**Budget KVM Sale 是作者愿意推荐、值得先看的年付方案**：资源给得比较宽裕，价格也适合个人基础设施。它和官网常规的 Budget KVM VPS 是两个商品入口，找活动套餐时别走错。
 
-**[用 Faye 的 GreenCloud referral 进入](https://greencloudvps.com/billing/aff.php?aff=10083)** → 在产品列表选择 **Budget KVM Sale**。也可以直接用[普通套餐入口](https://greencloudvps.com/billing/store/budget-kvm-sale/?language=english)。这是推荐链接；符合商家的 referral 规则时，Faye 可能获得佣金或账户奖励。这里不承诺额外折扣。
+**[使用作者的 GreenCloud referral](https://greencloudvps.com/billing/aff.php?aff=10083)** → 在产品列表选择 **Budget KVM Sale**。也可以直接用[普通套餐入口](https://greencloudvps.com/billing/store/budget-kvm-sale/?language=english)。这是推荐链接；符合商家的 referral 规则时，作者可能获得佣金或账户奖励。这里不承诺额外折扣。
 
 官方商品页在 **2026-10-02** 列出的例子：
 
@@ -68,6 +68,8 @@ NAT 方案也能有用途，例如只运行主动发出的定时任务。但如�
 **ASN**是自治系统编号，描述一个具有统一路由策略的网络域。它能帮助理解 IP 由谁宣告、经过哪些网络，不能单凭 ASN 判断机器物理位置、实际带宽或账号风险。[RIPE：What is an AS Number?](https://www.ripe.net/manage-ips-and-asns/as-numbers/)
 
 普通 VPS 常使用机房或云网络地址。“住宅”是网络接入及地址分类语境，并不是给 VPS 安装一个协议后能获得的属性。地理数据库与商业分类也可能不同步。**独享 IPv4、住宅标签、某种代理协议，都不是账号不受限制的保证。** 使用 AI 服务仍应满足其区域、账户、自动化与 API 条款；出现账户限制，应使用官方支持和申诉路径。更换出口不是修复资格问题的方法。
+
+海外地区的 VPS 默认直接使用自身出口，**不需要再把静态住宅代理作为标配，也不推荐常规叠加**。额外一跳会增加费用、延迟与排障环节；先确认自己的任务是否真有单独的代理需求。作者另外购买过 Proxy-Cheap 的 Dedicated 静态住宅代理，反馈所购 IP 测试结果很好，可用于访问官方 Claude 网页 / app；这不是 VPS 的必购配件，也不能推广为所有 ISP 或 IP 都有相同表现。产品术语、[referral 与体验边界见网络章节](07-network-and-proxies.md#住宅代理选项proxy-cheap-dedicated)。
 
 ## 5. 带宽是速度，流量是累计用量
 

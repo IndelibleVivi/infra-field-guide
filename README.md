@@ -12,6 +12,8 @@
 
 [教程导航](#从你的问题进入) · [完整架构](docs/architecture.md) · [Agent 入口](agents/README.md) · [检查状态](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
+**[打开独立阅读站 →](https://indeliblevivi.github.io/infra-field-guide/)** · 章节目录、站内搜索、手机阅读与完整架构图集。正文与仓库保持同一份来源；构建和维护见 [site/README.md](site/README.md)。
+
 ## 从你的问题进入
 
 | 我现在想做什么 | 从这里开始 | 完成后应该得到什么 |
@@ -56,9 +58,15 @@ python3 tools/health.py render reports/health-demo.json -o reports/health-demo.h
 
 [打开总览 SVG 放大阅读](docs/diagrams/infrastructure-overview.svg)。这是供读者按需组合的参考架构，图中节点不代表仓库替你部署了服务。管理连接、公网入口和应用出站是不同路径；迁移时还要单独追踪数据 writer。进入[完整架构图集](docs/architecture.md)查看六张图、边界说明及可编辑源：总览、控制访问、公网入口、出站访问、迁移状态、仓库与 health 数据流。
 
-## 猫的 VPS 推荐
+## 作者的服务选择与 referral
 
-Faye 从 Hetzner 搬到 GreenCloud 后，愿意推荐 **Budget KVM Sale** 给个人小服务与远程 worker 使用。选购章放了[推荐链接、普通入口与带日期的套餐对照](docs/01-vps-basics.md#猫的实际选择greencloud-budget-kvm-sale)。referral 满足商家规则时可能给 Faye 带来奖励；先按自己的地区、用途与账期选配置。
+**VPS：GreenCloud Budget KVM Sale。** 作者从 Hetzner 搬到 GreenCloud 后，愿意推荐这一年付方案给个人小服务与远程 worker 使用。选购章保留了[GreenCloud referral、普通入口与带日期的套餐对照](docs/01-vps-basics.md#作者选择greencloud-budget-kvm-sale)；先按自己的地区、用途与账期选配置。
+
+**住宅代理：Proxy-Cheap Dedicated。** 作者购买的是静态住宅产品中的 **Dedicated** 档，反馈这次拿到的 IP 测试结果很好，可用于访问官方 Claude 网页 / app。这是作者所购样本的使用体验，不是全部 IP 的评分或可用性保证；不同 ISP、分配地址与测试时间可能有差异。[使用作者的 Proxy-Cheap referral](https://app.proxy-cheap.com/r/3zNHbA)，或先看[普通产品入口](https://www.proxy-cheap.com/services/static-residential-proxies)与[术语、体验边界和选购说明](docs/07-network-and-proxies.md#住宅代理选项proxy-cheap-dedicated)。
+
+海外地区的 VPS 默认直接使用自身出口，**无需把静态住宅代理作为标配，也不推荐常规叠加**。使用目标服务仍须符合其地区、账号与使用规则；代理不是访问资格或账号安全的保证。
+
+以上为 referral 链接；符合各商家规则的购买可能为作者带来佣金或账户奖励，不承诺额外折扣。两处都提供普通产品入口，可以自行比较后选择。
 
 ## 可以在 VPS 上放什么
 
