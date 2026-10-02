@@ -38,10 +38,10 @@
 
 - 标准库测试：20 项通过，包括合成采集、schema／阈值／unknown、HTML 转义、CLI roundtrip、现有输出保护，以及文档链接／章节锚点、shell 语法和 JSON 示例。
 - 命令代码块只作静态语法检查，没有执行 SSH、firewall、swap、迁移或账号清理。
-- health 合成 JSON→HTML 已实际生成；本地验证不包含真实 Linux 采集或 Windows 运行，health 浏览器视觉布局未验收。
+- [跨平台 CI](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/36984498352) 在 Linux / Windows、Python 3.9 / 3.13 四个组合通过 20 项测试与合成 JSON→HTML 演示；Linux runner 的真实资源采集与渲染也已通过。它不证明真实 VPS 部署或长期监控效果；health HTML 浏览器视觉布局未验收。
 - 六张架构图已从 Excalidraw 源生成 SVG、PNG 与语义模型，实际渲染并逐张查看；卡片文字边界检查通过。banner 已按白底、天水蓝、墨蓝、浅金重绘排版，900px 字号／对比度检查通过，实际渲染已查看。
 - 基础／网络／私有访问、CC 清理、排障、架构与 health 实现经分批独立技术审查；公开入口、推荐段、许可和 CI 也经审查。修正了 curl 继承代理导致验收失真、清理重复执行的目录碰撞、Windows 文本 stdin 转换换行导致 Bash 静态检查失效的问题；审查没有留下已确认但未解决的 P1/P2。
-- CI 定义覆盖 Linux / Windows 与 Python 3.9 / 3.13，Linux 另做 runner 本机资源采集与渲染；具体远端执行结果见 [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)，按对应 commit 判断，不能只凭 workflow 文件认定通过。没有真实 VPS 部署或用户设备验收。
+- 独立仓库已公开，匿名 GitHub 页面与 README 封面显示已检查。后续改动的执行结果见 [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)，按对应 commit 判断。没有真实 VPS 部署或用户设备验收。
 
 ## 许可与推荐关系
 

@@ -85,7 +85,7 @@ python3 tools/health.py --help
 python3 -m unittest discover -s tests -p 'test_health.py' -v
 ```
 
-测试使用临时的合成 `/proc` 文本、模拟 `statvfs` 和合成 JSON，覆盖公式、阈值、未知/损坏、非 Linux 拒绝、字节与 inode、时间语义、HTML 转义、CLI 演示 roundtrip 与保护既有文件。**不读取测试机器的真实 `/proc` 或文件系统统计，也不连接任何 VPS。** 本次验证为本地测试与 HTML 生成；尚未完成真实 Linux 主机采集、Windows 运行或浏览器视觉布局验收。
+测试使用临时的合成 `/proc` 文本、模拟 `statvfs` 和合成 JSON，覆盖公式、阈值、未知/损坏、非 Linux 拒绝、字节与 inode、时间语义、HTML 转义、CLI 演示 roundtrip 与保护既有文件。**不读取测试机器的真实 `/proc` 或文件系统统计，也不连接任何 VPS。** 2026-10-02 的[跨平台 CI](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/36984498352)已在 Linux / Windows、Python 3.9 / 3.13 上通过测试与合成演示，并在 Linux runner 上完成真实资源采集和 HTML 渲染。未对用户的 VPS 执行采集；health HTML 的浏览器视觉布局仍未验收。
 
 接口定义参考一手文档，查阅日期 **2026-10-02**：
 

@@ -3,6 +3,7 @@
   <desc id="desc">白底、天水蓝与墨蓝的封面。右边一只带浅金色斑点的小鹿低头喝水。原创 AI 辅助生成的小鹿位图嵌入 SVG 排版；文字与装饰线保留矢量。左下是 GitHub 用户名 IndelibleVivi。</desc>
   <style>
     text { font-family: "Avenir Next", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif; fill: #163a5f; }
+    .headline { font-family: Georgia, "Times New Roman", serif; }
     .gold { stroke: #dcc078; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; fill: none; }
   </style>
   <rect width="1200" height="440" fill="#ffffff"/>
@@ -16,7 +17,7 @@
   </g>
   <g id="title-block">
     <text x="53" y="58" font-size="17" letter-spacing="2.1" data-readability="supporting" fill="#365775">A LITTLE HOME FOR YOUR SERVICES</text>
-    <text x="49" y="144" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="-1.5">Infra Field Guide</text>
+    <text x="49" y="144" class="headline" font-size="68" font-weight="400" letter-spacing="-1.5">Infra Field Guide</text>
     <path d="M52 164c91 4 155 2 200-2" stroke="#b8e1f2" stroke-width="7" stroke-linecap="round" fill="none"/>
     <text x="52" y="218" font-size="30" font-weight="500">把自己的服务安顿好</text>
     <text x="53" y="259" font-size="21" fill="#365775">一台小服务器，也能长成自己的世界。</text>
