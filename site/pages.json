@@ -16,7 +16,7 @@
   {"source":"agents/migration.md","route":"agents/migration/","title":"工单 · 可恢复的迁移"},
   {"source":"agents/account-cleanup.md","route":"agents/account-cleanup/","title":"工单 · CC 环境清理"},
   {"source":"agents/private-access.md","route":"agents/private-access/","title":"工单 · 私有远程访问"},
-  {"source":"docs/sources-and-maintenance.md","route":"sources/","title":"来源与维护","group":"关于手册"},
+  {"source":"docs/sources-and-maintenance.md","route":"sources/","title":"来源与维护","summary":"这本手册依据什么、适用于哪里，以及如何持续校正。","group":"关于手册"},
   {"source":"README.md","route":"about/","title":"关于这本手册","group":"关于手册"},
   {"source":"README.en.md","route":"en/","title":"English introduction","lang":"en"},
   {"source":"LICENSING.md","route":"licensing/","title":"许可与归属","group":"关于手册"},

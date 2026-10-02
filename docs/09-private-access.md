@@ -8,7 +8,7 @@
 
 本章建立一条具体路径：**VPS 上某个真实 Linux 用户运行的 worker，通过 Tailscale 网络，使用专用 SSH key 登录 Mac 的普通 Remote Login/OpenSSH。** 它适合在得到授权后检查或处理 Mac 上的项目文件，不需要家里有公网 IPv4，也不要求把家用路由器的 TCP 22 转发到公网。
 
-这里的 `100.64.0.10`（VPS）与 `100.64.0.20`（Mac）是**合成示例**，来自 [RFC 6598 的 Shared Address Space](https://www.rfc-editor.org/rfc/pdfrfc/rfc6598.txt.pdf)，不是本书的 live 设备。部署时从自己的 Tailscale 设备列表逐项确认真实地址、节点与 owner 后替换。示例账户 `worker`、`macowner` 和项目 `example-project` 同样是占位。本文没有连接真实 Mac/VPS 做过复现；官方机制核验、示例语法检查与读者的端到端验收是不同证据。
+这里的 `100.64.0.10`（VPS）与 `100.64.0.20`（Mac）是**合成示例**，来自 [RFC 6598 的 Shared Address Space](https://www.rfc-editor.org/rfc/rfc6598.html)，不是本书的 live 设备。部署时从自己的 Tailscale 设备列表逐项确认真实地址、节点与 owner 后替换。示例账户 `worker`、`macowner` 和项目 `example-project` 同样是占位。本文没有连接真实 Mac/VPS 做过复现；官方机制核验、示例语法检查与读者的端到端验收是不同证据。
 
 > [!NOTE]
 > **停下检查点：“网络能到”不等于“被授权”，更不等于“只有这个节点能连”。**

@@ -12,7 +12,7 @@
 
 [教程导航](#从你的问题进入) · [完整架构](docs/architecture.md) · [Agent 入口](agents/README.md) · [检查状态](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
-**[打开独立阅读站 →](https://indeliblevivi.github.io/infra-field-guide/)** · 章节目录、站内搜索、手机阅读、术语就地释义与完整架构图集。正文与仓库保持同一份来源；构建和维护见 [site/README.md](site/README.md)。
+**[打开独立阅读站 →](https://indeliblevivi.github.io/infra-field-guide/)** · 按「从零开始／迁移与恢复／连接与排障」分组的章节目录、站内搜索、手机阅读、术语就地释义与完整架构图集。正文与仓库保持同一份来源；构建和维护见 [site/README.md](site/README.md)。
 
 ## 从你的问题进入
 
@@ -29,7 +29,7 @@
 | 想先看一眼自己的机器 | [health 工具与离线看板](tools/README.md) | 不上传数据的 Linux 资源快照和离线 HTML |
 | 想让 agent 帮我操作 | [给 agent 的入口](agents/README.md) | 明确范围、停机条件、证据与授权边界的工单 |
 
-每章开头有一张入门示意图；关键小节另有两种 SSH key、RAM / swap、迁移回退分界的对照图。陌生词可以先查[29 词的小词表](docs/glossary.md)，阅读站中点虚线下划线的词即可就地展开，关闭后接着读。带图钉的便笺标出容易混淆、值得停一下的概念。
+每章开头有一张入门示意图；关键小节另有两种 SSH key、RAM / swap、迁移回退分界的对照图。陌生词可以先查[29 词的小词表](docs/glossary.md)，阅读站中点虚线下划线的词即可就地展开，关闭后接着读。带图钉的便笺标出容易混淆、值得停一下的概念。正文链接用不同标记区分站内阅读、词义解释、本项目仓库和外部资料；标题下可展开标记说明。
 
 第一次学建议顺序：**01 → 02 → 03 → 07**，再按需要选 04、05 或 09。遇到账号问题直接读 06，不必先买服务器。
 

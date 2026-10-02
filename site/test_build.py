@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from urllib.parse import urlsplit, unquote
 
-from build import build, PAGES, ASSETS, CHAPTER_MAPS, glossary, render_markdown, resolve_link
+from build import build, PAGES, ASSETS, CHAPTER_MAPS, glossary, render_markdown, resolve_link, link_kind
 import re
 from html import unescape
 
@@ -14,13 +14,14 @@ from html import unescape
 class Document(HTMLParser):
     def __init__(self, source):
         super().__init__()
-        self.ids, self.links = set(), []
+        self.ids, self.links, self.descriptions = set(), [], []
         self.feed(source)
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         if 'id' in attributes:
             self.ids.add(attributes['id'])
+        self.descriptions.extend(attributes.get('aria-describedby', '').split())
         for attribute in ('href', 'src', 'srcset'):
             if attribute in attributes:
                 self.links.append(attributes[attribute])
@@ -57,6 +58,29 @@ class SiteTests(unittest.TestCase):
                     self.assertTrue(target.is_file(), f'Missing {target}')
                     if parsed.fragment and target.suffix == '.html':
                         self.assertIn(unquote(parsed.fragment), self.documents[target.relative_to(self.output).as_posix()].ids)
+
+    def test_link_destinations_are_distinct_and_explained(self):
+        cases = {
+            '/infra-field-guide/guide/operations/': 'internal',
+            '#来源规则': 'internal',
+            'https://indeliblevivi.github.io/infra-field-guide/': 'internal',
+            'https://github.com/IndelibleVivi/infra-field-guide/blob/main/tools/health.py': 'repository',
+            'https://github.com/IndelibleVivi/another-project': 'external',
+            'https://www.rfc-editor.org/rfc/rfc6598.html': 'external',
+            '/infra-field-guide/docs/diagrams/03-operations-map.svg': 'file',
+        }
+        for href, expected in cases.items():
+            self.assertEqual(link_kind(href, '/infra-field-guide/'), expected, href)
+        for path, document in self.documents.items():
+            for description in document.descriptions:
+                self.assertIn(description, document.ids, path)
+        _, content, _ = render_markdown('docs/09-private-access.md', '/infra-field-guide/')
+        self.assertIn('data-link-kind="term"', content)
+        self.assertIn('data-link-kind="external"', content)
+        self.assertIn('https://www.rfc-editor.org/rfc/rfc6598.html', content)
+        self.assertNotIn('/pdfrfc/', content)
+        self.assertIn('class="heading-icon"', content)
+        self.assertNotRegex(content, r'class="headerlink"[^>]*data-link-kind')
 
     def test_every_chapter_and_asset_is_published(self):
         for page in PAGES:

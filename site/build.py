@@ -14,6 +14,8 @@ from xml.etree import ElementTree as ET
 
 import markdown
 
+from ui import icon, chapter_icon
+
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / 'site'
 REPO = 'https://github.com/IndelibleVivi/infra-field-guide'
@@ -71,34 +73,69 @@ def resolve_link(value, source, base):
     return url
 
 
+LINK_LABELS = {'internal': '站内页面', 'term': '本站词义', 'repository': '本项目仓库',
+               'external': '外部网站', 'file': '本站文件'}
+
+
+def link_kind(href, base):
+    parsed = urlsplit(href)
+    if parsed.hostname == 'github.com' and (parsed.path == '/IndelibleVivi/infra-field-guide' or
+                                            parsed.path.startswith('/IndelibleVivi/infra-field-guide/')):
+        return 'repository'
+    if parsed.netloc and not (parsed.hostname == 'indeliblevivi.github.io' and
+                              parsed.path.startswith('/infra-field-guide/')):
+        return 'external'
+    if parsed.path.startswith(base + 'docs/') or parsed.path.endswith(('.svg', '.png', '.excalidraw', '.json')):
+        return 'file'
+    return 'internal'
+
+
 class ContentHTML(HTMLParser):
-    """Rewrite generated and raw-HTML links without touching code-block text."""
+    """Render link destinations and heading markers without touching command text."""
     def __init__(self, source, base):
         super().__init__(convert_charrefs=False)
         self.source, self.base, self.output = source, base, []
+        self.active_link = None
 
     def handle_starttag(self, tag, attrs):
         if tag == 'table':
             self.output.append('<div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格">')
-        attrs = [(k, resolve_link(v, self.source, self.base) if k in ('href', 'src') else v)
-                 for k, v in attrs]
-        attributes = dict(attrs)
-        if tag == 'a' and attributes.get('href', '').startswith(self.base + 'glossary/#'):
-            term = glossary().get(unquote(urlsplit(attributes['href']).fragment))
-            if term:
-                attrs += [('class', 'term-link'), ('data-term', term['name']),
-                          ('data-definition', term['definition'])]
+        attributes = {k: resolve_link(v, self.source, self.base) if k in ('href', 'src') else v
+                      for k, v in attrs}
+        if tag == 'a':
+            self.active_link = None
+            if 'headerlink' not in attributes.get('class', ''):
+                href = attributes.get('href', '')
+                kind = link_kind(href, self.base)
+                if href.startswith(self.base + 'glossary/#'):
+                    term = glossary().get(unquote(urlsplit(href).fragment))
+                    if term:
+                        kind = 'term'
+                        attributes.update({'data-term': term['name'], 'data-definition': term['definition']})
+                css = 'term-link' if kind == 'term' else 'link-' + kind
+                attributes['class'] = (attributes.get('class', '') + ' ' + css).strip()
+                attributes['data-link-kind'] = kind
+                attributes['aria-describedby'] = 'link-help-' + kind
+                host = urlsplit(href).hostname
+                attributes['title'] = LINK_LABELS[kind] + ((' · ' + host) if host and kind == 'external' else '')
+                self.active_link = kind
         if tag == 'th':
-            attrs += [('scope', 'col')]
+            attributes['scope'] = 'col'
         if tag == 'img':
-            attrs += [('loading', 'lazy'), ('decoding', 'async')]
-        encoded = ''.join(f' {k}="{escape(v, quote=True)}"' if v is not None else f' {k}' for k, v in attrs)
+            attributes.update({'loading': 'lazy', 'decoding': 'async'})
+        encoded = ''.join(f' {k}="{escape(v, quote=True)}"' if v is not None else f' {k}' for k, v in attributes.items())
         self.output.append(f'<{tag}{encoded}>')
+        if tag in ('h2', 'h3') and attributes.get('id') != '这一章帮你做什么':
+            name = chapter_icon(self.source) if tag == 'h2' else 'spark'
+            self.output.append(icon(name, 'heading-icon'))
 
     def handle_startendtag(self, tag, attrs):
         self.handle_starttag(tag, attrs)
 
     def handle_endtag(self, tag):
+        if tag == 'a' and self.active_link:
+            self.output.append(icon(self.active_link, 'link-cue cue-' + self.active_link))
+            self.active_link = None
         self.output.append(f'</{tag}>')
         if tag == 'table':
             self.output.append('</div>')
@@ -120,13 +157,13 @@ def render_markdown(source, base):
     raw = (ROOT / source).read_text(encoding='utf-8')
     md = markdown.Markdown(extensions=['fenced_code', 'tables', 'sane_lists', 'toc'],
                            extension_configs={'toc': {'slugify': slugify, 'toc_depth': '2-3',
-                                                       'permalink': '↗', 'permalink_title': '此节链接'}})
+                                                       'permalink': '¶', 'permalink_title': '此节链接'}})
     rendered = md.convert(raw)
     # The source h1 remains the real title; move it to the reader header.
     match = re.search(r'<h1\b[^>]*>(.*?)</h1>', rendered, re.S)
     title = match.group(0) if match else ''
     rendered = rendered.replace(title, '', 1)
-    rendered = re.sub(r'<p>(?=<a[^>]*>返回首页</a>)', '<p class="source-nav">', rendered, count=1)
+    rendered = re.sub(r'^\s*<p><a[^>]*>返回首页</a></p>', '', rendered, count=1)
     rewrite = ContentHTML(source, base)
     rewrite.feed(rendered)
     content = enhance_content(''.join(rewrite.output), base)
@@ -151,7 +188,7 @@ def enhance_content(content, base):
         alternative = diagram['description'] + ' ' + '；'.join(node['title'] + '：' + node['body'].replace('\n', '，') for node in diagram['nodes'])
         figure = (f'<figure class="concept-map"><picture><source media="(max-width: 1000px)" srcset="{source}.mobile.svg">'
                   f'<img src="{source}.svg" alt="{escape(alternative, quote=True)}" loading="lazy" decoding="async"></picture>'
-                  f'<figcaption><span>{escape(diagram["footer"])}</span><a href="{source}.svg">查看原图 ↗</a></figcaption></figure>')
+                  f'<figcaption><span>{escape(diagram["footer"])}</span><a class="link-file" href="{source}.svg" title="本站 SVG 原图" data-link-kind="file" aria-describedby="link-help-file">本站原图 {icon("file", "link-cue cue-file")}</a></figcaption></figure>')
         content = re.sub(pattern, lambda _: figure, content)
     return content
 
@@ -165,7 +202,7 @@ def navigation(base, current=''):
             if group:
                 result.append('</ul>')
             group = page['group']
-            result.append(f'<h3>{group}</h3><ul>')
+            result.append(f'<h3>{icon({"从零开始": "server", "迁移与恢复": "move", "连接与排障": "network"}.get(group, "source"))}{group}</h3><ul>')
         active = ' aria-current="page"' if current == page['source'] else ''
         number = f'<span class="nav-number">{page["number"]}</span>' if 'number' in page else ''
         result.append(f'<li><a href="{base}{page["route"]}"{active}>{number}{page["title"]}</a></li>')
@@ -183,21 +220,28 @@ def shell(body, base, page=None):
 
 
 def home(base):
-    chapters = []
-    for page in PAGES[:9]:
-        chapters.append(f'<a class="chapter-row" href="{base}{page["route"]}">'
-                        f'<span class="chapter-number">{page["number"]}</span><span>'
-                        f'<h3>{page["title"]}</h3><p>{page["summary"]}</p></span><span class="row-arrow">↗</span></a>')
-    return Template((SITE / 'home.html').read_text(encoding='utf-8')).substitute(base=base, chapters=''.join(chapters))
+    groups = {'foundations': '从零开始', 'migration': '迁移与恢复', 'connections': '连接与排障'}
+    chapters = {}
+    for key, group in groups.items():
+        entries = []
+        for page in PAGES:
+            if page.get('group') != group or 'number' not in page:
+                continue
+            entries.append(f'<li><a class="chapter-entry" href="{base}{page["route"]}">'
+                           f'<span class="entry-number" aria-hidden="true">{page["number"]}</span><div>'
+                           f'<h4>{escape(page["title"])}</h4><p>{escape(page["summary"])}</p></div>'
+                           f'<span class="entry-arrow" aria-hidden="true">→</span></a></li>')
+        chapters[key] = ''.join(entries)
+    return Template((SITE / 'home.html').read_text(encoding='utf-8')).substitute(base=base, **chapters)
 
 
 def reader(page, base):
     title, content, toc = render_markdown(page['source'], base)
-    number = page.get('number', 'REF')
+    group = page.get('group', 'Agent 工单' if page['source'].startswith('agents/') else '参考附录')
+    location = f'第 {page["number"]} 章' if 'number' in page else '参考页'
     if 'number' in page:
         title = re.sub(r'(<h1[^>]*>)\d{2} · ', r'\1', title)
         title = re.sub(r'(<h1[^>]*>)([^<：]+)：([^<]+)', r'\1\2<span class="title-detail">\3</span>', title)
-
     pager = ''
     if 'number' in page:
         index = PAGES.index(page)
@@ -206,19 +250,28 @@ def reader(page, base):
         for label, item in [('上一章', previous), ('下一章', following)]:
             pager += (f'<a href="{base}{item["route"]}"><small>{label}</small>{item["title"]} <span>→</span></a>'
                       if item else '<span></span>')
+    legend = ''.join(f'<span>{icon(kind)}{label}</span>' for kind, label in
+                     [('internal', '站内'), ('term', '词义'), ('repository', '仓库'), ('external', '外部')])
     return f'''<div class="reader-layout">
-      <aside class="sidebar" aria-label="全书目录">{navigation(base, page['source'])}</aside>
+      <aside class="sidebar" aria-label="全书目录"><p class="sidebar-label">阅读目录</p>{navigation(base, page['source'])}</aside>
       <main id="main" class="reader" tabindex="-1">
-        <header class="article-header"><a class="eyebrow" href="{base}#chapters">FIELD NOTES / {number}</a>
-          {title}<p class="article-summary">{escape(page.get('summary', ''))}</p>
-          <div class="article-meta"><span>Infra Field Guide</span><a href="{REPO}/blob/main/{page['source']}">阅读 Markdown ↗</a></div>
+        <header class="article-header">
+          <nav class="reader-breadcrumb" aria-label="阅读位置"><a href="{base}#chapters">手册目录</a><span aria-hidden="true">/</span><span>{escape(group)}</span><span class="reading-location">{location}</span><a class="repository-source" href="{REPO}/blob/main/{page['source']}" title="前往本项目 GitHub 仓库">{icon('repository')}仓库原文{icon('external')}</a></nav>
+          <div class="article-title-row"><span class="article-emblem">{icon(chapter_icon(page['source']))}</span><div>{title}<p class="article-summary">{escape(page.get('summary', ''))}</p></div></div>
         </header>
-        <details class="inline-toc"><summary>本页目录</summary>{toc}</details>
+        <details class="link-guide"><summary><span class="link-guide-label">链接标记</span>{legend}</summary><ul>
+          <li id="link-help-internal">{icon('internal')}<span><strong>站内页面</strong>继续阅读手册中的章节或本页小节。</span></li>
+          <li id="link-help-term">{icon('term')}<span><strong>本站词义</strong>点击就地查词；未启用脚本时进入词表。</span></li>
+          <li id="link-help-repository">{icon('repository')}<span><strong>本项目仓库</strong>前往 GitHub 查看原文、代码或示例。</span></li>
+          <li id="link-help-external">{icon('external')}<span><strong>外部网站</strong>离开手册，查看引用资料或其他网站。</span></li>
+          <li id="link-help-file">{icon('file')}<span><strong>本站文件</strong>打开本站提供的原图、文件或下载资源。</span></li>
+        </ul></details>
+        <details class="inline-toc"><summary>{icon('compass')}这一页的路标</summary>{toc}</details>
         <article class="prose">{content}</article>
-        <nav class="chapter-pager" aria-label="相邻章节">{pager}</nav>
+        {f'<nav class="chapter-pager" aria-label="相邻章节">{pager}</nav>' if pager else ''}
         <div class="article-end"><span>读到这里，喝口水吧。</span><a href="#main">回到页首 ↑</a></div>
       </main>
-      <aside class="page-toc" aria-label="本页目录"><p class="eyebrow">这一页，读到哪里</p>{toc}</aside>
+      <aside class="page-toc" aria-label="本页目录"><p class="toc-label">{icon('compass')}这一页的路标</p>{toc}</aside>
     </div>'''
 
 
@@ -248,7 +301,7 @@ class SearchSections(HTMLParser):
 
     def handle_data(self, value):
         if self.in_heading:
-            self.heading += value.replace('↗', '')
+            self.heading += value.replace('¶', '')
         else:
             self.parts.append(value)
 
