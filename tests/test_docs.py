@@ -11,6 +11,7 @@ import unittest
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+BASH = shutil.which('bash')
 DOCUMENTS = sorted(ROOT.glob('*.md')) + sorted(ROOT.glob('docs/**/*.md')) + sorted(ROOT.glob('agents/*.md')) + [ROOT / 'tools/README.md']
 
 
@@ -46,7 +47,7 @@ class DocumentationTests(unittest.TestCase):
                 checked += 1
         self.assertGreater(checked, 20)
 
-    @unittest.skipUnless(shutil.which('bash'), 'bash unavailable; tutorial syntax check skipped')
+    @unittest.skipUnless(BASH, 'bash unavailable; tutorial syntax check skipped')
     def test_shell_fences_parse_without_execution(self):
         for doc in DOCUMENTS:
             text = doc.read_text(encoding='utf-8')
@@ -54,7 +55,7 @@ class DocumentationTests(unittest.TestCase):
             for index, code in enumerate(re.findall(r'^```(?:bash|sh)\n(.*?)^```\s*$', text, re.M | re.S)):
                 with self.subTest(document=str(doc.relative_to(ROOT)), block=index):
                     # Preserve LF for Bash even when Python runs on Windows.
-                    result = subprocess.run(['bash', '-n'], input=code.encode('utf-8'), capture_output=True)
+                    result = subprocess.run([BASH, '-n'], input=code.encode('utf-8'), capture_output=True)
                     detail = (result.stdout + result.stderr).decode('utf-8', errors='replace')
                     self.assertEqual(result.returncode, 0, detail)
 

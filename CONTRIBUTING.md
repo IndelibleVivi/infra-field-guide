@@ -22,7 +22,7 @@ git diff --check
 
 health 演示见 [工具说明](tools/README.md)。图的维护与渲染见 [diagram source](docs/diagrams/README.md)。真实服务器验收需要环境所有者授权，不属于贡献测试的默认步骤。
 
-Windows 的 shell 静态检查使用 Git for Windows 随附的 Git Bash，请让它在 PATH 中优先于系统的 `bash.exe` / WSL 入口；CI 明确选择该路径。CLI 测试只向子进程传入测试用 Python 设置与 Windows 启动所需的 `SystemRoot`，不带入日常账号环境。
+Windows 的 shell 静态检查使用 Git for Windows 随附的 Git Bash，请让它在 PATH 中优先于系统的 `bash.exe` / WSL 入口；CI 明确选择该路径，测试使用解析后的完整可执行路径，避免 Windows 的系统目录搜索再次选中 WSL。CLI 测试只向子进程传入测试用 Python 设置与 Windows 启动所需的 `SystemRoot`，不带入日常账号环境。
 
 ## English
 
