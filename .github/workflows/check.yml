@@ -1,0 +1,44 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guide-and-tool:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.9', '3.13']
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Test tool and documentation contracts
+        run: python -m unittest discover -s tests -v
+      - name: Render synthetic snapshot
+        run: |
+          python -c "from pathlib import Path; Path('reports').mkdir()"
+          python tools/health.py collect --demo -o reports/ci-demo.json
+          python tools/health.py render reports/ci-demo.json -o reports/ci-demo.html
+      - name: Collect runner resources on Linux
+        if: runner.os == 'Linux'
+        run: |
+          python tools/health.py collect -o reports/ci-linux.json
+          python tools/health.py render reports/ci-linux.json -o reports/ci-linux.html
+      - name: Check patch whitespace
+        run: git show --format= --check HEAD

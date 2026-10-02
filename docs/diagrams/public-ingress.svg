@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1190" viewBox="0 0 1600 1190" role="img" aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">公网入站 · DNS 定位入口，Access 决定谁可进入</title><desc id="diagram-description">参考：example.com → Cloudflare Access / edge → Tunnel → origin；家庭侧无需开放公网入站端口。</desc>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<g font-family="Arial, 'PingFang SC', 'Noto Sans CJK SC', sans-serif"><rect id="client-zone" x="40" y="140" width="355" height="440" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="cloud-zone" x="435" y="140" width="630" height="440" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="origin-zone" x="1105" y="140" width="455" height="930" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="acceptance" x="40" y="625" width="1025" height="445" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<defs><marker id="head-dns-lookup" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="dns-lookup" points="220,375 220,275 480,275" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="3 6" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-dns-lookup)"/>
+<defs><marker id="head-client-https" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="client-https" points="365,445 480,445" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-client-https)"/>
+<defs><marker id="head-policy-allow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="policy-allow" points="715,445 770,445" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-policy-allow)"/>
+<defs><marker id="head-connect-tunnel" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="connect-tunnel" points="1335,375 1335,340 895,340 895,375" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="10 7" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-connect-tunnel)"/>
+<defs><marker id="head-forward-request" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="forward-request" points="1015,460 1140,460" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-forward-request)"/>
+<defs><marker id="head-forward-origin" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="forward-origin" points="1332,515 1332,675" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-forward-origin)"/>
+<defs><marker id="head-origin-write" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="origin-write" points="1332,815 1332,925" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-origin-write)"/>
+<text id="title" data-container-id="" fill="#163a5f" font-size="34" font-weight="700" text-anchor="start"><tspan x="40" y="62">公网入站 · DNS 定位入口，Access 决定谁可进入</tspan></text>
+<text id="subtitle" data-container-id="" fill="#365775" font-size="19" font-weight="400" text-anchor="start"><tspan x="40" y="101">参考：example.com → Cloudflare Access / edge → Tunnel → origin；家庭侧无需开放公网入站端口。</tspan></text>
+<text id="client-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="177">访问者</tspan></text>
+<text id="client-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="205">浏览器或获准客户端</tspan></text>
+<text id="cloud-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="455" y="177">Cloudflare</tspan></text>
+<text id="cloud-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="455" y="205">域名记录、访问策略、edge</tspan></text>
+<text id="origin-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="1125" y="177">你控制的 origin</tspan></text>
+<text id="origin-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="1125" y="205">VPS 或 NAT 后的本机；此图二选一</tspan></text>
+<rect id="client" x="70" y="375" width="295" height="140" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="client-text" data-container-id="client" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="88" y="422.5" font-weight="700">浏览器 / 客户端</tspan><tspan x="88" y="449.5">先查询 DNS</tspan><tspan x="88" y="476.5">随后发 HTTPS 请求</tspan></text>
+<rect id="dns-record" x="480" y="230" width="535" height="90" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="dns-record-text" data-container-id="dns-record" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="498" y="266" font-weight="700">DNS 记录 · example.com</tspan><tspan x="498" y="293">定位 edge；DNS 记录不承载网页请求</tspan></text>
+<rect id="access" x="480" y="375" width="235" height="140" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="access-text" data-container-id="access" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="498" y="422.5" font-weight="700">Access 策略</tspan><tspan x="498" y="449.5">身份 / service token</tspan><tspan x="498" y="476.5">明确允许或拒绝</tspan></text>
+<rect id="edge" x="770" y="375" width="245" height="140" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="edge-text" data-container-id="edge" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="788" y="422.5" font-weight="700">Cloudflare edge</tspan><tspan x="788" y="449.5">经已建立的 Tunnel</tspan><tspan x="788" y="476.5">转发获准请求</tspan></text>
+<rect id="cloudflared" x="1140" y="375" width="385" height="140" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="cloudflared-text" data-container-id="cloudflared" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1158" y="422.5" font-weight="700">cloudflared connector</tspan><tspan x="1158" y="449.5">origin 主动向 edge 建立连接</tspan><tspan x="1158" y="476.5">Tunnel 不自动创建 Access 策略</tspan></text>
+<rect id="app-origin" x="1140" y="675" width="385" height="140" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="app-origin-text" data-container-id="app-origin" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1158" y="722.5" font-weight="700">应用 origin · loopback</tspan><tspan x="1158" y="749.5">仍要验证应用身份与操作权限</tspan><tspan x="1158" y="776.5">同机本地 HTTP 是独立一跳</tspan></text>
+<rect id="origin-data" x="1140" y="925" width="385" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="origin-data-text" data-container-id="origin-data" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1158" y="971" font-weight="700">数据库 / 附件</tspan><tspan x="1158" y="998">只有应用授予的操作可写入</tspan></text>
+<rect id="dns-lookup-label-bg" x="251" y="236" width="217" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="dns-lookup-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="359.5" y="255">查询 / 解析</tspan></text>
+<rect id="client-https-label-bg" x="365" y="398" width="115" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="client-https-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="422.5" y="417">HTTPS</tspan></text>
+<rect id="connect-tunnel-label-bg" x="1035" y="282" width="360" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="connect-tunnel-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1215" y="301">连接建立：origin → edge</tspan></text>
+<rect id="forward-request-label-bg" x="1020" y="481" width="114" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="forward-request-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1077" y="500">请求 →</tspan></text>
+<rect id="forward-origin-label-bg" x="1193" y="577" width="277" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="forward-origin-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1331.5" y="596">在 origin 内转交请求</tspan></text>
+<rect id="origin-write-label-bg" x="1190" y="851" width="285" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="origin-write-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1332.5" y="870">应用权限约束读写</tspan></text>
+<text id="acceptance-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="662">按路径验收 · 一层的成功不能替下一层作证</tspan></text>
+<text id="acceptance-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="690">检查来自获准用户，也检查不该获准的用户。</tspan></text>
+<rect id="checks" x="70" y="715" width="965" height="140" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="checks-text" data-container-id="checks" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="88" y="749" font-weight="700">DNS → Access → Tunnel → origin → client</tspan><tspan x="88" y="776">DNS 是否指向预期入口？未获准身份是否被拒？</tspan><tspan x="88" y="803">connector 在线只是中间证据；检查应用返回与真实客户端操作。</tspan><tspan x="88" y="830">不要用一次 edge HTTP 200 推断数据库、后台任务或账号都正常。</tspan></text>
+<rect id="ingress-limit" x="70" y="890" width="965" height="145" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="ingress-limit-text" data-container-id="ingress-limit" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="88" y="926.5" font-weight="700">入站能力与出站能力独立</tspan><tspan x="88" y="953.5">本方案用公开 hostname 加身份门禁；无需家庭公网 IP。</tspan><tspan x="88" y="980.5">直接公开 VPS 端口是另一种入口，需分别配置云防火墙和主机防火墙。</tspan><tspan x="88" y="1007.5">添加 Tunnel 不会改变应用访问第三方 API 的一般出站 IP。</tspan></text>
+<text id="footer" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="40" y="1164">实线：请求或数据　虚线：Tunnel 连接建立　点线：DNS 查询。这里的 Access 私有应用方案不代表所有公共网站必须使用同一策略。</tspan></text></g>
+</svg>

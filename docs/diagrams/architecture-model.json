@@ -1,0 +1,1458 @@
+{
+  "schema_version": 1,
+  "source": "*.excalidraw element customData; generated, do not edit",
+  "views": [
+    {
+      "id": "control-access",
+      "title": "私有控制 · 能到达网络，还要能以正确身份工作",
+      "question": "一次远程执行需要经过哪些独立边界？",
+      "status": "reference-model",
+      "evidence": [
+        "../09-private-access.md",
+        "../02-first-server.md",
+        "../../examples/tailnet-ssh-grant.example.json",
+        "../../examples/ssh-config.example"
+      ],
+      "state": {
+        "canonical": "Mac 用户与文件权限",
+        "writers": "已获准且以指定 Mac 用户登录的 SSH 会话",
+        "receipts": "真实 worker 的项目命令；未授权 peer 拒绝；既有 HTTPS 仍通"
+      },
+      "objects": [
+        {
+          "id": "worker-zone",
+          "kind": "region",
+          "name": "VPS",
+          "responsibility": "命令实际由谁执行",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "overlay-zone",
+          "kind": "region",
+          "name": "Tailnet",
+          "responsibility": "只处理网络访问许可",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "mac-zone",
+          "kind": "region",
+          "name": "Mac · Remote Login / OpenSSH",
+          "responsibility": "登录身份、文件权限与项目能力继续分别判断",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "identity",
+          "kind": "region",
+          "name": "最小访问示例的边界",
+          "responsibility": "100.64.0.10 / .20 是合成 shared-address 示例，不是真实节点；不要原样应用到账号。",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "enter-overlay",
+          "kind": "edge",
+          "source": "worker-user",
+          "destination": "grant",
+          "payload": "经 tailnet 加密链路访问 TCP22",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "tcp22",
+          "kind": "edge",
+          "source": "grant",
+          "destination": "openssh",
+          "payload": "网络 grant 允许指定源目的端口 TCP22",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "ssh-login",
+          "kind": "edge",
+          "source": "openssh",
+          "destination": "mac-user",
+          "payload": "SSH key 对应本机用户",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "file-access",
+          "kind": "edge",
+          "source": "mac-user",
+          "destination": "project",
+          "payload": "受 OS 权限、TCC 与目录状态约束",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "worker-user",
+          "kind": "node",
+          "name": "真实 worker 用户",
+          "responsibility": "专用 SSH 私钥 / 不要只用管理员测试",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "grant",
+          "kind": "node",
+          "name": "指定节点 grant",
+          "responsibility": "合成源 100.64.0.10 / → 100.64.0.20:22 / 既有 allow 规则会叠加",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "openssh",
+          "kind": "node",
+          "name": "OpenSSH 认证",
+          "responsibility": "独立核验 host key / StrictHostKeyChecking yes / 专用 key + from=限制",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "mac-user",
+          "kind": "node",
+          "name": "Mac 登录用户",
+          "responsibility": "按 OS 用户授予权限 / owner 用户拥有广泛权限 / 不自动成为 repo 沙箱",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "project",
+          "kind": "node",
+          "name": "项目与 runtime",
+          "responsibility": "cwd / git / 可写目录 / 非交互 PATH / node / TCC 与 GUI 能力另验",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "network-receipt",
+          "kind": "node",
+          "name": "网络探测的证据范围",
+          "responsibility": "tailscale ping 成功不证明 TCP22 获准。 / direct / DERP 改变传输路径， / 不替代 OpenSSH key 与用户认证。",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "permission-receipt",
+          "kind": "node",
+          "name": "权限要正向与反向验收",
+          "responsibility": "真实 worker 用户：SSH、cwd、git。 / 临时文件 write/read、真实项目命令。 / 未授权 peer 仍拒绝；原 HTTPS 仍通。",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "availability-receipt",
+          "kind": "node",
+          "name": "可达性不等于持续可用",
+          "responsibility": "Mac 休眠、重启、FileVault 状态， / 挂载盘、GUI 会话与 TCC 均可阻断。 / 按自己的设备启动路径实际验收。",
+          "evidence": [
+            "../09-private-access.md",
+            "../02-first-server.md",
+            "../../examples/tailnet-ssh-grant.example.json",
+            "../../examples/ssh-config.example"
+          ],
+          "evidenceStatus": "reference-model"
+        }
+      ]
+    },
+    {
+      "id": "infrastructure-overview",
+      "title": "基础设施总览 · 三条网络路径，一份数据权威",
+      "question": "本机、VPS、公网入口和出口分别承担什么？",
+      "status": "reference-model",
+      "evidence": [
+        "../01-vps-basics.md",
+        "../03-operations.md",
+        "../04-local-to-vps.md",
+        "../05-vps-to-vps.md",
+        "../07-network-and-proxies.md",
+        "../09-private-access.md"
+      ],
+      "state": {
+        "canonical": "应用数据库与附件",
+        "writers": "应用 + 已盘点的后台 writer；迁移时只开放一侧",
+        "receipts": "真实 client、应用日志、一致备份恢复"
+      },
+      "objects": [
+        {
+          "id": "local",
+          "kind": "region",
+          "name": "本机 · 可在 NAT / CGNAT 后",
+          "responsibility": "你拥有的 Mac；本地使用与私有访问",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "vps",
+          "kind": "region",
+          "name": "VPS · 你选择的运行位置",
+          "responsibility": "进程由 systemd 等明确 owner 管理",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "outside",
+          "kind": "region",
+          "name": "外部网络与服务",
+          "responsibility": "入口、DNS 与第三方 API 各有职责",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "operations",
+          "kind": "region",
+          "name": "运行与恢复 · 覆盖上面每一条路径",
+          "responsibility": "健康快照、服务存活、网络连通与真实用户成功是不同证据",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "local-admin",
+          "kind": "edge",
+          "source": "local-operator",
+          "destination": "remote-worker",
+          "payload": "在授权范围内通过 SSH 管理 VPS",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "worker-overlay",
+          "kind": "edge",
+          "source": "remote-worker",
+          "destination": "tailnet-grant",
+          "payload": "私有加密链路",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "overlay-mac",
+          "kind": "edge",
+          "source": "tailnet-grant",
+          "destination": "mac-ssh",
+          "payload": "到 Mac 的 TCP22，网络 grant 之后还需 OpenSSH 认证",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "ssh-permissions",
+          "kind": "edge",
+          "source": "mac-ssh",
+          "destination": "mac-project",
+          "payload": "以 Mac 登录用户访问文件与 runtime",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dns-query",
+          "kind": "edge",
+          "source": "browser",
+          "destination": "dns",
+          "payload": "DNS 查询定位入口",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "https-request",
+          "kind": "edge",
+          "source": "browser",
+          "destination": "edge-access",
+          "payload": "客户端 HTTPS 请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "tunnel-connect",
+          "kind": "edge",
+          "source": "connector",
+          "destination": "edge-access",
+          "payload": "cloudflared 主动建立 Tunnel 连接",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "tunnel-request",
+          "kind": "edge",
+          "source": "edge-access",
+          "destination": "connector",
+          "payload": "通过现有 Tunnel 转发请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "origin-request",
+          "kind": "edge",
+          "source": "connector",
+          "destination": "app",
+          "payload": "本地 HTTP 请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "app-write",
+          "kind": "edge",
+          "source": "app",
+          "destination": "data",
+          "payload": "应用按权限读写正式数据",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "job-write",
+          "kind": "edge",
+          "source": "writers",
+          "destination": "data",
+          "payload": "后台任务也可写数据",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "app-outbound",
+          "kind": "edge",
+          "source": "app",
+          "destination": "egress",
+          "payload": "应用发出的请求由实际代理设置和路由选择出口",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "api-request",
+          "kind": "edge",
+          "source": "egress",
+          "destination": "external-api",
+          "payload": "外部 API 请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "local-operator",
+          "kind": "node",
+          "name": "本机用户 / 本机 agent",
+          "responsibility": "在授权范围内配置与操作",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "remote-worker",
+          "kind": "node",
+          "name": "远程 worker",
+          "responsibility": "VPS 上的实际 OS 用户",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "tailnet-grant",
+          "kind": "node",
+          "name": "Tailscale 私有控制",
+          "responsibility": "grant 允许指定源 → TCP22",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "mac-ssh",
+          "kind": "node",
+          "name": "Mac Remote Login",
+          "responsibility": "普通 OpenSSH 验 key / 用户",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "mac-project",
+          "kind": "node",
+          "name": "本机项目与 runtime",
+          "responsibility": "OS 权限、TCC、挂载盘仍适用",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "browser",
+          "kind": "node",
+          "name": "浏览器 / CLI",
+          "responsibility": "真实客户端",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dns",
+          "kind": "node",
+          "name": "DNS",
+          "responsibility": "定位入口",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "edge-access",
+          "kind": "node",
+          "name": "Cloudflare edge + Access",
+          "responsibility": "example.com · HTTPS + 访问策略",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "connector",
+          "kind": "node",
+          "name": "cloudflared",
+          "responsibility": "主动连接 edge；转交请求",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "app",
+          "kind": "node",
+          "name": "应用 origin",
+          "responsibility": "loopback 服务 + 自身鉴权",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "data",
+          "kind": "node",
+          "name": "正式数据库 / 附件",
+          "responsibility": "持久状态 · 可恢复的数据",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "writers",
+          "kind": "node",
+          "name": "后台 writer",
+          "responsibility": "job / queue / timer / cron",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "egress",
+          "kind": "node",
+          "name": "应用请求的实际出口",
+          "responsibility": "直连 / 代理 / exit node",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "external-api",
+          "kind": "node",
+          "name": "外部 API",
+          "responsibility": "依据实际请求处理身份与权限",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "availability",
+          "kind": "node",
+          "name": "持续可用有条件",
+          "responsibility": "供电、登录状态、睡眠与网络",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "observability",
+          "kind": "node",
+          "name": "分层监控与验收",
+          "responsibility": "host → service → origin → edge → client",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "restore",
+          "kind": "node",
+          "name": "数据 → 一致备份 → 独立恢复",
+          "responsibility": "备份要离开故障域，并做 restore 演练",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "migration",
+          "kind": "node",
+          "name": "迁移 → 两侧冻结 → 目标唯一 writer",
+          "responsibility": "首次新写入后，恢复必须覆盖数据差异",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../03-operations.md",
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../07-network-and-proxies.md",
+            "../09-private-access.md"
+          ],
+          "evidenceStatus": "reference-model"
+        }
+      ]
+    },
+    {
+      "id": "migration-state",
+      "title": "迁移状态 · 先决定谁能写，再决定请求到哪里",
+      "question": "迁移什么时候还能恢复旧机，什么时候必须处理新数据？",
+      "status": "reference-model",
+      "evidence": [
+        "../04-local-to-vps.md",
+        "../05-vps-to-vps.md",
+        "../../examples/migration-plan.example.json"
+      ],
+      "state": {
+        "canonical": "当前唯一正式 writer 所写的数据库、附件与队列状态",
+        "writers": "S0源写；S1-S3两侧禁写；S4目标写源禁写",
+        "receipts": "冻结完成记录、最终快照边界、恢复验证、入口读验收、目标首次新写入"
+      },
+      "objects": [
+        {
+          "id": "migration-process",
+          "kind": "region",
+          "name": "迁移主线 · 每一步有观察结果才进入下一步",
+          "responsibility": "正式 writer 包含 API、后台 job、队列、cron/timer、其他机器和手工操作。",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "entry-choices",
+          "kind": "region",
+          "name": "入口是另一层状态 · 以下是可选分支，不是顺序步骤",
+          "responsibility": "确认所有真实客户端与缓存；入口切换成功不等于正式数据已一致。",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "advance-0",
+          "kind": "edge",
+          "source": "source-state",
+          "destination": "freeze-state",
+          "payload": "完成该阶段验证后进入下一状态",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "advance-1",
+          "kind": "edge",
+          "source": "freeze-state",
+          "destination": "restore-state",
+          "payload": "完成该阶段验证后进入下一状态",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "advance-2",
+          "kind": "edge",
+          "source": "restore-state",
+          "destination": "entry-state",
+          "payload": "完成该阶段验证后进入下一状态",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "advance-3",
+          "kind": "edge",
+          "source": "entry-state",
+          "destination": "target-state",
+          "payload": "完成该阶段验证后进入下一状态",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "no-new-writes-return",
+          "kind": "edge",
+          "source": "entry-state",
+          "destination": "source-state",
+          "payload": "目标没有新写入时，关闭目标并恢复旧入口，再重新开放源 writer",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "keep-new-data",
+          "kind": "edge",
+          "source": "target-state",
+          "destination": "new-data-recovery",
+          "payload": "目标写入后出故障须保留新增数据",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "source-state",
+          "kind": "node",
+          "name": "S0 · 源唯一写入",
+          "responsibility": "候选机独立演练 / 代码 / 配置 / 恢复先验证",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "freeze-state",
+          "kind": "node",
+          "name": "S1 · 冻结所有写入",
+          "responsibility": "两侧均禁写 / 最终快照 + 边界记录",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "restore-state",
+          "kind": "node",
+          "name": "S2 · 目标恢复验收",
+          "responsibility": "恢复数据库与附件 / 目标只读；源仍禁写",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "entry-state",
+          "kind": "node",
+          "name": "S3 · 切入口后读验收",
+          "responsibility": "请求到目标，但尚不写 / 源不会重启后自行复活",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "target-state",
+          "kind": "node",
+          "name": "S4 · 目标唯一写入",
+          "responsibility": "记下首次正式新写入 / 源禁写；不再自动回退",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "new-data-recovery",
+          "kind": "node",
+          "name": "首次新写入之后 · 恢复必须覆盖差异",
+          "responsibility": "优先修复目标；或冻结、备份新状态并对账， / 再进行受控反向迁移。只改回 DNS 会漏掉新数据。",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dual-write",
+          "kind": "node",
+          "name": "若意外出现双写：冻结受影响 writer，保留两侧事实",
+          "responsibility": "按业务主键、事件顺序或账目做对账；不能盲目以旧库覆盖新库。 / 长任务需要 owner、日志、state、status 与 resume，避免重发成重复 writer。",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dns-cutover",
+          "kind": "node",
+          "name": "直接 DNS / IP",
+          "responsibility": "A / AAAA / CNAME 与 TTL / 缓存 / 旧入口在缓存期仍可能收到请求",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "tunnel-cutover",
+          "kind": "node",
+          "name": "Cloudflare Tunnel",
+          "responsibility": "同 tunnel 多 connector 可同时接流量 / 不是天然主备；Access 配置也要验证",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "tailnet-cutover",
+          "kind": "node",
+          "name": "Tailnet 私有入口",
+          "responsibility": "新节点身份、grant、端点与客户端 / 不要复制旧节点身份来假装同一台机器",
+          "evidence": [
+            "../04-local-to-vps.md",
+            "../05-vps-to-vps.md",
+            "../../examples/migration-plan.example.json"
+          ],
+          "evidenceStatus": "reference-model"
+        }
+      ]
+    },
+    {
+      "id": "outbound-access",
+      "title": "公网出站 · 平台看到的是这次请求实际走的出口",
+      "question": "同一台机器上的不同程序为什么可能有不同出口？",
+      "status": "reference-model",
+      "evidence": [
+        "../01-vps-basics.md",
+        "../07-network-and-proxies.md",
+        "../08-troubleshooting.md"
+      ],
+      "state": {
+        "canonical": "每个进程、代理客户端与操作系统的实际配置",
+        "writers": "有权修改程序配置、凭据与路由的 owner",
+        "receipts": "同一程序的真实请求、IPv4/IPv6、DNS路径与服务端结果"
+      },
+      "objects": [
+        {
+          "id": "program-zone",
+          "kind": "region",
+          "name": "请求产生的位置",
+          "responsibility": "本机或 VPS；不同程序、用户和进程环境可以不同",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "route-zone",
+          "kind": "region",
+          "name": "这一次选择的路径",
+          "responsibility": "由客户端与系统路由共同决定",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "platform-zone",
+          "kind": "region",
+          "name": "外部 API / 平台",
+          "responsibility": "网络出口只是观测的一部分",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "program-route",
+          "kind": "edge",
+          "source": "program",
+          "destination": "routing",
+          "payload": "程序发出实际请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "choose-direct",
+          "kind": "edge",
+          "source": "routing",
+          "destination": "direct",
+          "payload": "直接连接",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "choose-proxy",
+          "kind": "edge",
+          "source": "routing",
+          "destination": "proxy",
+          "payload": "显式应用代理路径",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "choose-vpn",
+          "kind": "edge",
+          "source": "routing",
+          "destination": "vpn",
+          "payload": "系统路由选用的 exit node 或 VPN",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "direct-api",
+          "kind": "edge",
+          "source": "direct",
+          "destination": "api",
+          "payload": "使用直接公网出口请求外部 API",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "proxy-api",
+          "kind": "edge",
+          "source": "proxy",
+          "destination": "api",
+          "payload": "代理端向 API 建立连接",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "vpn-api",
+          "kind": "edge",
+          "source": "vpn",
+          "destination": "api",
+          "payload": "VPN 或 exit node 的出口访问 API",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "program",
+          "kind": "node",
+          "name": "应用 / CLI / worker",
+          "responsibility": "实际进程与实际用户 / 请求使用的 token / 登录态",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "routing",
+          "kind": "node",
+          "name": "出口决策",
+          "responsibility": "客户端代理支持与配置 / NO_PROXY 与目标地址 / IPv4 / IPv6 + OS 路由",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "direct",
+          "kind": "node",
+          "name": "直接连接",
+          "responsibility": "本机 / VPS 的公网出口",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "proxy",
+          "kind": "node",
+          "name": "显式应用代理 · 可选",
+          "responsibility": "HTTP CONNECT / SOCKS5 等",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "vpn",
+          "kind": "node",
+          "name": "VPN / exit node · 可选",
+          "responsibility": "路由匹配流量才进入该出口",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "api",
+          "kind": "node",
+          "name": "外部 API",
+          "responsibility": "看到实际来源连接 / 另验身份、地区、配额 / 与平台使用规则",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dns-choice",
+          "kind": "node",
+          "name": "DNS 在哪解析也要确认",
+          "responsibility": "HTTP / SOCKS 的客户端实现不同。 / 例如 socks5 与 socks5h 可使 / DNS 在本机或代理侧解析。",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "verify-outbound",
+          "kind": "node",
+          "name": "在真实进程中验收",
+          "responsibility": "不要用另一用户的终端代替 worker。 / 检查代理变量、IPv4 / IPv6 与请求。 / Tunnel 入站不替你切换 API 出口。",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "account-boundary",
+          "kind": "node",
+          "name": "出口不是账号结果保证",
+          "responsibility": "ASN / 机房 IP / 住宅属性是不同概念。 / 协议加密不授予第三方访问权限。 / 遵守账号、地区与平台使用规则。",
+          "evidence": [
+            "../01-vps-basics.md",
+            "../07-network-and-proxies.md",
+            "../08-troubleshooting.md"
+          ],
+          "evidenceStatus": "reference-model"
+        }
+      ]
+    },
+    {
+      "id": "public-ingress",
+      "title": "公网入站 · DNS 定位入口，Access 决定谁可进入",
+      "question": "cloudflared 向外建立连接时，请求如何向内到达应用？",
+      "status": "reference-model",
+      "evidence": [
+        "../07-network-and-proxies.md",
+        "../09-private-access.md",
+        "../05-vps-to-vps.md"
+      ],
+      "state": {
+        "canonical": "origin 应用自己的用户权限与正式数据",
+        "writers": "通过应用授权的请求与独立后台 writer",
+        "receipts": "DNS、Access拒绝/允许、connector、origin与真实client分别验收"
+      },
+      "objects": [
+        {
+          "id": "client-zone",
+          "kind": "region",
+          "name": "访问者",
+          "responsibility": "浏览器或获准客户端",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "cloud-zone",
+          "kind": "region",
+          "name": "Cloudflare",
+          "responsibility": "域名记录、访问策略、edge",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "origin-zone",
+          "kind": "region",
+          "name": "你控制的 origin",
+          "responsibility": "VPS 或 NAT 后的本机；此图二选一",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "acceptance",
+          "kind": "region",
+          "name": "按路径验收 · 一层的成功不能替下一层作证",
+          "responsibility": "检查来自获准用户，也检查不该获准的用户。",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dns-lookup",
+          "kind": "edge",
+          "source": "client",
+          "destination": "dns-record",
+          "payload": "DNS 查询与记录结果定位入口",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "client-https",
+          "kind": "edge",
+          "source": "client",
+          "destination": "access",
+          "payload": "HTTPS 请求进入 Access 策略",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "policy-allow",
+          "kind": "edge",
+          "source": "access",
+          "destination": "edge",
+          "payload": "获准后转交请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "connect-tunnel",
+          "kind": "edge",
+          "source": "cloudflared",
+          "destination": "edge",
+          "payload": "cloudflared 主动建立到 edge 的持久连接",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "forward-request",
+          "kind": "edge",
+          "source": "edge",
+          "destination": "cloudflared",
+          "payload": "在已经建立的 Tunnel 中传入请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "forward-origin",
+          "kind": "edge",
+          "source": "cloudflared",
+          "destination": "app-origin",
+          "payload": "向本地应用转发 HTTP 请求",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "origin-write",
+          "kind": "edge",
+          "source": "app-origin",
+          "destination": "origin-data",
+          "payload": "应用执行自己授权的数据读写",
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "client",
+          "kind": "node",
+          "name": "浏览器 / 客户端",
+          "responsibility": "先查询 DNS / 随后发 HTTPS 请求",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "dns-record",
+          "kind": "node",
+          "name": "DNS 记录 · example.com",
+          "responsibility": "定位 edge；DNS 记录不承载网页请求",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "access",
+          "kind": "node",
+          "name": "Access 策略",
+          "responsibility": "身份 / service token / 明确允许或拒绝",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "edge",
+          "kind": "node",
+          "name": "Cloudflare edge",
+          "responsibility": "经已建立的 Tunnel / 转发获准请求",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "cloudflared",
+          "kind": "node",
+          "name": "cloudflared connector",
+          "responsibility": "origin 主动向 edge 建立连接 / Tunnel 不自动创建 Access 策略",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "app-origin",
+          "kind": "node",
+          "name": "应用 origin · loopback",
+          "responsibility": "仍要验证应用身份与操作权限 / 同机本地 HTTP 是独立一跳",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "origin-data",
+          "kind": "node",
+          "name": "数据库 / 附件",
+          "responsibility": "只有应用授予的操作可写入",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "checks",
+          "kind": "node",
+          "name": "DNS → Access → Tunnel → origin → client",
+          "responsibility": "DNS 是否指向预期入口？未获准身份是否被拒？ / connector 在线只是中间证据；检查应用返回与真实客户端操作。 / 不要用一次 edge HTTP 200 推断数据库、后台任务或账号都正常。",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        },
+        {
+          "id": "ingress-limit",
+          "kind": "node",
+          "name": "入站能力与出站能力独立",
+          "responsibility": "本方案用公开 hostname 加身份门禁；无需家庭公网 IP。 / 直接公开 VPS 端口是另一种入口，需分别配置云防火墙和主机防火墙。 / 添加 Tunnel 不会改变应用访问第三方 API 的一般出站 IP。",
+          "evidence": [
+            "../07-network-and-proxies.md",
+            "../09-private-access.md",
+            "../05-vps-to-vps.md"
+          ],
+          "evidenceStatus": "reference-model"
+        }
+      ]
+    },
+    {
+      "id": "repository-map",
+      "title": "仓库架构 · 文字帮助决策，工具在本地生成快照",
+      "question": "读者和 agent 怎样使用仓库，health 的数据怎样变成 HTML？",
+      "status": "implemented-source",
+      "evidence": [
+        "../../README.md",
+        "../../agents/README.md",
+        "../../tools/README.md",
+        "../../tools/health.py",
+        "../../tests/test_docs.py",
+        "../../tests/test_health.py"
+      ],
+      "state": {
+        "canonical": "docs说明、agents工单、examples合成输入、tools实际行为",
+        "writers": "owner手动运行工具后，仅写显式新输出文件",
+        "receipts": "单元测试与合成CLI输出不证明真实Linux、网络或用户服务可用"
+      },
+      "objects": [
+        {
+          "id": "reading-plane",
+          "kind": "region",
+          "name": "人读与 agent 阅读面",
+          "responsibility": "内容是参考；真实操作授权来自 owner",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "health-plane",
+          "kind": "region",
+          "name": "本地工具 · tools/health.py · Python 标准库",
+          "responsibility": "按命令运行一次；无网络、SSH、提权、常驻服务或自动刷新。",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "verification-plane",
+          "kind": "region",
+          "name": "验证面 · tests/",
+          "responsibility": "合成测试保护 source 契约；部署与真实客户端验收留在所选运行环境。",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "guide-workorder",
+          "kind": "edge",
+          "source": "docs",
+          "destination": "workorders",
+          "payload": "工单链接教程的操作依据",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "template-workorder",
+          "kind": "edge",
+          "source": "examples",
+          "destination": "workorders",
+          "payload": "合成模板供 owner 在自己的环境填写",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "read-proc",
+          "kind": "edge",
+          "source": "linux-input",
+          "destination": "collect",
+          "payload": "真实采集读取 Linux procfs 和根文件系统统计",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "fixture-demo",
+          "kind": "edge",
+          "source": "examples",
+          "destination": "collect",
+          "payload": "collect --demo 使用固定合成 fixture，替代真实采集",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "write-json",
+          "kind": "edge",
+          "source": "collect",
+          "destination": "snapshot",
+          "payload": "输出 schema v1 JSON",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "validate-json",
+          "kind": "edge",
+          "source": "snapshot",
+          "destination": "render",
+          "payload": "render 读取并验证 JSON",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "render-html",
+          "kind": "edge",
+          "source": "render",
+          "destination": "html",
+          "payload": "生成离线单文件 HTML",
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "docs",
+          "kind": "node",
+          "name": "README.md → docs/",
+          "responsibility": "从买机、SSH、运维到迁移与网络 / 章节说明命令位置、预期与恢复 / architecture.md 连接各条路径",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "workorders",
+          "kind": "node",
+          "name": "agents/ · 工单文本",
+          "responsibility": "先盘点目标、权限与证据 / 再提出可审查操作与验收 / 不含执行器、凭据或隐含授权",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "examples",
+          "kind": "node",
+          "name": "examples/ · 合成输入",
+          "responsibility": "迁移计划、inventory、SSH / grant / health-demo.json 是固定合成快照 / 不含真实主机与账号数据",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "linux-input",
+          "kind": "node",
+          "name": "真实采集 · 仅 Linux",
+          "responsibility": "/proc：load、RAM、swap、uptime、PSI / statvfs(/)：根文件系统字节与 inodes / 未读 cgroup；缺失指标记 unknown",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "collect",
+          "kind": "node",
+          "name": "collect → schema v1 JSON",
+          "responsibility": "只读指标；只写显式新输出文件 / --demo 改读 fixture，不读取本机",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "snapshot",
+          "kind": "node",
+          "name": "JSON 快照",
+          "responsibility": "采集时间、来源声明、metrics / source 是声明，不是来源认证",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "render",
+          "kind": "node",
+          "name": "render INPUT.json -o OUTPUT.html",
+          "responsibility": "校验 schema / 数值，重算状态并转义",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "html",
+          "kind": "node",
+          "name": "离线 HTML · 快照看板",
+          "responsibility": "内嵌 CSS；没有 JS / 外部请求 / 刷新",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        },
+        {
+          "id": "output-boundary",
+          "kind": "node",
+          "name": "输出边界",
+          "responsibility": "reports/ 是本地生成结果，不入 Git。 / 输出文件必须不存在，不覆盖旧快照。 / HTML 年龄在生成时计算，之后不更新。 / 只看资源余量，不能证明服务可用。 / 不会上传；跨机器复制由 owner 决定。",
+          "evidence": [
+            "../../README.md",
+            "../../agents/README.md",
+            "../../tools/README.md",
+            "../../tools/health.py",
+            "../../tests/test_docs.py",
+            "../../tests/test_health.py"
+          ],
+          "evidenceStatus": "implemented-source"
+        }
+      ]
+    }
+  ]
+}

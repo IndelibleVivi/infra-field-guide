@@ -1,10 +1,16 @@
+[简体中文](README.md) · [English](README.en.md)
+
+[![Infra Field Guide：从第一台 VPS 到可恢复的个人基础设施](docs/assets/banner.svg)](https://github.com/IndelibleVivi/infra-field-guide)
+
 # Infra Field Guide · 把自己的服务安顿好
 
 给第一次买 VPS、准备把本机服务搬上云、或正在更换服务器的人。也给陪你操作的 AI agent。
 
 这是一套中文基础设施现场手册：先理解机器和网络，再部署、观察、备份、迁移，最后把旧资源收干净。你不需要先成为 Linux 专家，但需要知道每条命令在哪台机器运行、改变什么、失败后如何回来。
 
-**当前形态：九章教程、agent 工单、配置示例，以及可运行的只读 health 工具。** 本地候选已建立独立 Git 历史；真实机器操作与公开发布分别验收。教程使用合成地址，实施时换成自己核实过的目标。
+**九章教程、agent 工单、配置示例、六张架构图，以及可运行的只读 health 工具。** 教程使用合成地址，实施时换成自己核实过的目标。
+
+[教程导航](#从你的问题进入) · [完整架构](docs/architecture.md) · [Agent 入口](agents/README.md) · [检查状态](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
 ## 从你的问题进入
 
@@ -16,7 +22,7 @@
 | 本机服务想常驻 VPS | [04 · 本机 → VPS](docs/04-local-to-vps.md) | 候选部署、数据迁移、入口与客户端验收 |
 | VPS 涨价、配置不够、准备换商家 | [05 · VPS → VPS](docs/05-vps-to-vps.md) | 单一 writer 的切换与数据边界清楚的恢复方案 |
 | 想按 CC「转生」材料重整环境 | [06 · 备份、环境清理与恢复](docs/06-account-recovery.md) | 两套清单、具体路径、分层重置与选择性恢复 |
-| Tunnel、DNS、VPN、代理分不清 | [07 · 网络与代理](docs/07-network-and-proxies.md) / [三条路径图](docs/architecture.md) | 说清请求从哪来、往哪去、由谁鉴权 |
+| Tunnel、DNS、VPN、代理分不清 | [07 · 网络与代理](docs/07-network-and-proxies.md) / [架构图集](docs/architecture.md) | 说清请求从哪来、往哪去、由谁鉴权 |
 | 想让 VPS worker 回到 Mac 做项目 | [09 · 私有远程访问](docs/09-private-access.md) | Tailscale grant、OpenSSH、非交互环境与项目验收 |
 | 想先看一眼自己的机器 | [health 工具与离线看板](tools/README.md) | 不上传数据的 Linux 资源快照和离线 HTML |
 | 想让 agent 帮我操作 | [给 agent 的入口](agents/README.md) | 明确范围、停机条件、证据与授权边界的工单 |
@@ -25,13 +31,34 @@
 
 ## 五分钟内先看见一个结果
 
-需要 Python 3.9+；无需 pip 安装依赖。从仓库根目录运行：
+需要 Python 3.9+；无需 pip 安装依赖。先下载仓库，或在终端克隆：
 
 ```sh
-python3 -m unittest discover -s tests -v
+git clone https://github.com/IndelibleVivi/infra-field-guide.git
+cd infra-field-guide
 ```
 
-然后按 [tools/README.md](tools/README.md) 用合成 JSON 生成看板。这个例子不 SSH、不联网、不安装服务、不读取你的账号。真实采集仅面向 Linux；在 macOS、Windows 上可以渲染已有快照。合成演示不证明你的 VPS 健康。
+从仓库根目录运行：
+
+```sh
+mkdir -p reports
+python3 tools/health.py collect --demo -o reports/health-demo.json
+python3 tools/health.py render reports/health-demo.json -o reports/health-demo.html
+```
+
+在文件管理器中打开 `reports/health-demo.html`，会看到 RAM、swap、load、磁盘／inode、uptime 和 memory PSI 的离线快照。数据是仓库附带的合成样例，包含需关注与未知状态。重复演示请换输出文件名，工具会保护已有结果。
+
+这个例子不 SSH、不联网、不安装服务、不读取你的账号。真实采集仅面向 Linux；macOS、Windows 可做合成演示与渲染。Windows 请手动创建 `reports` 目录并使用可用的 Python 命令。完整选项与限制见 [health 工具说明](tools/README.md)。合成演示不证明你的 VPS 健康。
+
+## 把整套路径看清楚
+
+[![参考基础设施总览：管理访问、服务入口、出站 API，以及数据、备份和观察的关系](docs/diagrams/infrastructure-overview.svg)](docs/architecture.md)
+
+[打开总览 SVG 放大阅读](docs/diagrams/infrastructure-overview.svg)。这是供读者按需组合的参考架构，图中节点不代表仓库替你部署了服务。管理连接、公网入口和应用出站是不同路径；迁移时还要单独追踪数据 writer。进入[完整架构图集](docs/architecture.md)查看六张图、边界说明及可编辑源：总览、控制访问、公网入口、出站访问、迁移状态、仓库与 health 数据流。
+
+## 猫的 VPS 推荐
+
+Faye 从 Hetzner 搬到 GreenCloud 后，愿意推荐 **Budget KVM Sale** 给个人小服务与远程 worker 使用。选购章放了[推荐链接、普通入口与带日期的套餐对照](docs/01-vps-basics.md#猫的实际选择greencloud-budget-kvm-sale)。referral 满足商家规则时可能给 Faye 带来奖励；先按自己的地区、用途与账期选配置。
 
 ## 可以在 VPS 上放什么
 
@@ -50,6 +77,12 @@ python3 -m unittest discover -s tests -v
 
 `docs/` 是给人读的教程；`agents/` 是给机器的任务约束；`examples/` 是可复制的合成输入；`tools/` 是实现；`tests/` 是行为证据。[AGENTS.md](AGENTS.md) 只约束仓库贡献，不授予对任何服务器的权限。
 
-改动操作步骤时，同时检查示例、agent 工单和相关测试。提交问题时请给 OS、工具版本、失败步骤和脱敏错误；不要贴 token、Cookie、环境变量值、完整日志或包含个人路径的截图。详见[来源与维护](docs/sources-and-maintenance.md)。
+贡献方式见 [CONTRIBUTING.md](CONTRIBUTING.md)；资料归属、适用环境和实际验证范围见[来源与维护](docs/sources-and-maintenance.md)。检查只使用合成输入并静态解析教程命令：
 
-**许可状态：尚未选定公开许可。** 仓库可见性不等于复用授权；文档、图示与功能代码将分别明确许可范围。第三方产品名称用于说明，不代表官方合作或背书。
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+CI 在 Linux / Windows、Python 3.9 / 3.13 运行这些检查；Linux job 另做 runner 本机的只读采集和渲染。它不连接你的 VPS。提交问题时给 OS、工具版本、失败步骤和脱敏错误，不要贴 token、Cookie、完整日志或含个人路径的截图。
+
+**许可：功能代码与配置示例使用 [SUL-1.0](LICENSE)，原创文字与图示使用 [CC BY-NC-SA 4.0](LICENSE-DOCUMENTATION.md)。** 这是 source-available 项目；具体路径、代码片段及第三方材料的边界见 [LICENSING.md](LICENSING.md)。第三方产品名称用于说明，不代表官方合作或背书。

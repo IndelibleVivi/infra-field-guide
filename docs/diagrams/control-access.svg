@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1060" viewBox="0 0 1600 1060" role="img" aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">私有控制 · 能到达网络，还要能以正确身份工作</title><desc id="diagram-description">参考：VPS worker 经 Tailscale 访问自己的 Mac 普通 OpenSSH；不是 macOS GUI 客户端的 Tailscale SSH server。</desc>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<g font-family="Arial, 'PingFang SC', 'Noto Sans CJK SC', sans-serif"><rect id="worker-zone" x="40" y="220" width="285" height="365" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="overlay-zone" x="345" y="220" width="285" height="365" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="mac-zone" x="650" y="220" width="910" height="365" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="identity" x="40" y="815" width="1520" height="155" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<defs><marker id="head-enter-overlay" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="enter-overlay" points="305,415 365,415" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-enter-overlay)"/>
+<defs><marker id="head-tcp22" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="tcp22" points="610,415 670,415" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-tcp22)"/>
+<defs><marker id="head-ssh-login" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="ssh-login" points="925,415 965,415" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-ssh-login)"/>
+<defs><marker id="head-file-access" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="file-access" points="1220,415 1260,415" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-file-access)"/>
+<text id="title" data-container-id="" fill="#163a5f" font-size="34" font-weight="700" text-anchor="start"><tspan x="40" y="62">私有控制 · 能到达网络，还要能以正确身份工作</tspan></text>
+<text id="subtitle" data-container-id="" fill="#365775" font-size="19" font-weight="400" text-anchor="start"><tspan x="40" y="101">参考：VPS worker 经 Tailscale 访问自己的 Mac 普通 OpenSSH；不是 macOS GUI 客户端的 Tailscale SSH server。</tspan></text>
+<text id="worker-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="257">VPS</tspan></text>
+<text id="worker-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="285">命令实际由谁执行</tspan></text>
+<text id="overlay-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="365" y="257">Tailnet</tspan></text>
+<text id="overlay-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="365" y="285">只处理网络访问许可</tspan></text>
+<text id="mac-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="670" y="257">Mac · Remote Login / OpenSSH</tspan></text>
+<text id="mac-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="670" y="285">登录身份、文件权限与项目能力继续分别判断</tspan></text>
+<rect id="worker-user" x="60" y="330" width="245" height="170" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="worker-user-text" data-container-id="worker-user" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="78" y="392.5" font-weight="700">真实 worker 用户</tspan><tspan x="78" y="419.5">专用 SSH 私钥</tspan><tspan x="78" y="446.5">不要只用管理员测试</tspan></text>
+<rect id="grant" x="365" y="330" width="245" height="170" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="grant-text" data-container-id="grant" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="383" y="379" font-weight="700">指定节点 grant</tspan><tspan x="383" y="406">合成源 100.64.0.10</tspan><tspan x="383" y="433">→ 100.64.0.20:22</tspan><tspan x="383" y="460">既有 allow 规则会叠加</tspan></text>
+<rect id="openssh" x="670" y="330" width="255" height="170" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="openssh-text" data-container-id="openssh" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="688" y="379" font-weight="700">OpenSSH 认证</tspan><tspan x="688" y="406">独立核验 host key</tspan><tspan x="688" y="433">只用专用 SSH key</tspan><tspan x="688" y="460">from= 指定源 IP</tspan></text>
+<rect id="mac-user" x="965" y="330" width="255" height="170" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="mac-user-text" data-container-id="mac-user" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="983" y="379" font-weight="700">Mac 登录用户</tspan><tspan x="983" y="406">按 OS 用户授予权限</tspan><tspan x="983" y="433">owner 用户拥有广泛权限</tspan><tspan x="983" y="460">不自动成为 repo 沙箱</tspan></text>
+<rect id="project" x="1260" y="330" width="275" height="170" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="project-text" data-container-id="project" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1278" y="379" font-weight="700">项目与 runtime</tspan><tspan x="1278" y="406">cwd / git / 可写目录</tspan><tspan x="1278" y="433">非交互 PATH / node</tspan><tspan x="1278" y="460">TCC 与 GUI 能力另验</tspan></text>
+<rect id="network-receipt" x="40" y="625" width="490" height="140" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="network-receipt-text" data-container-id="network-receipt" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="58" y="659" font-weight="700">网络探测的证据范围</tspan><tspan x="58" y="686">tailscale ping 成功不证明 TCP22 获准。</tspan><tspan x="58" y="713">direct / DERP 改变传输路径，</tspan><tspan x="58" y="740">不替代 OpenSSH key 与用户认证。</tspan></text>
+<rect id="permission-receipt" x="555" y="625" width="490" height="140" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="permission-receipt-text" data-container-id="permission-receipt" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="573" y="659" font-weight="700">权限要正向与反向验收</tspan><tspan x="573" y="686">真实 worker 用户：SSH、cwd、git。</tspan><tspan x="573" y="713">临时文件 write/read、真实项目命令。</tspan><tspan x="573" y="740">未授权 peer 仍拒绝；原 HTTPS 仍通。</tspan></text>
+<rect id="availability-receipt" x="1070" y="625" width="490" height="140" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="availability-receipt-text" data-container-id="availability-receipt" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1088" y="659" font-weight="700">可达性不等于持续可用</tspan><tspan x="1088" y="686">Mac 休眠、重启、FileVault 状态，</tspan><tspan x="1088" y="713">挂载盘、GUI 会话与 TCC 均可阻断。</tspan><tspan x="1088" y="740">按自己的设备启动路径实际验收。</tspan></text>
+<text id="identity-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="852">最小访问示例的边界</tspan></text>
+<text id="identity-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="880">100.64.0.10 / .20 是合成 shared-address 示例，不是真实节点；不要原样应用到账号。</tspan></text>
+<text id="identity-body" data-container-id="" fill="#163a5f" font-size="19" font-weight="400" text-anchor="start"><tspan x="65" y="919">将 grant fragment 合并到既有策略并检查所有 allow；SSH 配置使用 IdentitiesOnly yes，专用 key 不代替 OS 用户隔离。</tspan></text>
+<text id="footer" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="40" y="1034">实线：一次远程执行逐层跨越的权限边界。Tailscale 私有访问无需家庭公网入站地址；域名、Tunnel 和公网出口不是此路径的前提。</tspan></text></g>
+</svg>

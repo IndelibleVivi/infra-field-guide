@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1270" viewBox="0 0 1680 1270" role="img" aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">基础设施总览 · 三条网络路径，一份数据权威</title><desc id="diagram-description">合成参考架构 · 展示可组合的教程方案，不表示本仓库部署了这些服务。</desc>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<g font-family="Arial, 'PingFang SC', 'Noto Sans CJK SC', sans-serif"><rect id="local" x="40" y="160" width="410" height="800" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="vps" x="480" y="160" width="705" height="800" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="outside" x="1215" y="160" width="425" height="800" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="operations" x="40" y="1000" width="1600" height="205" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<defs><marker id="head-local-admin" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="local-admin" points="415,300 520,300" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-local-admin)"/>
+<defs><marker id="head-worker-overlay" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="worker-overlay" points="775,300 850,300" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-worker-overlay)"/>
+<defs><marker id="head-overlay-mac" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="overlay-mac" points="995,355 995,410 245,410 245,475" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-overlay-mac)"/>
+<defs><marker id="head-ssh-permissions" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="ssh-permissions" points="245,590 245,700" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-ssh-permissions)"/>
+<defs><marker id="head-dns-query" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="dns-query" points="1420,300 1450,300" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-dns-query)"/>
+<defs><marker id="head-https-request" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="https-request" points="1335,355 1335,475" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-https-request)"/>
+<defs><marker id="head-tunnel-connect" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="tunnel-connect" points="1140,505 1250,505" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="10 7" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-tunnel-connect)"/>
+<defs><marker id="head-tunnel-request" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="tunnel-request" points="1250,555 1140,555" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-tunnel-request)"/>
+<defs><marker id="head-origin-request" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="origin-request" points="850,533 775,533" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-origin-request)"/>
+<defs><marker id="head-app-write" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="app-write" points="645,590 645,700" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-app-write)"/>
+<defs><marker id="head-job-write" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="job-write" points="850,760 775,760" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-job-write)"/>
+<defs><marker id="head-app-outbound" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="app-outbound" points="520,548 495,548 495,905 850,905" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-app-outbound)"/>
+<defs><marker id="head-api-request" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="api-request" points="1140,904 1250,904" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-api-request)"/>
+<text id="title" data-container-id="" fill="#163a5f" font-size="34" font-weight="700" text-anchor="start"><tspan x="40" y="62">基础设施总览 · 三条网络路径，一份数据权威</tspan></text>
+<text id="subtitle" data-container-id="" fill="#365775" font-size="19" font-weight="400" text-anchor="start"><tspan x="40" y="101">合成参考架构 · 展示可组合的教程方案，不表示本仓库部署了这些服务。</tspan></text>
+<text id="local-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="197">本机 · 可在 NAT / CGNAT 后</tspan></text>
+<text id="local-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="225">你拥有的 Mac；本地使用与私有访问</tspan></text>
+<text id="vps-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="500" y="197">VPS · 你选择的运行位置</tspan></text>
+<text id="vps-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="500" y="225">进程由 systemd 等明确 owner 管理</tspan></text>
+<text id="outside-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="1235" y="197">外部网络与服务</tspan></text>
+<text id="outside-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="1235" y="225">入口、DNS 与第三方 API 各有职责</tspan></text>
+<rect id="local-operator" x="75" y="245" width="340" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="local-operator-text" data-container-id="local-operator" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="93" y="291" font-weight="700">本机用户 / 本机 agent</tspan><tspan x="93" y="318">在授权范围内配置与操作</tspan></text>
+<rect id="remote-worker" x="520" y="245" width="255" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="remote-worker-text" data-container-id="remote-worker" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="538" y="291" font-weight="700">远程 worker</tspan><tspan x="538" y="318">VPS 上的实际 OS 用户</tspan></text>
+<rect id="tailnet-grant" x="850" y="245" width="290" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="tailnet-grant-text" data-container-id="tailnet-grant" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="868" y="291" font-weight="700">Tailscale 私有控制</tspan><tspan x="868" y="318">grant 允许指定源 → TCP22</tspan></text>
+<rect id="mac-ssh" x="75" y="475" width="340" height="115" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="mac-ssh-text" data-container-id="mac-ssh" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="93" y="523.5" font-weight="700">Mac Remote Login</tspan><tspan x="93" y="550.5">普通 OpenSSH 验 key / 用户</tspan></text>
+<rect id="mac-project" x="75" y="700" width="340" height="120" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="mac-project-text" data-container-id="mac-project" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="93" y="751" font-weight="700">本机项目与 runtime</tspan><tspan x="93" y="778">OS 权限、TCC、挂载盘仍适用</tspan></text>
+<rect id="browser" x="1250" y="245" width="170" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="browser-text" data-container-id="browser" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1268" y="291" font-weight="700">浏览器 / CLI</tspan><tspan x="1268" y="318">真实客户端</tspan></text>
+<rect id="dns" x="1450" y="245" width="160" height="110" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="dns-text" data-container-id="dns" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1468" y="291" font-weight="700">DNS</tspan><tspan x="1468" y="318">定位入口</tspan></text>
+<rect id="edge-access" x="1250" y="475" width="360" height="115" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="edge-access-text" data-container-id="edge-access" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1268" y="523.5" font-weight="700">Cloudflare edge + Access</tspan><tspan x="1268" y="550.5">example.com · HTTPS + 访问策略</tspan></text>
+<rect id="connector" x="850" y="475" width="290" height="115" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="connector-text" data-container-id="connector" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="868" y="523.5" font-weight="700">cloudflared</tspan><tspan x="868" y="550.5">主动连接 edge；转交请求</tspan></text>
+<rect id="app" x="520" y="475" width="255" height="115" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="app-text" data-container-id="app" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="538" y="523.5" font-weight="700">应用 origin</tspan><tspan x="538" y="550.5">loopback 服务 + 自身鉴权</tspan></text>
+<rect id="data" x="520" y="700" width="255" height="120" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="data-text" data-container-id="data" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="538" y="751" font-weight="700">正式数据库 / 附件</tspan><tspan x="538" y="778">持久状态 · 可恢复的数据</tspan></text>
+<rect id="writers" x="850" y="700" width="290" height="120" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="writers-text" data-container-id="writers" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="868" y="751" font-weight="700">后台 writer</tspan><tspan x="868" y="778">job / queue / timer / cron</tspan></text>
+<rect id="egress" x="850" y="865" width="290" height="75" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="egress-text" data-container-id="egress" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="868" y="893.5" font-weight="700">应用请求的实际出口</tspan><tspan x="868" y="920.5">直连 / 代理 / exit node</tspan></text>
+<rect id="external-api" x="1250" y="865" width="360" height="75" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="external-api-text" data-container-id="external-api" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1268" y="893.5" font-weight="700">外部 API</tspan><tspan x="1268" y="920.5">依据实际请求处理身份与权限</tspan></text>
+<rect id="local-admin-label-bg" x="417" y="265" width="101" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="local-admin-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="467.5" y="284">SSH</tspan></text>
+<rect id="overlay-mac-label-bg" x="520" y="377" width="370" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="overlay-mac-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="705" y="396">控制路径 · 网络许可 + SSH 身份</tspan></text>
+<rect id="ssh-permissions-label-bg" x="82" y="632" width="310" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="ssh-permissions-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="237" y="651">不是单 repo 沙箱</tspan></text>
+<rect id="https-request-label-bg" x="1275" y="403" width="125" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="https-request-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1337.5" y="422">HTTPS</tspan></text>
+<rect id="tunnel-connect-label-bg" x="1139" y="444" width="115" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="tunnel-connect-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1196.5" y="463">连接 →</tspan></text>
+<rect id="tunnel-request-label-bg" x="1136" y="586" width="118" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="tunnel-request-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1195" y="605">← 请求</tspan></text>
+<rect id="app-write-label-bg" x="543" y="633" width="203" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="app-write-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="644.5" y="652">读写</tspan></text>
+<rect id="app-outbound-label-bg" x="540" y="863" width="285" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="app-outbound-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="682.5" y="882">出站路径 · 由程序与路由决定</tspan></text>
+<rect id="api-request-label-bg" x="1145" y="859" width="102" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="api-request-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1196" y="878">请求 →</tspan></text>
+<rect id="availability" x="75" y="865" width="340" height="75" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="availability-text" data-container-id="availability" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="93" y="893.5" font-weight="700">持续可用有条件</tspan><tspan x="93" y="920.5">供电、登录状态、睡眠与网络</tspan></text>
+<text id="operations-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="1037">运行与恢复 · 覆盖上面每一条路径</tspan></text>
+<text id="operations-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="1065">健康快照、服务存活、网络连通与真实用户成功是不同证据</tspan></text>
+<rect id="observability" x="65" y="1090" width="475" height="90" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="observability-text" data-container-id="observability" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="83" y="1126" font-weight="700">分层监控与验收</tspan><tspan x="83" y="1153">host → service → origin → edge → client</tspan></text>
+<rect id="restore" x="580" y="1090" width="490" height="90" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="restore-text" data-container-id="restore" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="598" y="1126" font-weight="700">数据 → 一致备份 → 独立恢复</tspan><tspan x="598" y="1153">备份要离开故障域，并做 restore 演练</tspan></text>
+<rect id="migration" x="1110" y="1090" width="505" height="90" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="migration-text" data-container-id="migration" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1128" y="1126" font-weight="700">迁移 → 两侧冻结 → 目标唯一 writer</tspan><tspan x="1128" y="1153">首次新写入后，恢复必须覆盖数据差异</tspan></text>
+<text id="footer" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="40" y="1244">实线：请求 / 操作 / 数据流　虚线：连接建立（此图）　每条路径的鉴权与验收见分图；颜色不表示当前运行状态。</tspan></text></g>
+</svg>

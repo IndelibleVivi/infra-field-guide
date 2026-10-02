@@ -4,12 +4,12 @@
 
 ## 真源与执行范围
 
-- `README.md` 管读者入口与能力声明；`docs/` 管解释和 runbook；`agents/` 管可复用工单；`examples/` 管合成输入；`tools/` 与 `tests/` 管可执行行为。
+- `README.md` 管中文读者入口与能力声明，`README.en.md` 是对应英文入口；`docs/` 管解释和 runbook；`agents/` 管可复用工单；`examples/` 管合成输入；`tools/` 与 `tests/` 管可执行行为。
 - 示例使用 `example.com`、文档 IP、合成身份和占位符。OS 标准路径可用于教学；真实使用者的私人主机、账号、路径、凭据和笔记不得进入仓库。
 - 写教程不授权操作真实服务器、修改账号、购买、迁移、防火墙、SSH 或删除数据。编写和验证期间不执行教程中的真实环境变更命令。
 - 分开报告 source、测试、安装、service activation、网络可达性与真实客户端验收。只写实际验证过的结果。
 - 版本敏感的断言以官方资料为依据并标记查阅日期。社区操作步骤可以按归属保留；作者经验、平台因果推断与本地可验证事实必须分清。
-- owner 未选择确切许可与适用范围前，不添加公开许可条款。
+- 许可范围以 `LICENSING.md` 为准：功能代码与配置示例使用 SUL-1.0；原创说明文字、工单文字与图示使用 CC BY-NC-SA 4.0。改变许可需要 owner 明确选择，不覆盖第三方权利。
 
 ## 协作
 
@@ -24,4 +24,4 @@ git diff --check
 
 按 `tools/README.md` 运行合成 health 例子，检查新 JSON 与 HTML。单元测试覆盖合成采集与渲染；文档检查验证相对链接／章节锚点、shell 静态语法与 JSON 示例。真实 Linux、SSH、cloud 和账号验收是独立层级。
 
-修改操作步骤时，同步相关教程、工单、示例与 README 导航；改变 health 契约时同步工具说明、fixture 和行为测试。验证状态记录在 `docs/sources-and-maintenance.md`。私人 working continuity 留在仓库外，不能写入文档或提交。
+修改读者能力或入口时同步两份 README。架构图模型、可编辑源与导出关系见 `docs/diagrams/README.md`；修改图后重新生成并实际查看。修改操作步骤时，同步相关教程、工单、示例与 README 导航；改变 health 契约时同步工具说明、fixture 和行为测试。验证状态记录在 `docs/sources-and-maintenance.md`。私人 working continuity 留在仓库外，不能写入文档或提交。

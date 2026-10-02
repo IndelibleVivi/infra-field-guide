@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">公网出站 · 平台看到的是这次请求实际走的出口</title><desc id="diagram-description">参考：直接连接、显式应用代理、系统 VPN / exit node 是可选分支；不表示同时启用。</desc>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<g font-family="Arial, 'PingFang SC', 'Noto Sans CJK SC', sans-serif"><rect id="program-zone" x="40" y="175" width="710" height="625" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="route-zone" x="790" y="140" width="405" height="660" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="platform-zone" x="1235" y="175" width="325" height="625" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<defs><marker id="head-program-route" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="program-route" points="340,455 425,455" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-program-route)"/>
+<defs><marker id="head-choose-direct" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="choose-direct" points="565,380 565,290 825,290" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-choose-direct)"/>
+<defs><marker id="head-choose-proxy" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="choose-proxy" points="710,455 825,455" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="10 7" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-choose-proxy)"/>
+<defs><marker id="head-choose-vpn" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="choose-vpn" points="565,530 565,660 825,660" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="10 7" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-choose-vpn)"/>
+<defs><marker id="head-direct-api" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="direct-api" points="1160,290 1210,290 1210,415 1265,415" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-direct-api)"/>
+<defs><marker id="head-proxy-api" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="proxy-api" points="1160,475 1265,475" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-proxy-api)"/>
+<defs><marker id="head-vpn-api" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="vpn-api" points="1160,660 1210,660 1210,515 1265,515" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-vpn-api)"/>
+<text id="title" data-container-id="" fill="#163a5f" font-size="34" font-weight="700" text-anchor="start"><tspan x="40" y="62">公网出站 · 平台看到的是这次请求实际走的出口</tspan></text>
+<text id="subtitle" data-container-id="" fill="#365775" font-size="19" font-weight="400" text-anchor="start"><tspan x="40" y="101">参考：直接连接、显式应用代理、系统 VPN / exit node 是可选分支；不表示同时启用。</tspan></text>
+<text id="program-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="212">请求产生的位置</tspan></text>
+<text id="program-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="240">本机或 VPS；不同程序、用户和进程环境可以不同</tspan></text>
+<text id="route-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="810" y="177">这一次选择的路径</tspan></text>
+<text id="route-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="810" y="205">由客户端与系统路由共同决定</tspan></text>
+<text id="platform-zone-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="1255" y="212">外部 API / 平台</tspan></text>
+<text id="platform-zone-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="1255" y="240">网络出口只是观测的一部分</tspan></text>
+<rect id="program" x="70" y="380" width="270" height="150" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="program-text" data-container-id="program" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="88" y="432.5" font-weight="700">应用 / CLI / worker</tspan><tspan x="88" y="459.5">实际进程与实际用户</tspan><tspan x="88" y="486.5">请求使用的 token / 登录态</tspan></text>
+<rect id="routing" x="425" y="380" width="285" height="150" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="routing-text" data-container-id="routing" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="443" y="419" font-weight="700">出口决策</tspan><tspan x="443" y="446">客户端代理支持与配置</tspan><tspan x="443" y="473">NO_PROXY 与目标地址</tspan><tspan x="443" y="500">IPv4 / IPv6 + OS 路由</tspan></text>
+<rect id="direct" x="825" y="235" width="335" height="110" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="direct-text" data-container-id="direct" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="843" y="281" font-weight="700">直接连接</tspan><tspan x="843" y="308">本机 / VPS 的公网出口</tspan></text>
+<rect id="proxy" x="825" y="420" width="335" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="proxy-text" data-container-id="proxy" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="843" y="466" font-weight="700">显式应用代理 · 可选</tspan><tspan x="843" y="493">HTTP CONNECT / SOCKS5 等</tspan></text>
+<rect id="vpn" x="825" y="605" width="335" height="110" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="vpn-text" data-container-id="vpn" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="843" y="651" font-weight="700">VPN / exit node · 可选</tspan><tspan x="843" y="678">路由匹配流量才进入该出口</tspan></text>
+<rect id="api" x="1265" y="370" width="265" height="170" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="api-text" data-container-id="api" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1283" y="419" font-weight="700">外部 API</tspan><tspan x="1283" y="446">看到实际来源连接</tspan><tspan x="1283" y="473">另验身份、地区、配额</tspan><tspan x="1283" y="500">与平台使用规则</tspan></text>
+<rect id="choose-direct-label-bg" x="629" y="252" width="155" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="choose-direct-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="706.5" y="271">无代理的请求</tspan></text>
+<rect id="choose-vpn-label-bg" x="624" y="623" width="167" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="choose-vpn-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="707.5" y="642">路由选中时</tspan></text>
+<rect id="dns-choice" x="40" y="850" width="490" height="155" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="dns-choice-text" data-container-id="dns-choice" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="58" y="891.5" font-weight="700">DNS 在哪解析也要确认</tspan><tspan x="58" y="918.5">HTTP / SOCKS 的客户端实现不同。</tspan><tspan x="58" y="945.5">例如 socks5 与 socks5h 可使</tspan><tspan x="58" y="972.5">DNS 在本机或代理侧解析。</tspan></text>
+<rect id="verify-outbound" x="555" y="850" width="490" height="155" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="verify-outbound-text" data-container-id="verify-outbound" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="573" y="891.5" font-weight="700">在真实进程中验收</tspan><tspan x="573" y="918.5">不要用另一用户的终端代替 worker。</tspan><tspan x="573" y="945.5">检查代理变量、IPv4 / IPv6 与请求。</tspan><tspan x="573" y="972.5">Tunnel 入站不替你切换 API 出口。</tspan></text>
+<rect id="account-boundary" x="1070" y="850" width="490" height="155" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="account-boundary-text" data-container-id="account-boundary" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1088" y="891.5" font-weight="700">出口不是账号结果保证</tspan><tspan x="1088" y="918.5">ASN / 机房 IP / 住宅属性是不同概念。</tspan><tspan x="1088" y="945.5">协议加密不授予第三方访问权限。</tspan><tspan x="1088" y="972.5">遵守账号、地区与平台使用规则。</tspan></text>
+<text id="footer" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="40" y="1074">实线：请求路径　虚线：可选代理 / VPN 分支。协议的加密、UDP 与 transport 差异见网络章节；选择协议不保证账号安全或服务可用。</tspan></text></g>
+</svg>

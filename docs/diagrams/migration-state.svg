@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1210" viewBox="0 0 1600 1210" role="img" aria-labelledby="diagram-title diagram-description">
+<title id="diagram-title">迁移状态 · 先决定谁能写，再决定请求到哪里</title><desc id="diagram-description">参考：本机 → VPS 或旧 VPS → 新 VPS；DNS、Tunnel、Tailnet 入口切换都不能代替数据一致性。</desc>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<g font-family="Arial, 'PingFang SC', 'Noto Sans CJK SC', sans-serif"><rect id="migration-process" x="40" y="160" width="1520" height="390" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<rect id="entry-choices" x="40" y="855" width="1520" height="250" rx="16" fill="#ffffff" stroke="#a9d4e6" stroke-width="2" stroke-dasharray=""/>
+<defs><marker id="head-advance-0" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="advance-0" points="310,380 370,380" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-advance-0)"/>
+<defs><marker id="head-advance-1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="advance-1" points="615,380 675,380" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-advance-1)"/>
+<defs><marker id="head-advance-2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="advance-2" points="920,380 980,380" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-advance-2)"/>
+<defs><marker id="head-advance-3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="advance-3" points="1225,380 1285,380" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-advance-3)"/>
+<defs><marker id="head-no-new-writes-return" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="no-new-writes-return" points="1102,470 1102,600 187,600 187,470" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="10 7" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-no-new-writes-return)"/>
+<defs><marker id="head-keep-new-data" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#6ab9db" stroke-width="1.4"/></marker></defs>
+<polyline id="keep-new-data" points="1407,470 1407,660" fill="none" stroke="#6ab9db" stroke-width="2.5" stroke-dasharray="" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#head-keep-new-data)"/>
+<text id="title" data-container-id="" fill="#163a5f" font-size="34" font-weight="700" text-anchor="start"><tspan x="40" y="62">迁移状态 · 先决定谁能写，再决定请求到哪里</tspan></text>
+<text id="subtitle" data-container-id="" fill="#365775" font-size="19" font-weight="400" text-anchor="start"><tspan x="40" y="101">参考：本机 → VPS 或旧 VPS → 新 VPS；DNS、Tunnel、Tailnet 入口切换都不能代替数据一致性。</tspan></text>
+<text id="migration-process-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="197">迁移主线 · 每一步有观察结果才进入下一步</tspan></text>
+<text id="migration-process-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="225">正式 writer 包含 API、后台 job、队列、cron/timer、其他机器和手工操作。</tspan></text>
+<rect id="source-state" x="65" y="290" width="245" height="180" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="source-state-text" data-container-id="source-state" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="83" y="357.5" font-weight="700">S0 · 源唯一写入</tspan><tspan x="83" y="384.5">候选机独立演练</tspan><tspan x="83" y="411.5">代码 / 配置 / 恢复先验证</tspan></text>
+<rect id="freeze-state" x="370" y="290" width="245" height="180" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="freeze-state-text" data-container-id="freeze-state" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="388" y="357.5" font-weight="700">S1 · 冻结所有写入</tspan><tspan x="388" y="384.5">两侧均禁写</tspan><tspan x="388" y="411.5">最终快照 + 边界记录</tspan></text>
+<rect id="restore-state" x="675" y="290" width="245" height="180" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="restore-state-text" data-container-id="restore-state" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="693" y="357.5" font-weight="700">S2 · 目标恢复验收</tspan><tspan x="693" y="384.5">恢复数据库与附件</tspan><tspan x="693" y="411.5">目标只读；源仍禁写</tspan></text>
+<rect id="entry-state" x="980" y="290" width="245" height="180" rx="16" fill="#e9f7fc" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="entry-state-text" data-container-id="entry-state" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="998" y="357.5" font-weight="700">S3 · 切入口后读验收</tspan><tspan x="998" y="384.5">请求到目标，但尚不写</tspan><tspan x="998" y="411.5">源不会重启后自行复活</tspan></text>
+<rect id="target-state" x="1285" y="290" width="245" height="180" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="target-state-text" data-container-id="target-state" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1303" y="357.5" font-weight="700">S4 · 目标唯一写入</tspan><tspan x="1303" y="384.5">记下首次正式新写入</tspan><tspan x="1303" y="411.5">源禁写；不再自动回退</tspan></text>
+<rect id="no-new-writes-return-label-bg" x="265" y="568" width="730" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="no-new-writes-return-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="630" y="587">仅当目标尚无新写入：关闭目标 → 恢复旧入口 → 开放源</tspan></text>
+<rect id="new-data-recovery" x="980" y="660" width="550" height="155" rx="16" fill="#fff5d9" stroke="#e7c979" stroke-width="2" stroke-dasharray=""/>
+<text id="new-data-recovery-text" data-container-id="new-data-recovery" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="998" y="715" font-weight="700">首次新写入之后 · 恢复必须覆盖差异</tspan><tspan x="998" y="742">优先修复目标；或冻结、备份新状态并对账，</tspan><tspan x="998" y="769">再进行受控反向迁移。只改回 DNS 会漏掉新数据。</tspan></text>
+<rect id="keep-new-data-label-bg" x="1205" y="568" width="327" height="26.950000000000003" rx="16" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-dasharray=""/>
+<text id="keep-new-data-label" data-container-id="" fill="#365775" font-size="17" font-weight="400" text-anchor="middle"><tspan x="1368.5" y="587">先保留目标新增数据</tspan></text>
+<rect id="dual-write" x="65" y="660" width="825" height="155" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="dual-write-text" data-container-id="dual-write" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="83" y="715" font-weight="700">若意外出现双写：冻结受影响 writer，保留两侧事实</tspan><tspan x="83" y="742">按业务主键、事件顺序或账目做对账；不能盲目以旧库覆盖新库。</tspan><tspan x="83" y="769">长任务需要 owner、日志、state、status 与 resume，避免重发成重复 writer。</tspan></text>
+<text id="entry-choices-heading" data-container-id="" fill="#365775" font-size="22" font-weight="700" text-anchor="start"><tspan x="60" y="892">入口是另一层状态 · 以下是可选分支，不是顺序步骤</tspan></text>
+<text id="entry-choices-sub" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="60" y="920">确认所有真实客户端与缓存；入口切换成功不等于正式数据已一致。</tspan></text>
+<rect id="dns-cutover" x="65" y="945" width="465" height="130" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="dns-cutover-text" data-container-id="dns-cutover" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="83" y="987.5" font-weight="700">直接 DNS / IP</tspan><tspan x="83" y="1014.5">A / AAAA / CNAME 与 TTL / 缓存</tspan><tspan x="83" y="1041.5">旧入口在缓存期仍可能收到请求</tspan></text>
+<rect id="tunnel-cutover" x="565" y="945" width="470" height="130" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="tunnel-cutover-text" data-container-id="tunnel-cutover" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="583" y="987.5" font-weight="700">Cloudflare Tunnel</tspan><tspan x="583" y="1014.5">同 tunnel 多 connector 可同时接流量</tspan><tspan x="583" y="1041.5">不是天然主备；Access 配置也要验证</tspan></text>
+<rect id="tailnet-cutover" x="1070" y="945" width="465" height="130" rx="16" fill="#ffffff" stroke="#6ab9db" stroke-width="2" stroke-dasharray=""/>
+<text id="tailnet-cutover-text" data-container-id="tailnet-cutover" fill="#163a5f" font-size="20" font-weight="400" text-anchor="start"><tspan x="1088" y="987.5" font-weight="700">Tailnet 私有入口</tspan><tspan x="1088" y="1014.5">新节点身份、grant、端点与客户端</tspan><tspan x="1088" y="1041.5">不要复制旧节点身份来假装同一台机器</tspan></text>
+<text id="footer" data-container-id="" fill="#365775" font-size="16" font-weight="400" text-anchor="start"><tspan x="40" y="1184">验收后再观察关键业务周期、独立备份恢复与重启行为。退役旧资源与确认停费是另一个明确动作；旧机存在本身不构成可用恢复。</tspan></text></g>
+</svg>
