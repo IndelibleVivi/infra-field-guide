@@ -27,6 +27,8 @@ python3 -m http.server 4178 --bind 127.0.0.1 --directory .local/preview
 | `ui.py` | 原创线性 UI 图标，供标题、目录和链接标记共用 |
 | `home.html` / `shell.html` | 首页编辑排版与公共阅读界面 |
 | `site.css` / `site.js` | 响应式排版、原生 dialog 搜索／目录／术语解释、代码复制、表格滑动提示与目录当前位置 |
+| `search.js` / `test_search.cjs` | 本地多词检索、问题别名及真实问法回归；可同时在浏览器与 Node 测试中使用 |
+| `health_demo.py` / `health.html` / `health.css` / `health.js` | 生成合成场景、模拟仪表盘布局与本地时间回放；指标判断继续由 `tools/health.py` 管理 |
 | `test_build.py` | 全部生成页面的链接／锚点、搜索目标、发布文件白名单与 Markdown 关键结构 |
 | `../.github/workflows/pages.yml` | PR 只构建验证；main 推送验证后部署到 `github-pages` environment |
 
@@ -39,6 +41,35 @@ python3 -m http.server 4178 --bind 127.0.0.1 --directory .local/preview
 ## 首页阅读入口
 
 首页的第一章入口采用书签式链接，直接进入 VPS 选购与基础概念。目录按 `pages.json` 已有的「从零开始／迁移与恢复／连接与排障」分为三组；章节标题、简介和地址仍取自该文件，组间引导文案和小图标由 `home.html` 管理。桌面显示三栏，平板使用左侧组说明／右侧章节，手机按组纵排。主题导航是普通页内锚点链接，不依赖 JavaScript，也不改变章节原有顺序或相邻章导航。
+
+## 问题搜索
+
+`search.js` 将「SSH 超时／连接超时／timeout」「磁盘满／空间不足／No space left」「公钥拒绝／publickey」等问法对应到正文词组和直接排障小节。输入多个关键词时，各组都要匹配；别名命中后，额外关键词仍参与筛选。标题和直接处理症状的章节优先。别名是小型人工维护表，没有向量库、在线模型或服务端查询。修改别名、排序或正文目标后运行：
+
+```sh
+.local/site-venv/bin/python site/build.py
+node --test site/test_search.cjs
+node --check site/site.js
+node --check site/health.js
+```
+
+## Health 模拟仪表盘
+
+`health/demo/` 是交互式教学演示，`health/snapshot/` 是原有 CLI renderer 生成的固定离线示例。二者不是同一种产品行为：模拟页需要 JavaScript，快照无需脚本。站点构建不会调用真实采集，也不会发布 `reports/`。
+
+```mermaid
+flowchart LR
+  F[examples/health-demo.json<br/>合成 fixture] --> S[health_demo.py<br/>5 场景 × 13 时刻]
+  S --> H[health.py<br/>校验 · 格式化 · 状态判断]
+  H --> J[health/demo/scenarios.json]
+  J --> B[浏览器模拟仪表盘<br/>场景 · 时间 · 曲线联动]
+  F --> R[health.py render_snapshot]
+  R --> O[health/snapshot/index.html<br/>固定离线快照]
+```
+
+所有曲线都来自显式合成数据：每 5 分钟一帧，共 60 分钟。`health_demo.py` 定义场景，`health.py` 是字段校验与状态语义的真源；JS 只管理选择、回放和图表。切换场景、拖动时间轴、从头开始或离开可见页面会暂停回放。缺失值保持空缺，不变成零或绿色。界面上的曲线阈值与工具说明一致，修改阈值时须同时核对图表标签。手机改为横向场景选择与纵排图表，键盘焦点只在时间滑块上提示。
+
+网站加载同站 CSS、JS 和合成 JSON，不连接 VPS，不执行 SSH，不上传读数。`test_build.py` 验证五组场景、缺失读数、状态转换和发布白名单；时间回放、切换、键盘操作及响应式布局另做浏览器验收。
 
 ## 章节图、词表与便笺
 

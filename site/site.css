@@ -586,6 +586,10 @@ kbd {
 .article-header h1>.headerlink { display:none; }
 .article-summary { color:var(--muted); font-size:15px; line-height:1.85; margin:0 0 18px; }
 .article-summary:empty { display:none; }
+.prose details { margin:22px 0; padding:14px 18px; background:#f5fafd; border:1px solid #dceaf1; border-radius:8px; font-size:14px; }
+.prose details summary { color:var(--ink); font-weight:550; cursor:pointer; }
+.prose details[open] summary { padding-bottom:10px; border-bottom:1px solid #dceaf1; }
+.prose details p { font-size:14px; line-height:1.9; margin:12px 0 0; }
 .repository-source { margin-left:auto; display:flex; align-items:center; gap:6px; color:var(--ink); white-space:nowrap; }
 .repository-source .ui-icon { width:15px; height:15px; }
 .repository-source .ui-icon:last-child { width:12px; height:12px; color:var(--muted); }

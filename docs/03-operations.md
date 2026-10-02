@@ -6,6 +6,12 @@
 
 ![主机指标给出线索；服务记录解释原因；真实操作验证是否恢复。 一个绿色读数，只能证明它测量的那一层。](diagrams/03-operations-map.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>以 Ubuntu 24.04 LTS 和 systemd 为例；swap 实验另有本地 ext4、无现成 swap 等明确条件，见第 3 节。</p>
+<p>本章命令作静态检查，未据此验证真实主机的 swap、更新、重启或业务恢复。合成恢复练习与真实应用恢复分别验收。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 本章继续使用 Ubuntu 24.04 LTS + [systemd](glossary.md#systemd)。目标是让一台小 VPS 可持续运行：知道进程由谁负责，发现资源压力，控制日志增长，完成更新，并且能从[备份](glossary.md#备份)恢复。没有部署应用时也可以先做只读检查；文中的 `example.service` 是合成服务名，执行前必须换成你已确认的 unit。
 
 命令块均说明运行位置。除明确标注的练习与修改外，检查不会主动改变服务器；涉及 swap、日志清理、重启和恢复的步骤应逐步运行。一次读数、脚本退出码、服务进程存在、真实客户端任务成功，各自证明不同的事情。
@@ -355,3 +361,10 @@ cat "$HOME/infra-backup-lab/restored/note.txt"
 - [Ubuntu systemd.service(5)](https://manpages.ubuntu.com/manpages/noble/man5/systemd.service.5.html)：服务 owner 与恢复策略。
 - [Ubuntu journald.conf(5)](https://manpages.ubuntu.com/manpages/noble/man5/journald.conf.5.html)、[journalctl(1)](https://manpages.ubuntu.com/manpages/noble/man1/journalctl.1.html)：日志持久化、限额与清理范围。
 - [Ubuntu security updates](https://documentation.ubuntu.com/security/security-updates/)：更新边界与自动更新。
+
+**想一想：主机还有可用 RAM，是否就能排除某个服务被 OOM kill？**
+
+<details>
+<summary>查看答案</summary>
+<p>不能。服务或容器可能先碰到 cgroup 的独立限制；应结合该服务的日志、memory.events、限制与故障时段判断，不能只看全机剩余内存。</p>
+</details>

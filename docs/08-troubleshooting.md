@@ -8,6 +8,12 @@
 
 ![先分别测本机应用、origin 与公开入口，再定位从哪一段开始失败。 三段分别测；公开入口的 200 可能只是缓存。](diagrams/08-fault-layers.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>示例覆盖 Linux/systemd 主机与可运行 curl、dig、SSH 的管理设备；工具与日志权限按实际环境核对，缺失信息记为 unknown。</p>
+<p>本章检查覆盖文档与命令静态语法；真实故障是否修复，要重复原先失败的路径并检查受影响的相邻路径。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 先记录**时间、运行机器、请求目标、预期与实测**。一次只验证一个假设；修复前留下足够的错误证据，不要一遇到错误就把网络、认证、缓存和服务器一起重装。
 
 > [!NOTE]
@@ -106,3 +112,10 @@ journalctl -k --since '1 hour ago' --no-pager
 ```
 
 来源与参数核对日期：**2026-10-02**。HTTP/代理参数依据 [curl 官方手册](https://curl.se/docs/manpage.html)；SSH 依据 [OpenSSH 手册](https://man.openbsd.org/ssh.1)。各子系统的版本来源与恢复步骤链接在对应章节。
+
+**想一想：进程以 137 退出，是否可以直接判定为内存不够？**
+
+<details>
+<summary>查看答案</summary>
+<p>不可以。137 常与信号 9 有关，也可能是程序主动返回；要结合 kernel OOM 日志、cgroup 事件、systemd 记录和当时资源证据判断。日志缺失应记为未知。</p>
+</details>

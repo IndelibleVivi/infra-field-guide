@@ -6,9 +6,15 @@
 
 ![预拷贝可以提前做，最终同步必须在所有正式 writer 冻结后进行。 新机一旦有新数据，回退前必须冻结、对账。](diagrams/05-server-move.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>以 Ubuntu 24.04 和 systemd 为例；Docker、Cloudflare Tunnel、Tailscale、Certbot 只适用于清单中实际存在的组件。</p>
+<p>本章从已注明的迁移经验整理通用步骤，未按本教程执行真实迁移。文档静态检查与正式切换、恢复、账单验收分开记录；agent 的执行范围见 <a href="../agents/README.md">agent 入口</a>。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 把 Provider A 的服务迁到 Provider B，通常应新建独立候选机、迁应用与数据，再切入口。跨服务商整盘克隆会带来启动驱动、网络配置、machine identity 和运行副作用；本教程采用逐项重建的路线。目标是让旧机停止承担业务后仍有明确的数据恢复办法，而不是仅让新 IP 返回 200。
 
-示例 OS 是 **Ubuntu 24.04 + systemd**；Docker、Cloudflare Tunnel、Tailscale 和 Certbot 都是条件分支，只操作清单中实际存在的组件。本文为未执行的教程，官方资料查阅日期为 **2026-10-02**。`old-vps`、`new-vps`、`operator`、`app.example.com`、`203.0.113.20` 均为合成示例，最后一个属于文档地址范围，不是可用服务器。
+示例 OS 是 **Ubuntu 24.04 + systemd**；Docker、Cloudflare Tunnel、Tailscale 和 Certbot 都是条件分支，只操作清单中实际存在的组件。官方资料查阅日期为 **2026-10-02**。`old-vps`、`new-vps`、`operator`、`app.example.com`、`203.0.113.20` 均为合成示例，最后一个属于文档地址范围，不是可用服务器。
 
 若源是 macOS/Windows，先读[本机迁移](04-local-to-vps.md)。填写[迁移工单](../examples/migration-plan.example.json)和[服务清单](../examples/service-inventory.example.csv)；真实 IP、账号 ID、备份位置与日志保存在自己的私人运维记录中，不提交到本仓库。
 
@@ -67,7 +73,7 @@ docker volume ls
 
 ## 2. 建立独立的目标候选
 
-通过服务商正式镜像新建 B，按实际项目准备 OS/runtime、磁盘、用户和网络。购买、创建、安装、加入 tailnet 都是独立的执行动作，需要已有授权；教程不执行这些动作。
+通过服务商正式镜像新建 B，按实际项目准备 OS/runtime、磁盘、用户和网络。
 
 **在新 VPS，基础只读检查：**
 
@@ -206,7 +212,7 @@ dig app.example.com AAAA
 dig app.example.com CNAME
 ```
 
-记录 authoritative DNS 和实际客户端 resolver 的结果；查询权威服务器时先从真实 zone 配置确认其名称，再使用 `dig @已确认的权威服务器 app.example.com A`。正式变更在 DNS 提供商的受控界面/API 内按工单执行，保存变更前值、时间和 read-back。本文不提供默认账号写命令。
+记录 authoritative DNS 和实际客户端 resolver 的结果；查询权威服务器时先从真实 zone 配置确认其名称，再使用 `dig @已确认的权威服务器 app.example.com A`。正式变更在 DNS 提供商的受控界面/API 内按工单执行，保存变更前值、时间和 read-back。
 
 **在获准直连新 origin 的管理电脑，仅当新机已配置该 hostname 的有效 TLS 且接口允许测试：**
 
@@ -310,3 +316,10 @@ DNS、tunnel、客户端配置回退只改变到达位置，不会把 B 的新�
 服务停止或虚机关机不必然停止收费。例如 DigitalOcean 的常规 CPU Droplet 关机后仍保留资源并计费，snapshots、volumes 和部分 reserved IP 情况各自收费；其他服务商须查本次合同与控制台，不套用示例的政策或价格。[Droplet 计费](https://docs.digitalocean.com/products/droplets/details/pricing/)、[Snapshot 计费](https://docs.digitalocean.com/products/snapshots/details/pricing/)、[Volume 计费](https://docs.digitalocean.com/products/volumes/details/pricing/)、[Reserved IP 计费](https://docs.digitalocean.com/products/networking/reserved-ips/details/pricing/)
 
 最终交接写清“B 已验收且为唯一 writer”“A 保留 / 停机 / 已终止”“备份保留位置与恢复证据”“仍在计费的独立资源”。没有执行某层就写未执行，不把教程完成、文件上传、服务启动、业务切换和账单关闭合并为一个完成状态。
+
+**想一想：新机已经接收一条正式写入，出现问题时还能直接把 DNS 改回旧机吗？**
+
+<details>
+<summary>查看答案</summary>
+<p>不能。旧机数据已经落后，DNS 回切不会带回新数据。先冻结相关写入并保留两侧状态，再选择在新机修复，或对账后反向迁移，最终只开放一个 writer。</p>
+</details>

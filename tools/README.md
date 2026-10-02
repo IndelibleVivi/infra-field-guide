@@ -2,6 +2,16 @@
 
 `health.py` 把 Linux 资源指标存成 JSON，再生成一张可离线打开的 HTML 看板。只使用 Python 3.9+ 标准库，不需要 pip、sudo、服务安装或浏览器扩展。它不持续监控，不发送告警，也不验证服务可用性。
 
+## 先看看成品
+
+**[打开 Health 交互模拟仪表盘 →](https://indeliblevivi.github.io/infra-field-guide/health/demo/)**
+
+不用终端，先切换五种合成场景：日常运行、内存吃紧、磁盘快满、小文件堆积、采集缺失。拖动时间轴或回放一小时，数值、曲线和状态提示会一起变化；点指标可切换趋势，图表可看最近 15 分钟或 1 小时。缺失读数留空，不画成零。回放可以暂停、从头开始，切换场景和手动调时间会停止回放。
+
+模拟仪表盘是阅读站的教学界面，**不是你的机器，也没有在线采集**。构建器由仓库 fixture 生成合成序列，交给 `health.py` 的同一套校验、格式化与状态判断，再由浏览器回放。它没有后台服务，也不提供导入真实报告的入口。
+
+下面的 CLI 生成的是固定离线快照，不含时间轴或脚本。可以先[打开同一 renderer 生成的合成快照](https://indeliblevivi.github.io/infra-field-guide/health/snapshot/)，再运行命令复现。模拟界面的源与构建关系见[阅读站维护](../site/README.md#health-模拟仪表盘)。
+
 ## 先运行合成演示
 
 在仓库根目录执行。macOS、Linux、Windows 上均可运行合成演示与渲染；下面的 `mkdir -p` 使用 POSIX shell，Windows 可手动创建 `reports` 文件夹。
@@ -85,7 +95,7 @@ python3 tools/health.py --help
 python3 -m unittest discover -s tests -p 'test_health.py' -v
 ```
 
-测试使用临时的合成 `/proc` 文本、模拟 `statvfs` 和合成 JSON，覆盖公式、阈值、未知/损坏、非 Linux 拒绝、字节与 inode、时间语义、HTML 转义、CLI 演示 roundtrip 与保护既有文件。**不读取测试机器的真实 `/proc` 或文件系统统计，也不连接任何 VPS。** 2026-10-02 的[跨平台 CI](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/36984498352)已在 Linux / Windows、Python 3.9 / 3.13 上通过测试与合成演示，并在 Linux runner 上完成真实资源采集和 HTML 渲染。未对用户的 VPS 执行采集；health HTML 的浏览器视觉布局仍未验收。
+测试使用临时的合成 `/proc` 文本、模拟 `statvfs` 和合成 JSON，覆盖公式、阈值、未知/损坏、非 Linux 拒绝、字节与 inode、时间语义、HTML 转义、CLI 演示 roundtrip 与保护既有文件。**不读取测试机器的真实 `/proc` 或文件系统统计，也不连接任何 VPS。** 2026-10-02 的[跨平台 CI](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/36984498352)已在 Linux / Windows、Python 3.9 / 3.13 上通过测试与合成演示，并在 Linux runner 上完成真实资源采集和 HTML 渲染。未对用户的 VPS 执行采集。固定离线 HTML 的浏览器布局未单独验收；交互模拟页于同日另做了 1440px 桌面与 390px 手机视口检查，覆盖场景／指标切换、时间轴键盘操作、回放终止、未知值留空和无整页横向溢出。浏览器模拟尺寸不等于真实手机硬件验收。
 
 接口定义参考一手文档，查阅日期 **2026-10-02**：
 

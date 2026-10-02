@@ -4,6 +4,7 @@ from html import escape
 from html.parser import HTMLParser
 from string import Template
 from urllib.parse import urlsplit, unquote, quote
+import importlib.util
 import argparse
 import json
 import posixpath
@@ -15,6 +16,7 @@ from xml.etree import ElementTree as ET
 import markdown
 
 from ui import icon, chapter_icon
+from health_demo import build_demo
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / 'site'
@@ -22,7 +24,8 @@ REPO = 'https://github.com/IndelibleVivi/infra-field-guide'
 PAGES = json.loads((SITE / 'pages.json').read_text(encoding='utf-8'))
 ROUTES = {p['source']: p['route'] for p in PAGES}
 # Only this published collection is copied. No repository-wide copy/glob.
-ASSETS = ['docs/assets/banner.svg', 'docs/assets/drinking-fawn.png', 'LICENSE']
+ASSETS = ['docs/assets/banner.svg', 'docs/assets/drinking-fawn.png', 'docs/assets/drinking-fawn.webp', 'LICENSE']
+HEALTH_ROUTES = ('health/demo/', 'health/snapshot/')
 for stem in ('infrastructure-overview', 'control-access', 'public-ingress',
              'outbound-access', 'migration-state', 'repository-map'):
     ASSETS.extend(f'docs/diagrams/{stem}.{ext}' for ext in ('svg', 'png', 'excalidraw'))
@@ -55,6 +58,9 @@ def slugify(value, separator):
 
 
 def resolve_link(value, source, base):
+    for route in HEALTH_ROUTES:
+        if value == 'https://indeliblevivi.github.io/infra-field-guide/' + route:
+            return base + route
     parsed = urlsplit(value)
     if parsed.scheme or parsed.netloc or value.startswith('#'):
         return value
@@ -326,13 +332,18 @@ def build(output, base):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / source, target)
     (output / 'assets').mkdir(exist_ok=True)
-    for name in ('site.css', 'site.js', 'favicon.svg'):
+    for name in ('site.css', 'site.js', 'search.js', 'favicon.svg', 'health.css', 'health.js'):
         shutil.copyfile(SITE / name, output / 'assets' / name)
     (output / 'search.json').write_text(json.dumps(search, ensure_ascii=False), encoding='utf-8')
+    # Render only the explicit synthetic fixture; never call collect_snapshot or copy reports/.
+    spec = importlib.util.spec_from_file_location('guide_health', ROOT / 'tools/health.py')
+    health = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(health)
+    build_demo(output, base, health)
     (output / '.nojekyll').touch()
     missing = '<main id="main" class="not-found"><p class="eyebrow">404 / 迷路了</p><h1>这条小径还没有通向页面。</h1><p>可以回到目录，或搜索你想读的内容。</p><a class="button primary" href="' + base + '">回到手册首页 →</a></main>'
     (output / '404.html').write_text(shell(missing, base, {'title': '页面未找到'}), encoding='utf-8')
-    print(f'Built {len(PAGES) + 2} pages, {len(search)} search sections → {output}')
+    print(f'Built {len(PAGES) + 4} pages, {len(search)} search sections → {output}')
 
 
 if __name__ == '__main__':

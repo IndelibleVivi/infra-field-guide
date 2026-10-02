@@ -12,6 +12,7 @@
   <link rel="canonical" href="$canonical">
   <link rel="icon" href="${base}assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="${base}assets/site.css">
+  <script defer src="${base}assets/search.js"></script>
   <script defer src="${base}assets/site.js"></script>
   <title>$title · Infra Field Guide</title>
 </head>
@@ -30,7 +31,7 @@
   <dialog class="search-dialog" aria-labelledby="search-title">
     <div class="dialog-top"><h2 id="search-title">在手册里找一找</h2><button class="dialog-close" type="button" aria-label="关闭搜索">关闭 ×</button></div>
     <label class="visually-hidden" for="search-input">搜索章节、命令或问题</label>
-    <input id="search-input" type="search" placeholder="试试：swap、迁移、住宅代理…" autocomplete="off">
+    <input id="search-input" type="search" placeholder="试试：SSH 超时、磁盘满、swap…" autocomplete="off">
     <p class="search-status" role="status" aria-live="polite">输入关键词，搜索全部章节与工单。</p>
     <div class="search-results"></div>
     <div class="search-hint">关键词只在当前浏览器中检索。<span>Esc 关闭</span></div>

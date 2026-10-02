@@ -87,10 +87,42 @@ class SiteTests(unittest.TestCase):
             self.assertTrue((self.output / page['route'] / 'index.html').is_file())
         for asset in ASSETS:
             self.assertTrue((self.output / asset).is_file())
-        self.assertEqual(len(self.documents), len(PAGES) + 2)
+        self.assertEqual(len(self.documents), len(PAGES) + 4)
         published = {p.relative_to(self.output).as_posix() for p in self.output.rglob('*') if p.is_file()}
-        allowed = set(self.documents) | set(ASSETS) | {'assets/site.css', 'assets/site.js', 'assets/favicon.svg', 'search.json', '.nojekyll'}
+        allowed = set(self.documents) | set(ASSETS) | {'assets/site.css', 'assets/site.js', 'assets/search.js', 'assets/health.js', 'assets/health.css', 'health/demo/scenarios.json', 'assets/favicon.svg', 'search.json', '.nojekyll'}
         self.assertEqual(published, allowed)
+
+    def test_health_preview_is_a_rendered_synthetic_fixture(self):
+        html = (self.output / 'health/snapshot/index.html').read_text(encoding='utf-8')
+        self.assertIn('合成演示数据', html)
+        self.assertIn('2026-10-02T06:00:00Z', html)
+        self.assertIn('2.0 GiB', html)
+        self.assertNotIn('<script', html)
+        self.assertNotIn('iframe', html)
+        self.assertEqual(html.count('<article class="card '), 7)
+        _, content, _ = render_markdown('tools/README.md', '/infra-field-guide/')
+        self.assertIn('href="/infra-field-guide/health/demo/"', content)
+        _, content, _ = render_markdown('tools/README.md', '/')
+        self.assertIn('href="/health/demo/"', content)
+
+    def test_simulator_has_consistent_scenarios_and_explicit_missing_data(self):
+        payload = json.loads((self.output / 'health/demo/scenarios.json').read_text(encoding='utf-8'))
+        self.assertEqual(payload['kind'], 'synthetic')
+        scenes = {scene['id']: scene['frames'] for scene in payload['scenarios']}
+        self.assertEqual(len(scenes), 5)
+        for frames in scenes.values():
+            self.assertEqual([frame['minute'] for frame in frames], list(range(0, 61, 5)))
+            self.assertTrue(all(len(frame['metrics']) == 7 for frame in frames))
+        self.assertEqual(scenes['memory'][0]['metrics']['memory']['state'], 'ok')
+        self.assertEqual(scenes['memory'][-1]['metrics']['memory']['state'], 'critical')
+        self.assertEqual(scenes['memory'][-1]['metrics']['swap']['state'], 'warning')
+        self.assertEqual(scenes['disk'][-1]['metrics']['root_bytes']['state'], 'critical')
+        self.assertEqual(scenes['inodes'][-1]['metrics']['root_bytes']['state'], 'ok')
+        self.assertEqual(scenes['inodes'][-1]['metrics']['root_inodes']['state'], 'critical')
+        self.assertIsNone(scenes['missing'][-1]['chart']['memory'])
+        self.assertEqual(scenes['missing'][-1]['metrics']['memory']['main'], '—')
+        self.assertEqual(scenes['missing'][-1]['metrics']['memory_psi']['state'], 'unknown')
+        self.assertIsNotNone(scenes['missing'][0]['chart']['memory'])
 
     def test_search_results_target_real_sections(self):
         index = json.loads((self.output / 'search.json').read_text(encoding='utf-8'))

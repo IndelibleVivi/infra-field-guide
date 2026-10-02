@@ -120,3 +120,5 @@ node scripts/render-diagrams.mjs --png \
 这项验证只覆盖**图源、导出与图像呈现**。没有连接真实 VPS、Mac、Tailnet、Cloudflare 或外部 API，也没有验证 health HTML 的浏览器布局。真实环境的操作和验收仍按相关章节分别进行。
 
 独立阅读站是以上公共 Markdown 与图示的派生阅读界面，不是业务服务部署：正文与选定素材 → `site/build.py` → 静态 HTML／搜索索引 → GitHub Pages。第六张图聚焦教程、工单与 health 工具的关系；阅读站的文件职责、发布白名单和验收说明见 [site/README.md](../site/README.md)。
+
+阅读站另有 [Health 模拟仪表盘](https://indeliblevivi.github.io/infra-field-guide/health/demo/)：构建时从合成 fixture 派生五组时间序列，经同一 `health.py` 校验和判断后发布为静态 JSON；浏览器只回放这些数据，不连接机器。它与第六张图里的固定离线报告用途不同，完整生成关系见[模拟页数据流](../site/README.md#health-模拟仪表盘)。

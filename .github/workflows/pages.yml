@@ -30,8 +30,11 @@ jobs:
           python -m unittest discover -s tests -v
           python -m unittest discover -s site -p 'test_*.py' -v
           node --check site/site.js
+          node --check site/health.js
       - name: Build the public collection
         run: python site/build.py
+      - name: Verify reader search queries
+        run: node --test site/test_search.cjs
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:

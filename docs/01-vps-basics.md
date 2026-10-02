@@ -6,6 +6,12 @@
 
 ![从任务出发，分别核对算力、容量、网络和恢复能力。 先写需求，再比套餐；“便宜”要连同恢复成本一起看。](diagrams/01-vps-map.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>适用于个人小型服务的 VPS 选购；后续教程以 Ubuntu 24.04 LTS 为主线。具体套餐、机房和合同仍以下单时页面为准。</p>
+<p>本章结合官方资料与已注明的作者体验；文档检查不包含商家性能或购买结果验收。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 VPS（Virtual Private Server）是一台租来的虚拟服务器。你获得一份 CPU、内存、磁盘和网络资源，通过控制台或 [SSH](glossary.md#ssh) 管理操作系统。它可以运行自己的小网站、Webhook 接收端、定时任务、经授权的 API 客户端和远程开发环境；是否能运行某个 AI 模型，仍取决于模型需要的内存、GPU 和计算量。租到一台 Linux 机器，并不等于获得 GPU，也不等于获得某个 AI 平台的使用资格。
 
 第一次购买，先写一句可验收的目标，例如：“让我自己的两个设备访问一个小型工具，每天备份一次，月度总费用不超过自定预算。”有这个目标，才能判断你需要公网入口、多少资源，以及故障时愿意花多少时间恢复。下面也放了作者实际使用后愿意推荐的选择；套餐信息标记查阅日期，按下单时页面核对。
@@ -132,3 +138,10 @@ SSD/NVMe 表示设备类型或产品标签，实际随机读写、吞吐、共�
 - [Ubuntu vmstat(8)](https://manpages.ubuntu.com/manpages/noble/man8/vmstat.8.html)：CPU steal 的观察含义。
 - [NIST：binary prefixes](https://physics.nist.gov/cuu/Units/binary.html)：GB/GiB 与 bit/byte。
 - [Ubuntu 24.04 LTS release notes](https://discourse.ubuntu.com/t/ubuntu-24-04-lts-noble-numbat-release-notes/39890)：本书示例发行版的基础。
+
+**想一想：套餐写着“1 Gbps 端口”，就能按每月持续跑满来规划流量吗？**
+
+<details>
+<summary>查看答案</summary>
+<p>不能。端口速度可能是共享峰值，持续带宽、月流量和超额处理是不同条件；先核对公平使用与计费规则，再按实际任务估算传输量。</p>
+</details>

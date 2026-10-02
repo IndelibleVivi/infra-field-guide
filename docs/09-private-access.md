@@ -6,9 +6,15 @@
 
 ![网络授权、SSH 身份与 macOS 文件权限共同决定 worker 能做什么。 路径可达 ≠ 有权登录 ≠ 能完成项目任务。](diagrams/09-private-access.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>目标路径为 Linux VPS 的真实 worker 用户，经 Tailscale 连接 macOS Remote Login/OpenSSH；Mac GUI 客户端、系统版本与非交互环境的限制见正文。</p>
+<p>本章只编写文档与示例，没有操作账户或连接真实 Mac/VPS 复现。官方机制核验、示例语法检查与读者的端到端验收是不同证据。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 本章建立一条具体路径：**VPS 上某个真实 Linux 用户运行的 worker，通过 Tailscale 网络，使用专用 SSH key 登录 Mac 的普通 Remote Login/OpenSSH。** 它适合在得到授权后检查或处理 Mac 上的项目文件，不需要家里有公网 IPv4，也不要求把家用路由器的 TCP 22 转发到公网。
 
-这里的 `100.64.0.10`（VPS）与 `100.64.0.20`（Mac）是**合成示例**，来自 [RFC 6598 的 Shared Address Space](https://www.rfc-editor.org/rfc/rfc6598.html)，不是本书的 live 设备。部署时从自己的 Tailscale 设备列表逐项确认真实地址、节点与 owner 后替换。示例账户 `worker`、`macowner` 和项目 `example-project` 同样是占位。本文没有连接真实 Mac/VPS 做过复现；官方机制核验、示例语法检查与读者的端到端验收是不同证据。
+这里的 `100.64.0.10`（VPS）与 `100.64.0.20`（Mac）是**合成示例**，来自 [RFC 6598 的 Shared Address Space](https://www.rfc-editor.org/rfc/rfc6598.html)，不是本书的 live 设备。部署时从自己的 Tailscale 设备列表逐项确认真实地址、节点与 owner 后替换。示例账户 `worker`、`macowner` 和项目 `example-project` 同样是占位。
 
 > [!NOTE]
 > **停下检查点：“网络能到”不等于“被授权”，更不等于“只有这个节点能连”。**
@@ -39,7 +45,7 @@ SSH `-L` 本身不会穿过一个完全不可达的 NAT 来找到 Mac；它可�
 **运行位置：两台设备的拥有者界面。** Mac 要有人能本地操作或已有独立恢复通道；VPS 保留已验证的管理员会话。记录准备改变的三项：tailnet 新增 grant、Mac 新增一条用户公钥、VPS 新增一份专用 SSH 配置。恢复时逐项撤销本次改动，不能清空原策略或整个 `authorized_keys`。
 
 1. **Mac：** 使用官方 [macOS 版本说明](https://tailscale.com/docs/concepts/macos-variants) 选择一个受支持的 GUI 版本，按官方安装界面完成登录与 system/network extension 授权。不要同时安装多个互相冲突的 GUI 变体。已有客户端时先检查现状，不重装。
-2. **VPS：** 按 [官方 Linux 安装文档](https://tailscale.com/docs/install/linux) 选择实际发行版的包安装方式。安装后首次运行 `sudo tailscale up`，在自己浏览器打开输出的认证链接，确认加入的是预期 tailnet；已有配置时先看 `tailscale status`，不要用 `--reset` 消除提示。包安装是目标设备上的修改，本文作者未执行。
+2. **VPS：** 按 [官方 Linux 安装文档](https://tailscale.com/docs/install/linux) 选择实际发行版的包安装方式。安装后首次运行 `sudo tailscale up`，在自己浏览器打开输出的认证链接，确认加入的是预期 tailnet；已有配置时先看 `tailscale status`，不要用 `--reset` 消除提示。
 3. **回到 tailnet 管理面板：** 根据设备名称、系统、owner 和两端显示的 IP 对照节点，确认在线与密钥有效期。不要只凭相似的设备名选中旧节点。
 
 **运行位置：VPS；只读确认。**
@@ -303,7 +309,7 @@ Intel Homebrew、版本管理器或其他安装位置可能不同，应按查到
 
 ## 一手资料与查阅日期
 
-查阅日期：**2026-10-02**。本章只编写本地文档与示例，未操作账户或真实设备。
+查阅日期：**2026-10-02**。
 
 - [Tailscale Linux install](https://tailscale.com/docs/install/linux)、[macOS variants](https://tailscale.com/docs/concepts/macos-variants)、[system extension authorization](https://tailscale.com/docs/concepts/macos-sysext)：安装与 Mac 能力边界。
 - [Tailscale SSH](https://tailscale.com/docs/features/tailscale-ssh)：支持的 server 形态，与普通 OpenSSH 区别。
@@ -314,3 +320,10 @@ Intel Homebrew、版本管理器或其他安装位置可能不同，应按查到
 - [OpenSSH sshd(8)](https://man.openbsd.org/sshd)、[ssh(1)](https://man.openbsd.org/ssh)、[ssh-keygen(1)](https://man.openbsd.org/ssh-keygen)：专用 key、authorized_keys 选项、host key 与客户端配置。
 - [zsh files](https://zsh.sourceforge.io/Doc/Release/Files.html)、[Homebrew manual](https://docs.brew.sh/Manpage)：非交互 PATH 的依据。
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/)、[private web application](https://developers.cloudflare.com/cloudflare-one/setup/secure-private-apps/private-web-app/)：无需直接入站的 Web 入口与 Access。
+
+**想一想：新增一条只允许 VPS 到 Mac TCP 22 的 grant，是否就能说只有这台 VPS 能连 SSH？**
+
+<details>
+<summary>查看答案</summary>
+<p>不能。grants 与 ACL 的允许规则会叠加，既有宽规则仍可能放行其他 peer；还要检查原策略，并在同一时段验证获准与未获准节点。Tailnet 规则也不会自动限制 Mac 的 LAN 等其他接口。</p>
+</details>

@@ -27,4 +27,6 @@ git diff --check
 
 阅读站变更使用安装了 `site/requirements.txt` 的 Python 3.10+ 运行 `python -m unittest discover -s site -p 'test_*.py' -v` 与 `python site/build.py`；交互改动检查 `node --check site/site.js` 并做实际浏览器验收。Pages workflow 在 PR 只构建测试，在 main 推送后发布白名单产物；这不授予任何教程涉及的真实基础设施操作权限。
 
+搜索逻辑与问题别名由 `site/search.js` 管理，构建后用 `node --test site/test_search.cjs` 检查真实问法。Health 模拟页由 `site/health_demo.py` 与 `health.html/css/js` 管理；只生成合成序列，复用 `tools/health.py` 的校验与状态判断，禁止在构建中真实采集或复制 `reports/`。模拟页需要浏览器验收场景切换、回放/暂停、时间轴、缺失值和手机排版，并检查 `node --check site/health.js`。固定离线 HTML 仍由 `health.py` 独立生成，不能把两者的能力声明混在一起。
+
 修改读者能力或入口时同步两份 README。正文 UI 图标由 `site/ui.py` 管理；链接去向由 `site/build.py` 解析实际 hostname/path，保留普通链接和术语解释的渐进增强。不要把标题锚点或其他 GitHub 仓库标成本项目源码。`docs/glossary.md` 第一段释义是 inline 解释的唯一真源；不要复制到 JS。章节小图以 `docs/diagrams/chapter-maps.json` 为语义源，由 `python3 scripts/render-chapter-maps.py` 生成两种 SVG，不能只改单份导出。九章 Markdown 的代码块与既有锚点要保留。架构图模型、可编辑源与导出关系见 `docs/diagrams/README.md`；修改图后重新生成并实际查看。修改操作步骤时，同步相关教程、工单、示例与 README 导航；改变 health 契约时同步工具说明、fixture 和行为测试。验证状态记录在 `docs/sources-and-maintenance.md`。私人 working continuity 留在仓库外，不能写入文档或提交。

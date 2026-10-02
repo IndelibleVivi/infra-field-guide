@@ -63,16 +63,19 @@
     table.before(hint); table.setAttribute('aria-describedby', hint.id);
   });
 
-  function highlighted(text, query) {
+  function highlighted(text, terms) {
     const fragment = document.createDocumentFragment();
     const lower = text.toLowerCase();
     let position = 0;
-    let match;
-    while ((match = lower.indexOf(query, position)) !== -1) {
-      fragment.append(document.createTextNode(text.slice(position, match)));
+    while (position < text.length) {
+      const matches = terms.map(term => ({ term, at: lower.indexOf(term, position) }))
+        .filter(match => match.at >= 0).sort((a, b) => a.at - b.at || b.term.length - a.term.length);
+      if (!matches.length) break;
+      const { term, at } = matches[0];
+      fragment.append(document.createTextNode(text.slice(position, at)));
       const mark = document.createElement('mark');
-      mark.textContent = text.slice(match, match + query.length);
-      fragment.append(mark); position = match + query.length;
+      mark.textContent = text.slice(at, at + term.length);
+      fragment.append(mark); position = at + term.length;
     }
     fragment.append(document.createTextNode(text.slice(position)));
     return fragment;
@@ -97,20 +100,16 @@
       return;
     }
     if (version !== searchVersion) return;
-    const matches = index.map(section => {
-      const title = (section.title + ' ' + section.heading).toLowerCase();
-      const position = section.text.toLowerCase().indexOf(query);
-      return { section, position, score: (title.includes(query) ? 3 : 0) + (position >= 0 ? 1 : 0) };
-    }).filter(item => item.score).sort((a, b) => b.score - a.score);
-    status.textContent = matches.length ? `找到 ${matches.length} 节内容${matches.length > 30 ? '，先显示最相关的 30 节' : ''}。` : '没有找到匹配内容。可以试试更短的关键词，例如「代理」或「SSH」。';
-    for (const { section, position } of matches.slice(0, 30)) {
+    const matches = FieldGuideSearch.search(index, query);
+    status.textContent = matches.length ? `找到 ${matches.length} 节内容${matches.length > 30 ? '，先显示最相关的 30 节' : ''}。` : '没有找到匹配内容。可以试试更短的关键词，例如「SSH 超时」「磁盘满」或「swap」。';
+    for (const { section, position, terms } of matches.slice(0, 30)) {
       const link = document.createElement('a'); link.className = 'search-result'; link.href = section.url;
       const chapter = document.createElement('small'); chapter.textContent = section.title;
-      const heading = document.createElement('strong'); heading.append(highlighted(section.heading, query));
+      const heading = document.createElement('strong'); heading.append(highlighted(section.heading, terms));
       const excerpt = document.createElement('p');
       const start = Math.max(0, position - 40);
       const snippet = (start ? '…' : '') + section.text.slice(start, start + 150) + (section.text.length > start + 150 ? '…' : '');
-      excerpt.append(highlighted(snippet, query));
+      excerpt.append(highlighted(snippet, terms));
       link.append(chapter, heading, excerpt);
       link.addEventListener('click', () => searchDialog.close());
       results.append(link);

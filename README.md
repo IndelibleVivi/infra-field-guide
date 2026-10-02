@@ -8,6 +8,8 @@
 
 这是一套中文基础设施现场手册：先理解机器和网络，再部署、观察、备份、迁移，最后把旧资源收干净。你不需要先成为 Linux 专家，但需要知道每条命令在哪台机器运行、改变什么、失败后如何回来。
 
+即使让 AI 帮你操作，也能逐渐看懂它准备改什么，以及它到底有没有做成。
+
 **九章教程、agent 工单、配置示例、六张架构图，以及可运行的只读 health 工具。** 教程使用合成地址，实施时换成自己核实过的目标。
 
 [教程导航](#从你的问题进入) · [完整架构](docs/architecture.md) · [Agent 入口](agents/README.md) · [检查状态](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
@@ -33,7 +35,11 @@
 
 第一次学建议顺序：**01 → 02 → 03 → 07**，再按需要选 04、05 或 09。遇到账号问题直接读 06，不必先买服务器。
 
+搜索可以直接输入「SSH 超时」「磁盘满」「公钥拒绝」等问题，也支持多个关键词。每章的适用环境与验证范围可展开查看，章末有一道理解题，答案默认折叠。
+
 ## 五分钟内先看见一个结果
+
+**[先玩一遍 Health 模拟仪表盘 →](https://indeliblevivi.github.io/infra-field-guide/health/demo/)** 无需终端：切换日常运行、内存吃紧、磁盘快满、小文件堆积、采集缺失五种合成场景，拖动时间或回放一小时，让曲线、数值与提示一起变化。它不连接真实机器。想看命令会生成什么，可先打开[固定合成快照](https://indeliblevivi.github.io/infra-field-guide/health/snapshot/)。
 
 需要 Python 3.9+；无需 pip 安装依赖。先下载仓库，或在终端克隆：
 
@@ -50,7 +56,7 @@ python3 tools/health.py collect --demo -o reports/health-demo.json
 python3 tools/health.py render reports/health-demo.json -o reports/health-demo.html
 ```
 
-在文件管理器中打开 `reports/health-demo.html`，会看到 RAM、swap、load、磁盘／inode、uptime 和 memory PSI 的离线快照。数据是仓库附带的合成样例，包含需关注与未知状态。重复演示请换输出文件名，工具会保护已有结果。
+在文件管理器中打开 `reports/health-demo.html`，会看到 RAM、swap、load、磁盘／inode、uptime 和 memory PSI 的离线快照。数据是仓库附带的固定合成样例，包含低内存、低磁盘余量与未配置 swap 的提示；它没有时间回放。重复演示请换输出文件名，工具会保护已有结果。
 
 这个例子不 SSH、不联网、不安装服务、不读取你的账号。真实采集仅面向 Linux；macOS、Windows 可做合成演示与渲染。Windows 请手动创建 `reports` 目录并使用可用的 Python 命令。完整选项与限制见 [health 工具说明](tools/README.md)。合成演示不证明你的 VPS 健康。
 

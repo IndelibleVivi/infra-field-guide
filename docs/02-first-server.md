@@ -6,9 +6,15 @@
 
 ![保持 console 与旧 SSH 会话可用，第二次登录验证成功后才继续收紧。 验证完成前，保留原会话与 console。](diagrams/02-first-login.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>示例基线为 Ubuntu 24.04 LTS、systemd 和 OpenSSH；本地命令使用 macOS、Linux 或 WSL shell。供应商镜像与其他系统需按实际配置核对。</p>
+<p>本章提供手工操作步骤，仓库检查覆盖文档和命令静态语法；作者未对读者的服务器执行这些修改。实际登录、防火墙与恢复路径需要在目标机验收。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 本章的明确环境是 **Ubuntu 24.04 LTS、systemd、OpenSSH server**，以及你自己有管理权的新 VPS。示例用户名是 `operator`；`192.0.2.10`、`198.51.100.20`、`2001:db8::10` 是文档地址，不能在公网连接。执行前换成自己从控制面板核实的地址。本地命令按 macOS、Linux 或 WSL 的 shell 编写；原生 PowerShell 的路径和工具可用性不同，不要直接混用。
 
-目标是留下一个可恢复的服务器：普通用户以 [SSH](glossary.md#ssh) key 登录，需要时使用 [sudo](glossary.md#sudo)；入站[端口](glossary.md#端口)有明确用途；更新与时间同步可检查；误操作后知道怎样从 console 恢复。下面是供你在自己服务器上手工执行的教程，作者未对读者的服务器执行这些修改。逐块阅读预期结果，遇到停止条件就停，不要整页粘贴执行。
+目标是留下一个可恢复的服务器：普通用户以 [SSH](glossary.md#ssh) key 登录，需要时使用 [sudo](glossary.md#sudo)；入站[端口](glossary.md#端口)有明确用途；更新与时间同步可检查；误操作后知道怎样从 console 恢复。逐块阅读预期结果，遇到停止条件就停，不要整页粘贴执行。
 
 ## 1. 先打开恢复入口
 
@@ -299,3 +305,10 @@ if test -e /var/run/reboot-required; then cat /var/run/reboot-required; fi
 - [Ubuntu firewall](https://documentation.ubuntu.com/server/how-to/security/firewalls/index.html)：UFW 的主机防火墙职责。
 - [Docker packet filtering and firewalls](https://docs.docker.com/engine/network/packet-filtering-firewalls/)：Docker 与 UFW 的交互。
 - [Ubuntu security updates](https://documentation.ubuntu.com/security/security-updates/)：自动安全更新的配置、来源与日志。
+
+**想一想：收紧 SSH 配置后，旧终端窗口仍能执行命令，是否足以证明新配置可用？**
+
+<details>
+<summary>查看答案</summary>
+<p>不够。旧连接可能仍然存活；要新建禁用连接复用与密码回退的独立 key 登录，再验证 sudo，并核对有效配置。验证前保留旧会话和 console。</p>
+</details>

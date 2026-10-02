@@ -6,6 +6,12 @@
 
 ![管理连接、公开入口与应用出站分别配置，不能用其中一条推断另外两条。 Tunnel 接入应用入口，不自动改变应用的出口 IP。](diagrams/07-network-paths.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>适用于自有或获准测试的服务与网络；示例地址需替换，代理和协议能力需核对两端版本。</p>
+<p>本章核对机制与命令静态语法，不代表具体客户端、网络路径或平台账号已经验收。商家产品资料与作者单次使用体验分开注明。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 网络排障先问方向：是“别人访问我的服务”，还是“我的设备或 VPS 访问别的服务”？前者需要入口，后者涉及出口。域名解析、反向代理、设备组网、应用代理和 VPN 可能同时存在，但各自解决不同问题。把它们区分开，才能知道修改究竟会影响哪一段。
 
 本章使用 `app.example.com`、`192.0.2.10` 和 `2001:db8::10` 等文档示例；不是可直接使用的部署地址。命令用于你有权测试的服务，执行前替换目标。协议仅讨论管理自有系统、访问经授权网络与应用的用途；网络协议和出口 IP 都不能保证 AI 平台账号不受限制。
@@ -192,3 +198,10 @@ curl --noproxy '' --connect-timeout 5 --max-time 15 \
 - [Trojan protocol](https://trojan-gfw.github.io/trojan/protocol)、[VLESS inbound configuration](https://xtls.github.io/en/config/inbounds/vless.html)、[VLESS protocol explanation](https://xtls.github.io/en/development/protocols/vless.html)、[Hysteria 2 protocol](https://v2.hysteria.network/docs/developers/Protocol/)：协议差异与版本边界。
 - [curl manual](https://curl.se/docs/manpage.html)：`--resolve`、`--proxy`、超时与 SOCKS DNS 行为。
 - [Proxy-Cheap Static Residential](https://www.proxy-cheap.com/services/static-residential-proxies)、[ISP proxies](https://www.proxy-cheap.com/services/isp-proxies)、[referral program](https://www.proxy-cheap.com/referrals)：产品档位、托管用语与推荐奖励规则；不作为作者 IP 测试体验的证明。
+
+**想一想：Cloudflare Tunnel 显示 Healthy，是否说明 VPS 调用外部 API 也会从 Cloudflare 出口发出？**
+
+<details>
+<summary>查看答案</summary>
+<p>不是。Tunnel 为访问者到 origin 建立入口；应用的外部 API 请求仍按自己的出口路由发送，除非另外配置了相应的出口功能。</p>
+</details>

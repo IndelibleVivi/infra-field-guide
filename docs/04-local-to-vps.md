@@ -6,11 +6,17 @@
 
 ![本机仍负责正式服务时，先验证 VPS 的兼容性、恢复与服务管理。 Mac 的 GUI、钥匙串与本地路径，不会自动变成 Linux 服务。](diagrams/04-local-move.svg)
 
+<details>
+<summary>适用环境与验证范围</summary>
+<p>目标为 Ubuntu 24.04、systemd 和普通非 root SSH 用户；源端按 macOS、Linux／WSL 或 Windows 分支操作，Docker 仅用于原项目已有容器的情况。</p>
+<p>本章是待填写的迁移教程，未执行真实迁移；文档与命令静态检查不代替候选、数据、入口和客户端验收。交给 agent 时使用 <a href="../agents/README.md">agent 入口</a>。具体记录见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
+</details>
+
 迁移的对象是一个可持续运行的服务：代码、数据、启动方式、定时任务、入口和恢复办法都要一起考虑。先在 VPS 上建立不接正式流量的候选实例，再决定切换。把本机目录复制过去，只完成了其中一小步。
 
-本文以 **Ubuntu 24.04、systemd、普通非 root SSH 用户**为示例；Docker 仅适用于原项目已经使用容器的分支。它是一份待填写的操作教程，没有执行过任何真实迁移。命令中的 `candidate-vps`、`operator`、`example_app` 都是合成名称，必须先替换并核对。参考资料查阅日期：**2026-10-02**。
+本文以 **Ubuntu 24.04、systemd、普通非 root SSH 用户**为示例；Docker 仅适用于原项目已经使用容器的分支。命令中的 `candidate-vps`、`operator`、`example_app` 都是合成名称，必须先替换并核对。参考资料查阅日期：**2026-10-02**。
 
-先复制填写[迁移工单](../examples/migration-plan.example.json)和[服务清单](../examples/service-inventory.example.csv)，把真实记录放在自己的非公开运维目录。工单是记录格式，不是自动执行器；阅读教程不代表已获准购买服务器、传输私人数据、改 DNS 或删除本机数据。
+先复制填写[迁移工单](../examples/migration-plan.example.json)和[服务清单](../examples/service-inventory.example.csv)，把真实记录放在自己的非公开运维目录。用它们记录源与目标、数据边界、停机窗口和恢复证据。
 
 > [!NOTE]
 > **停下检查点：入口切了不等于数据切了，也不等于能回滚。**
@@ -89,7 +95,7 @@ docker volume ls
 
 ## 4. 建立独立候选机
 
-本节前提是你已获准创建目标 VPS，并有服务商控制台恢复通道。Ubuntu 24.04、SSH、systemd、所需运行时和传输工具应按各自官方安装文档准备；本文不把一条全系统安装/升级命令当作迁移步骤。
+本节前提是目标 VPS 已准备好，并有服务商控制台恢复通道。Ubuntu 24.04、SSH、systemd、所需运行时和传输工具应按各自官方安装文档准备；本文不把一条全系统安装/升级命令当作迁移步骤。
 
 **在目标 VPS，普通 SSH 会话；`sudo` 项需要管理员权限：**
 
@@ -274,3 +280,10 @@ pg_restore --host=127.0.0.1 --username=migration_owner \
 **回滚分界是目标是否接受过新写入。** 在目标仍未写入时，可在确认目标 writer 关闭后把入口恢复至源，重新放开源 writer；冻结期的排队请求仍需处理。目标已经写入后，旧数据已落后，不能仅改回 DNS。先冻结受影响写入、保留两侧数据，再选择在目标 forward recovery，或经对账的反向迁移；细节见[回滚与数据边界](05-vps-to-vps.md#回滚分界目标是否已经接受新写入)。
 
 完成报告分开写：源代码/配置已准备、候选已启动、数据恢复已验证、入口已切、目标已接收写入、真实客户端已验收、旧端是否保留。某层未执行就写“未验证”；不要把一个 HTTP 200 写成“迁移全部完成”。
+
+**想一想：把本机目录复制到 VPS，页面也返回 200，就能宣布迁移完成吗？**
+
+<details>
+<summary>查看答案</summary>
+<p>还不能。需要确认 Linux 运行兼容性、数据恢复、服务与调度 owner，再按冻结和切入口顺序开放唯一 writer，并从真实客户端验收；200 只说明这次请求得到响应。</p>
+</details>

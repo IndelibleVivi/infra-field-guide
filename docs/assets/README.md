@@ -2,6 +2,7 @@
 
 - [banner.svg](banner.svg)：白底、天水蓝、墨蓝与浅金的封面。文字、线条是可编辑矢量；小鹿以 PNG 嵌入，使 SVG 可以单文件显示。因此它是混合素材，**不是纯矢量插画**。
 - [drinking-fawn.png](drinking-fawn.png)：为本项目生成的透明背景小鹿原图。生成 brief 是比例自然、低头喝水的幼鹿，细墨蓝线条、浅蓝与白色、浅金斑点；无第三方参考图片、字体、商标或人物素材。
+- [drinking-fawn.webp](drinking-fawn.webp)：首页与 Health 模拟页使用的轻量版本，尺寸仍为 1254 × 1254；由原 PNG 经 Pillow 的 WebP `quality=90, method=6` 编码。原图约 1.34 MiB，网页版本约 311 KiB，减少约 77%；透明通道保持一致。PNG 原件与 banner 内嵌图继续保留。
 
 小鹿由内置图像生成工具辅助创作，排版与装饰在 SVG 中编写。左下的 `GitHub · @IndelibleVivi` 标识仓库作者的 GitHub handle；README 中封面链接到本仓库。
 

@@ -2,6 +2,8 @@
 
 依据：[CC 转生资料与路径清单](../docs/06-account-recovery.md)。
 
+执行顺序与第 06 章一致：先退出写入者，完成并抽查 logout 前的原始私有备份；只有所选范围包含已保存登录时，才在原配置仍在原位时 logout。logout 会启动程序，完成后再次确认 CLI、Desktop、IDE 扩展和后台任务不再写入，然后按 A/B 二选一隔离并逐项读回。只清缓存时不强制 logout；可选卸载／重装另列分支，不替代备份与隔离。
+
 ```text
 读本仓库 AGENTS.md、agents/README.md 与第06章。
 目标：<OS、Claude产品与版本、安装方式、真实配置目录>

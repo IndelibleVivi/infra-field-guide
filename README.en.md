@@ -6,6 +6,8 @@
 
 For people choosing their first VPS, moving a local service online, or replacing a server—and the AI agents helping them do it.
 
+Even with an AI agent doing the work, you can learn to understand what it is about to change and whether that change actually worked.
+
 **Nine chapters, reusable agent work orders, configuration examples, six architecture diagrams, and a working read-only health tool.** The full tutorials are written in Chinese with English technical terms; this English entry point maps the same capabilities. Examples use synthetic identities and documentation addresses.
 
 [Reading paths](#start-with-your-task) · [Architecture atlas](docs/architecture.md) · [Agent entry](agents/README.md) · [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
@@ -31,7 +33,11 @@ Each chapter starts with a concept map; three additional comparisons explain SSH
 
 New readers can start with **01 → 02 → 03 → 07**, then choose a migration or private-access path. Account cleanup does not require buying a server.
 
+Local search recognizes common questions such as “SSH 超时”, “磁盘满”, and “publickey”, with multiple-keyword matching. Each chapter has an expandable environment and verification note, plus a comprehension question with a collapsed answer.
+
 ## Run a synthetic example
+
+**[Try the interactive Health simulator first →](https://indeliblevivi.github.io/infra-field-guide/health/demo/)** Switch between five synthetic scenarios: ordinary operation, memory pressure, disk capacity, inode exhaustion and missing readings. Scrub or replay an hour and watch charts, values and status change together. It does not connect to a real machine. A separate [fixed synthetic snapshot](https://indeliblevivi.github.io/infra-field-guide/health/snapshot/) previews the CLI output.
 
 Python 3.9+ is enough. No pip dependencies. Download the repository or clone it:
 
@@ -48,7 +54,7 @@ python3 tools/health.py collect --demo -o reports/health-demo.json
 python3 tools/health.py render reports/health-demo.json -o reports/health-demo.html
 ```
 
-Open `reports/health-demo.html` from your file manager. It shows RAM, swap, load, root filesystem bytes/inodes, uptime and memory PSI, including attention and unknown states. Repeated runs need new output filenames: the tool protects existing files.
+Open `reports/health-demo.html` from your file manager. It shows RAM, swap, load, root filesystem bytes/inodes, uptime and memory PSI. This fixed example includes low memory, low disk headroom and unconfigured swap; the offline snapshot has no playback. Repeated runs need new output filenames: the tool protects existing files.
 
 This demo uses a fixed synthetic fixture. It does not SSH, access accounts, install services or make network requests. Real collection supports Linux only; macOS and Windows can run the demo and render JSON. On Windows, create `reports` manually and use your available Python command. The report is a snapshot, not continuous monitoring or an alerting service. Read the [tool contract](tools/README.md) for thresholds, errors, container limits and data handling.
 

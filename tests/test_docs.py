@@ -31,6 +31,15 @@ def anchors(text):
 
 
 class DocumentationTests(unittest.TestCase):
+    def test_cleanup_prerequisites_appear_before_quarantine(self):
+        text = (ROOT / 'docs/06-account-recovery.md').read_text(encoding='utf-8')
+        markers = ['cp -pR', '先抽查关键历史与配置能打开',
+                   '**按所选范围退出登录。**', '**再次退出写入者。**',
+                   '**A：只隔离', 'mv "$cc_source"', '**B：移走完整用户配置',
+                   '逐项检查原路径已移走', '**可选分支：卸载／重装程序。**']
+        positions = [text.index(marker) for marker in markers]
+        self.assertEqual(positions, sorted(positions))
+
     def test_relative_links_and_heading_targets(self):
         checked = 0
         for doc in DOCUMENTS:
