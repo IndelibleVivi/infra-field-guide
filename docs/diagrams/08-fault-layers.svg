@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 258" width="720" height="258" role="img" aria-labelledby="title desc">
+<title id="title">沿请求路径，逐段找证据</title><desc id="desc">先分别测本机应用、origin 与公开入口，再定位从哪一段开始失败。 三段分别测；公开入口的 200 可能只是缓存。</desc>
+<rect width="720" height="258" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="28" y="40" font-size="23" font-weight="600" fill="#203e56">沿请求路径，逐段找证据</text>
+<g id="step-1"><rect x="28.0" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43.0,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v7H3z M3 14h18v7H3z M6 6h1 M6 17h1 M11 6h7 M11 17h7"/></g>
+<text x="44.0" y="137" font-size="18" font-weight="600" fill="#203e56">本机应用</text>
+<text x="44.0" y="171" font-size="17" font-weight="400" fill="#203e56">监听地址、进程、依赖</text>
+<text x="44.0" y="196" font-size="17" font-weight="400" fill="#203e56">直接请求本机服务</text>
+</g>
+<path d="M236.33333333333334 156.0h18m-5-4 5 4-5 4" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-2"><rect x="257.33333333333337" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(272.33333333333337,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12 M12 2l3 3-3 3 M21 19H9 M12 16l-3 3 3 3 M3 5v10a4 4 0 0 0 4 4 M21 19V9a4 4 0 0 0-4-4"/></g>
+<text x="273.33333333333337" y="137" font-size="18" font-weight="600" fill="#203e56">定向 origin</text>
+<text x="273.33333333333337" y="171" font-size="17" font-weight="400" fill="#203e56">核对目标与 TLS</text>
+<text x="273.33333333333337" y="196" font-size="17" font-weight="400" fill="#203e56">绕开 edge 单独测试</text>
+</g>
+<path d="M465.66666666666674 156.0h18m-5-4 5 4-5 4" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-3"><rect x="486.6666666666667" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(501.6666666666667,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L21 5 M21 12v8H3V3h12"/></g>
+<text x="502.6666666666667" y="137" font-size="18" font-weight="600" fill="#203e56">公开入口</text>
+<text x="502.6666666666667" y="171" font-size="17" font-weight="400" fill="#203e56">检查 DNS / edge</text>
+<text x="502.6666666666667" y="196" font-size="17" font-weight="400" fill="#203e56">最后用真实客户端操作</text>
+</g>
+</g>
+</svg>

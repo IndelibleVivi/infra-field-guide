@@ -10,7 +10,7 @@ For people choosing their first VPS, moving a local service online, or replacing
 
 [Reading paths](#start-with-your-task) · [Architecture atlas](docs/architecture.md) · [Agent entry](agents/README.md) · [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
-**[Open the reading site →](https://indeliblevivi.github.io/infra-field-guide/)** with chapter navigation, in-browser search, mobile layouts and the architecture atlas. It renders the same Markdown sources; the full guide remains in Chinese. See [site/README.md](site/README.md) for building and maintenance.
+**[Open the reading site →](https://indeliblevivi.github.io/infra-field-guide/)** with chapter navigation, in-browser search, mobile layouts, inline term definitions and the architecture atlas. It renders the same Markdown sources; the full guide remains in Chinese. See [site/README.md](site/README.md) for building and maintenance.
 
 ## Start with your task
 
@@ -26,6 +26,8 @@ For people choosing their first VPS, moving a local service online, or replacing
 | Let a VPS worker reach a Mac project | [09 · Private remote access](docs/09-private-access.md) | Tailscale grants, ordinary OpenSSH and non-interactive environment checks |
 | Inspect resource headroom | [Health tool](tools/README.md) | A Linux resource snapshot and offline HTML report |
 | Work with an agent | [Agent work orders](agents/README.md) | Explicit scope, stop conditions, recovery and evidence |
+
+Each chapter starts with a concept map; three additional comparisons explain SSH keys, RAM / swap, and migration rollback boundaries. The [29-term glossary](docs/glossary.md) provides short definitions and links back to the relevant section. On the reading site, dotted-underlined terms open in place; pinned notes highlight common confusions.
 
 New readers can start with **01 → 02 → 03 → 07**, then choose a migration or private-access path. Account cleanup does not require buying a server.
 

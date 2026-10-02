@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 357" width="720" height="357" role="img" aria-labelledby="title desc">
+<title id="title">三条路，解决三个问题</title><desc id="desc">管理连接、公开入口与应用出站分别配置，不能用其中一条推断另外两条。 Tunnel 接入应用入口，不自动改变应用的出口 IP。</desc>
+<rect width="720" height="357" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="28" y="40" font-size="23" font-weight="600" fill="#203e56">三条路，解决三个问题</text>
+<g id="step-1"><rect x="28" y="76" width="664" height="77" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5a5 5 0 1 1-4 8L3 20H1v-4l8-7 M4 15l3 3"/></g>
+<text x="80" y="109" font-size="18" font-weight="600" fill="#203e56">管理</text>
+<text x="153" y="109" font-size="19" font-weight="400" fill="#203e56">自己 → SSH / tailnet → 主机</text>
+</g>
+<g id="step-2"><rect x="28" y="167" width="664" height="77" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43,182)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12 M12 2l3 3-3 3 M21 19H9 M12 16l-3 3 3 3 M3 5v10a4 4 0 0 0 4 4 M21 19V9a4 4 0 0 0-4-4"/></g>
+<text x="80" y="200" font-size="18" font-weight="600" fill="#203e56">入口</text>
+<text x="153" y="200" font-size="19" font-weight="400" fill="#203e56">访客 → DNS / edge → origin</text>
+</g>
+<g id="step-3"><rect x="28" y="258" width="664" height="77" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43,273)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v7H3z M3 14h18v7H3z M6 6h1 M6 17h1 M11 6h7 M11 17h7"/></g>
+<text x="80" y="291" font-size="18" font-weight="600" fill="#203e56">出站</text>
+<text x="153" y="291" font-size="19" font-weight="400" fill="#203e56">应用 → 公网出口 → 外部服务</text>
+</g>
+</g>
+</svg>

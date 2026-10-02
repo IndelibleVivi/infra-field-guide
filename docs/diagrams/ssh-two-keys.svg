@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 236" width="720" height="236" role="img" aria-labelledby="title desc">
+<title id="title">两种 key，验证两个方向</title><desc id="desc">SSH 登录中，主机身份与用户身份是不同的验证对象。 知道连的是谁，与被允许登录，缺一不可。</desc>
+<rect width="720" height="236" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="28" y="40" font-size="23" font-weight="600" fill="#203e56">两种 key，验证两个方向</text>
+<g id="step-1"><rect x="28" y="76" width="324" height="138" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v7H3z M3 14h18v7H3z M6 6h1 M6 17h1 M11 6h7 M11 17h7"/></g>
+<text x="80" y="109" font-size="18" font-weight="600" fill="#203e56">host key · 认主机</text>
+<text x="44" y="143" font-size="17" font-weight="400" fill="#203e56">服务器向你证明身份</text>
+<text x="44" y="168" font-size="17" font-weight="400" fill="#203e56">变化时从可信渠道核对指纹</text>
+</g>
+<g id="step-2"><rect x="368" y="76" width="324" height="138" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(383,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5a5 5 0 1 1-4 8L3 20H1v-4l8-7 M4 15l3 3"/></g>
+<text x="420" y="109" font-size="18" font-weight="600" fill="#203e56">用户 key · 认来访者</text>
+<text x="384" y="143" font-size="17" font-weight="400" fill="#203e56">你向服务器证明身份</text>
+<text x="384" y="168" font-size="17" font-weight="400" fill="#203e56">私钥留在客户端，公钥授权</text>
+</g>
+</g>
+</svg>

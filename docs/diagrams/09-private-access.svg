@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 258" width="720" height="258" role="img" aria-labelledby="title desc">
+<title id="title">VPS 回到 Mac，要过三道门</title><desc id="desc">网络授权、SSH 身份与 macOS 文件权限共同决定 worker 能做什么。 路径可达 ≠ 有权登录 ≠ 能完成项目任务。</desc>
+<rect width="720" height="258" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="28" y="40" font-size="23" font-weight="600" fill="#203e56">VPS 回到 Mac，要过三道门</text>
+<g id="step-1"><rect x="28.0" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43.0,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12 M12 2l3 3-3 3 M21 19H9 M12 16l-3 3 3 3 M3 5v10a4 4 0 0 0 4 4 M21 19V9a4 4 0 0 0-4-4"/></g>
+<text x="44.0" y="137" font-size="18" font-weight="600" fill="#203e56">tailnet grant</text>
+<text x="44.0" y="171" font-size="17" font-weight="400" fill="#203e56">来源 → Mac TCP 22</text>
+<text x="44.0" y="196" font-size="17" font-weight="400" fill="#203e56">检查全部规则的效果</text>
+</g>
+<path d="M236.33333333333334 156.0h18m-5-4 5 4-5 4" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-2"><rect x="257.33333333333337" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(272.33333333333337,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5a5 5 0 1 1-4 8L3 20H1v-4l8-7 M4 15l3 3"/></g>
+<text x="273.33333333333337" y="137" font-size="18" font-weight="600" fill="#203e56">普通 OpenSSH</text>
+<text x="273.33333333333337" y="171" font-size="17" font-weight="400" fill="#203e56">host key 验明主机</text>
+<text x="273.33333333333337" y="196" font-size="17" font-weight="400" fill="#203e56">用户 key 允许登录</text>
+</g>
+<path d="M465.66666666666674 156.0h18m-5-4 5 4-5 4" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-3"><rect x="486.6666666666667" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(501.6666666666667,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8l2 3h10v12H2z M2 6V3h8l2 3h8v3"/></g>
+<text x="502.6666666666667" y="137" font-size="18" font-weight="600" fill="#203e56">项目环境</text>
+<text x="502.6666666666667" y="171" font-size="17" font-weight="400" fill="#203e56">cwd、权限与 PATH</text>
+<text x="502.6666666666667" y="196" font-size="17" font-weight="400" fill="#203e56">运行真实项目命令</text>
+</g>
+</g>
+</svg>

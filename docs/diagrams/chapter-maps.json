@@ -1,0 +1,307 @@
+{
+  "description": "章节概念图。节点是概念或操作阶段，连接线表示顺序；lanes 表示独立网络路径。所有事实来自对应章节，数字仅为顺序。",
+  "diagrams": [
+    {
+      "id": "01-vps-map",
+      "chapter": "01-vps-basics",
+      "title": "一台 VPS，先看四件事",
+      "description": "从任务出发，分别核对算力、容量、网络和恢复能力。",
+      "kind": "grid",
+      "nodes": [
+        {
+          "title": "算得动",
+          "body": "vCPU 处理任务\nRAM 容纳正在用的数据",
+          "icon": "chip"
+        },
+        {
+          "title": "放得下",
+          "body": "磁盘存文件与数据库\n留出日志、更新的余量",
+          "icon": "folder"
+        },
+        {
+          "title": "连得上",
+          "body": "地区、IP、带宽与流量\n分别影响路径和用量",
+          "icon": "route"
+        },
+        {
+          "title": "回得来",
+          "body": "console 应急进入\n异机备份 + 恢复演练",
+          "icon": "key"
+        }
+      ],
+      "footer": "先写需求，再比套餐；“便宜”要连同恢复成本一起看。",
+      "anchor": ""
+    },
+    {
+      "id": "02-first-login",
+      "chapter": "02-first-server",
+      "title": "先留一条回来的路",
+      "description": "保持 console 与旧 SSH 会话可用，第二次登录验证成功后才继续收紧。",
+      "kind": "flow",
+      "nodes": [
+        {
+          "title": "打开 console",
+          "body": "服务商恢复入口\nSSH 失败时排障",
+          "icon": "server"
+        },
+        {
+          "title": "核对 host key",
+          "body": "可信渠道核验\n确认目标主机",
+          "icon": "key"
+        },
+        {
+          "title": "独立登录",
+          "body": "新用户与密钥\n另开会话测权限",
+          "icon": "route"
+        },
+        {
+          "title": "收紧后再测",
+          "body": "认证与防火墙\n每改一项重测",
+          "icon": "check"
+        }
+      ],
+      "footer": "验证完成前，保留原会话与 console。",
+      "anchor": ""
+    },
+    {
+      "id": "03-operations-map",
+      "chapter": "03-operations",
+      "title": "运维，把这三个环节连起来",
+      "description": "主机指标给出线索；服务记录解释原因；真实操作验证是否恢复。",
+      "kind": "flow",
+      "nodes": [
+        {
+          "title": "看资源",
+          "body": "CPU / RAM / 磁盘\n容量与压力一起看",
+          "icon": "chip"
+        },
+        {
+          "title": "找原因",
+          "body": "服务 owner 与日志\n对齐故障发生的时间",
+          "icon": "trace"
+        },
+        {
+          "title": "验恢复",
+          "body": "从真实客户端完成任务\n也要演练备份还原",
+          "icon": "check"
+        }
+      ],
+      "footer": "一个绿色读数，只能证明它测量的那一层。",
+      "anchor": ""
+    },
+    {
+      "id": "04-local-move",
+      "chapter": "04-local-to-vps",
+      "title": "搬家，先让新家独立跑通",
+      "description": "本机仍负责正式服务时，先验证 VPS 的兼容性、恢复与服务管理。",
+      "kind": "flow",
+      "nodes": [
+        {
+          "title": "本机盘点",
+          "body": "源码、数据、依赖\n以及正在写数据的任务",
+          "icon": "folder"
+        },
+        {
+          "title": "VPS 候选",
+          "body": "独立配置和测试入口\n验证 systemd 与恢复",
+          "icon": "server"
+        },
+        {
+          "title": "正式切换",
+          "body": "停写 → 最终同步\n切入口 → 唯一 writer",
+          "icon": "route"
+        }
+      ],
+      "footer": "Mac 的 GUI、钥匙串与本地路径，不会自动变成 Linux 服务。",
+      "anchor": ""
+    },
+    {
+      "id": "05-server-move",
+      "chapter": "05-vps-to-vps",
+      "title": "切换的核心：谁能写数据",
+      "description": "预拷贝可以提前做，最终同步必须在所有正式 writer 冻结后进行。",
+      "kind": "flow",
+      "nodes": [
+        {
+          "title": "旧机写入",
+          "body": "新机仅做候选验证\n预拷贝不等于最终状态",
+          "icon": "server"
+        },
+        {
+          "title": "两端停写",
+          "body": "冻结任务与定时器\n完成最终同步及核对",
+          "icon": "pause"
+        },
+        {
+          "title": "新机独写",
+          "body": "入口验收后开放写入\n旧机继续保持冻结",
+          "icon": "check"
+        }
+      ],
+      "footer": "新机一旦有新数据，回退前必须冻结、对账。",
+      "anchor": ""
+    },
+    {
+      "id": "06-recovery-choices",
+      "chapter": "06-account-recovery",
+      "title": "先保存资产，再选清理范围",
+      "description": "A 与 B 是两条不同的本地整理路径；共同前提是完整私有备份。",
+      "kind": "compare",
+      "nodes": [
+        {
+          "title": "A · 选定状态清理",
+          "body": "只隔离清单列出的四项\n其他认证来源需单独处理",
+          "icon": "folder"
+        },
+        {
+          "title": "B · 完整环境重建",
+          "body": "隔离完整用户配置\n按需重装，再选择性恢复",
+          "icon": "server"
+        }
+      ],
+      "footer": "共同起点：私有备份 → 共同终点：验证资产与本地环境。",
+      "anchor": ""
+    },
+    {
+      "id": "07-network-paths",
+      "chapter": "07-network-and-proxies",
+      "title": "三条路，解决三个问题",
+      "description": "管理连接、公开入口与应用出站分别配置，不能用其中一条推断另外两条。",
+      "kind": "lanes",
+      "nodes": [
+        {
+          "title": "管理",
+          "body": "自己 → SSH / tailnet → 主机",
+          "icon": "key"
+        },
+        {
+          "title": "入口",
+          "body": "访客 → DNS / edge → origin",
+          "icon": "route"
+        },
+        {
+          "title": "出站",
+          "body": "应用 → 公网出口 → 外部服务",
+          "icon": "server"
+        }
+      ],
+      "footer": "Tunnel 接入应用入口，不自动改变应用的出口 IP。",
+      "anchor": ""
+    },
+    {
+      "id": "08-fault-layers",
+      "chapter": "08-troubleshooting",
+      "title": "沿请求路径，逐段找证据",
+      "description": "先分别测本机应用、origin 与公开入口，再定位从哪一段开始失败。",
+      "kind": "flow",
+      "nodes": [
+        {
+          "title": "本机应用",
+          "body": "监听地址、进程、依赖\n直接请求本机服务",
+          "icon": "server"
+        },
+        {
+          "title": "定向 origin",
+          "body": "核对目标与 TLS\n绕开 edge 单独测试",
+          "icon": "route"
+        },
+        {
+          "title": "公开入口",
+          "body": "检查 DNS / edge\n最后用真实客户端操作",
+          "icon": "check"
+        }
+      ],
+      "footer": "三段分别测；公开入口的 200 可能只是缓存。",
+      "anchor": ""
+    },
+    {
+      "id": "09-private-access",
+      "chapter": "09-private-access",
+      "title": "VPS 回到 Mac，要过三道门",
+      "description": "网络授权、SSH 身份与 macOS 文件权限共同决定 worker 能做什么。",
+      "kind": "flow",
+      "nodes": [
+        {
+          "title": "tailnet grant",
+          "body": "来源 → Mac TCP 22\n检查全部规则的效果",
+          "icon": "route"
+        },
+        {
+          "title": "普通 OpenSSH",
+          "body": "host key 验明主机\n用户 key 允许登录",
+          "icon": "key"
+        },
+        {
+          "title": "项目环境",
+          "body": "cwd、权限与 PATH\n运行真实项目命令",
+          "icon": "folder"
+        }
+      ],
+      "footer": "路径可达 ≠ 有权登录 ≠ 能完成项目任务。",
+      "anchor": ""
+    },
+    {
+      "id": "memory-buffer",
+      "chapter": "03-operations",
+      "title": "RAM 与 swap，怎样分工",
+      "description": "这是内存工作方式的概念示意，不是你机器的实时使用率。",
+      "kind": "compare",
+      "nodes": [
+        {
+          "title": "RAM · 当前工作台",
+          "body": "活跃数据主要在这里\n超额工作集需要降载或扩容",
+          "icon": "chip"
+        },
+        {
+          "title": "swap · 磁盘缓冲",
+          "body": "可换出部分不活跃匿名页\n持续换入换出可能拖慢整机",
+          "icon": "folder"
+        }
+      ],
+      "footer": "OOM 还可能由 cgroup 限制或 systemd-oomd 触发。",
+      "anchor": "3-swap-是缓冲不是-oom-的治疗方案"
+    },
+    {
+      "id": "write-boundary",
+      "chapter": "05-vps-to-vps",
+      "title": "回退分界，看新写入",
+      "description": "入口可以改回，已经产生的数据却不会随着 DNS 自动搬回。",
+      "kind": "compare",
+      "nodes": [
+        {
+          "title": "目标尚无新写入",
+          "body": "确认旧数据仍是完整版本\n按计划退入口、恢复旧 writer",
+          "icon": "pause"
+        },
+        {
+          "title": "目标已有新写入",
+          "body": "先冻结并比较两端数据\n选定一致性恢复或向前修复",
+          "icon": "folder"
+        }
+      ],
+      "footer": "不要让新旧两端同时成为未经设计的正式 writer。",
+      "anchor": "回滚分界目标是否已经接受新写入"
+    },
+    {
+      "id": "ssh-two-keys",
+      "chapter": "02-first-server",
+      "title": "两种 key，验证两个方向",
+      "description": "SSH 登录中，主机身份与用户身份是不同的验证对象。",
+      "kind": "compare",
+      "nodes": [
+        {
+          "title": "host key · 认主机",
+          "body": "服务器向你证明身份\n变化时从可信渠道核对指纹",
+          "icon": "server"
+        },
+        {
+          "title": "用户 key · 认来访者",
+          "body": "你向服务器证明身份\n私钥留在客户端，公钥授权",
+          "icon": "key"
+        }
+      ],
+      "footer": "知道连的是谁，与被允许登录，缺一不可。",
+      "anchor": "3-核验服务器身份再接受-host-key"
+    }
+  ]
+}

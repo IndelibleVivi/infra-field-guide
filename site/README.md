@@ -22,18 +22,25 @@ python3 -m http.server 4178 --bind 127.0.0.1 --directory .local/preview
 
 | 文件 | 职责 |
 | --- | --- |
-| `pages.json` | 发布的正文白名单、路径、章节序号与导航短标题；原文 h1 保留为正文标题 |
+| `pages.json` | 发布的正文白名单、路径、章节序号与导航短标题；原文 h1 的文字与锚点保留；章节编号移到眉题，冒号后的说明单独一行 |
 | `build.py` | Markdown 渲染、站内链接转换、章节目录、分节搜索索引和显式素材白名单 |
 | `home.html` / `shell.html` | 首页编辑排版与公共阅读界面 |
-| `site.css` / `site.js` | 响应式排版、原生 dialog 搜索／目录、代码复制与目录当前位置 |
+| `site.css` / `site.js` | 响应式排版、原生 dialog 搜索／目录／术语解释、代码复制、表格滑动提示与目录当前位置 |
 | `test_build.py` | 全部生成页面的链接／锚点、搜索目标、发布文件白名单与 Markdown 关键结构 |
 | `../.github/workflows/pages.yml` | PR 只构建验证；main 推送验证后部署到 `github-pages` environment |
 
-页面正文、导航链接和原图入口无需 JavaScript；搜索、手机目录抽屉和代码复制为渐进增强。搜索索引按需从同一站点加载，关键词在浏览器内匹配，不发往搜索服务；站点无 analytics、第三方脚本、远程字体或登录。普通外链与 referral 由读者自行点击。
+页面正文、导航链接和原图入口无需 JavaScript；搜索、手机目录抽屉、术语就地解释和代码复制为渐进增强。搜索索引按需从同一站点加载，关键词在浏览器内匹配，不发往搜索服务；站点无 analytics、第三方脚本、远程字体或登录。普通外链与 referral 由读者自行点击。
 
 正文中的本地 Markdown 链接改写为对应站点路由；选定图片、完整许可与图源直接随站点发布，其他源码和示例链接回 GitHub。密集架构图保留“放大 SVG”、PNG 与可编辑源入口。代码复制只复制代码文本；剪贴板权限不可用时选中文本并提示手动复制。
 
 构建只读取 `pages.json` 与 `build.py` 明确选择的公共内容，不打包整个仓库、`.local/`、`reports/` 或真实 health 输出。CI 在全新 checkout 构建，只上传 `_site/`。本地变更路由／移除页面后，使用新的空输出目录检查，避免旧预览文件干扰判断。
+
+## 章节图、词表与便笺
+
+- `docs/glossary.md` 是词义真源，每个稳定的 `## 术语` 下第一段是释义，另段“继续读”链接回章节。普通 Markdown 链接在 GitHub 与无 JavaScript 的页面均可用；阅读站把指向词条的链接增强为原生 dialog。修正词义只改这份 Markdown，构建器自动提取，避免两份定义漂移。Escape／关闭后焦点返回原词，Ctrl/Cmd 点击仍按普通链接行为处理。
+- `docs/diagrams/chapter-maps.json` 与 `scripts/render-chapter-maps.py` 生成 12 张章节概念图的桌面／手机 SVG；9 张用于各章开头，3 张用于重点小节。Markdown 引用普通 SVG；站点构建为 `<picture>`，视口 1000px 及以下改用纵排，并限制图宽以保留可读字号。完整图源约定见[图示维护](../docs/diagrams/README.md)。
+- GitHub 兼容的 `> [!TIP]` / `> [!NOTE]` 在站点渲染为带图钉的阅读便笺。只改变容器与视觉层级，不改变提醒正文或代码块。
+- `favicon.svg` 是 Moonlight Fawn 月牙／水纹标记的唯一源，页眉与浏览器页签共用。正文保持白底墨蓝；月光和浅金只用来陪衬层级，不承担唯一语义。
 
 ## 发布与验收
 

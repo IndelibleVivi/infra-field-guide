@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 236" width="720" height="236" role="img" aria-labelledby="title desc">
+<title id="title">回退分界，看新写入</title><desc id="desc">入口可以改回，已经产生的数据却不会随着 DNS 自动搬回。 不要让新旧两端同时成为未经设计的正式 writer。</desc>
+<rect width="720" height="236" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="28" y="40" font-size="23" font-weight="600" fill="#203e56">回退分界，看新写入</text>
+<g id="step-1"><rect x="28" y="76" width="324" height="138" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v16 M16 4v16"/></g>
+<text x="80" y="109" font-size="18" font-weight="600" fill="#203e56">目标尚无新写入</text>
+<text x="44" y="143" font-size="17" font-weight="400" fill="#203e56">确认旧数据仍是完整版本</text>
+<text x="44" y="168" font-size="17" font-weight="400" fill="#203e56">按计划退入口、恢复旧 writer</text>
+</g>
+<g id="step-2"><rect x="368" y="76" width="324" height="138" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(383,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8l2 3h10v12H2z M2 6V3h8l2 3h8v3"/></g>
+<text x="420" y="109" font-size="18" font-weight="600" fill="#203e56">目标已有新写入</text>
+<text x="384" y="143" font-size="17" font-weight="400" fill="#203e56">先冻结并比较两端数据</text>
+<text x="384" y="168" font-size="17" font-weight="400" fill="#203e56">选定一致性恢复或向前修复</text>
+</g>
+</g>
+</svg>

@@ -9,6 +9,8 @@ import json
 import posixpath
 import re
 import shutil
+from functools import lru_cache
+from xml.etree import ElementTree as ET
 
 import markdown
 
@@ -23,6 +25,26 @@ for stem in ('infrastructure-overview', 'control-access', 'public-ingress',
              'outbound-access', 'migration-state', 'repository-map'):
     ASSETS.extend(f'docs/diagrams/{stem}.{ext}' for ext in ('svg', 'png', 'excalidraw'))
 ASSETS.append('docs/diagrams/architecture-model.json')
+CHAPTER_MAPS = json.loads((ROOT / 'docs/diagrams/chapter-maps.json').read_text(encoding='utf-8'))['diagrams']
+ASSETS.append('docs/diagrams/chapter-maps.json')
+for diagram in CHAPTER_MAPS:
+    ASSETS.extend(f'docs/diagrams/{diagram["id"]}{suffix}.svg' for suffix in ('', '.mobile'))
+
+
+@lru_cache(maxsize=1)
+def glossary():
+    """Keep inline definitions derived from the one canonical Markdown glossary."""
+    raw = (ROOT / 'docs/glossary.md').read_text(encoding='utf-8')
+    tree = ET.fromstring('<div>' + markdown.markdown(raw) + '</div>')
+    terms, current = {}, None
+    for element in tree:
+        if element.tag == 'h2':
+            name = ''.join(element.itertext())
+            current = slugify(name, '-')
+            terms[current] = {'name': name, 'definition': ''}
+        elif element.tag == 'p' and current and not terms[current]['definition']:
+            terms[current]['definition'] = ''.join(element.itertext())
+    return terms
 
 
 def slugify(value, separator):
@@ -60,6 +82,14 @@ class ContentHTML(HTMLParser):
             self.output.append('<div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格">')
         attrs = [(k, resolve_link(v, self.source, self.base) if k in ('href', 'src') else v)
                  for k, v in attrs]
+        attributes = dict(attrs)
+        if tag == 'a' and attributes.get('href', '').startswith(self.base + 'glossary/#'):
+            term = glossary().get(unquote(urlsplit(attributes['href']).fragment))
+            if term:
+                attrs += [('class', 'term-link'), ('data-term', term['name']),
+                          ('data-definition', term['definition'])]
+        if tag == 'th':
+            attrs += [('scope', 'col')]
         if tag == 'img':
             attrs += [('loading', 'lazy'), ('decoding', 'async')]
         encoded = ''.join(f' {k}="{escape(v, quote=True)}"' if v is not None else f' {k}' for k, v in attrs)
@@ -99,7 +129,31 @@ def render_markdown(source, base):
     rendered = re.sub(r'<p>(?=<a[^>]*>返回首页</a>)', '<p class="source-nav">', rendered, count=1)
     rewrite = ContentHTML(source, base)
     rewrite.feed(rendered)
-    return title, ''.join(rewrite.output), md.toc
+    content = enhance_content(''.join(rewrite.output), base)
+    return title, content, md.toc
+
+
+def enhance_content(content, base):
+    def note(match):
+        kind, first, remaining = match.groups()
+        heading = re.match(r'<strong>(.*?)</strong>\s*(.*)', first, re.S)
+        label = heading.group(1) if heading else '记在这里'
+        body = heading.group(2) if heading else first
+        return (f'<aside class="pinned-note note-{kind.lower()}" aria-label="阅读便笺">'
+                f'<span class="pin" aria-hidden="true"></span><div class="note-title">{label}</div>'
+                f'<p>{body}</p>{remaining}</aside>')
+    content = re.sub(r'<blockquote>\s*<p>\[!(NOTE|TIP)\]\s*(.*?)</p>(.*?)</blockquote>', note, content, flags=re.S)
+    content = re.sub(r'(<h2 id="这一章帮你做什么">.*?</h2>\s*<p>.*?</p>)',
+                     r'<section class="chapter-orientation">\1</section>', content, count=1, flags=re.S)
+    for diagram in CHAPTER_MAPS:
+        source = base + 'docs/diagrams/' + diagram['id']
+        pattern = r'<p><img\b[^>]*src="' + re.escape(source + '.svg') + r'"[^>]*>\s*</p>'
+        alternative = diagram['description'] + ' ' + '；'.join(node['title'] + '：' + node['body'].replace('\n', '，') for node in diagram['nodes'])
+        figure = (f'<figure class="concept-map"><picture><source media="(max-width: 1000px)" srcset="{source}.mobile.svg">'
+                  f'<img src="{source}.svg" alt="{escape(alternative, quote=True)}" loading="lazy" decoding="async"></picture>'
+                  f'<figcaption><span>{escape(diagram["footer"])}</span><a href="{source}.svg">查看原图 ↗</a></figcaption></figure>')
+        content = re.sub(pattern, lambda _: figure, content)
+    return content
 
 
 def navigation(base, current=''):
@@ -140,6 +194,10 @@ def home(base):
 def reader(page, base):
     title, content, toc = render_markdown(page['source'], base)
     number = page.get('number', 'REF')
+    if 'number' in page:
+        title = re.sub(r'(<h1[^>]*>)\d{2} · ', r'\1', title)
+        title = re.sub(r'(<h1[^>]*>)([^<：]+)：([^<]+)', r'\1\2<span class="title-detail">\3</span>', title)
+
     pager = ''
     if 'number' in page:
         index = PAGES.index(page)
@@ -160,7 +218,7 @@ def reader(page, base):
         <nav class="chapter-pager" aria-label="相邻章节">{pager}</nav>
         <div class="article-end"><span>读到这里，喝口水吧。</span><a href="#main">回到页首 ↑</a></div>
       </main>
-      <aside class="page-toc" aria-label="本页目录"><p class="eyebrow">ON THIS PAGE</p>{toc}</aside>
+      <aside class="page-toc" aria-label="本页目录"><p class="eyebrow">这一页，读到哪里</p>{toc}</aside>
     </div>'''
 
 

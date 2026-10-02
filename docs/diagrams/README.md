@@ -2,13 +2,13 @@
 
 [回到架构地图](../architecture.md)
 
-这里有六张独立视图。`infrastructure-overview` 是 README 可引用的总览；其余五图承接控制、入站、出站、迁移和仓库 source 结构。所有图中文字以中文为主，English README 可以共享同一导出并注明 Chinese labels。
+完整架构图集包含六张独立视图，另有本页后半部分说明的章节概念图。`infrastructure-overview` 是 README 可引用的总览；其余五图承接控制、入站、出站、迁移和仓库 source 结构。所有图中文字以中文为主，English README 可以共享同一导出并注明 Chinese labels。
 
 推荐点击 SVG 以全尺寸阅读：源画布宽 1600–1680 px，README 的窄幅嵌入用于认识整体布局。不要依赖缩到约 900 px 后的细字阅读具体权限和步骤；放大 SVG 或打开对应 PNG，再配合架构页的文字说明。
 
 | 文件角色 | 维护规则 |
 | --- | --- |
-| `*.excalidraw` | 唯一可编辑图源：布局、可见文字、稳定 ID、连接绑定和语义证据都在这里 |
+| 六张完整图的 `*.excalidraw` | 唯一可编辑图源：布局、可见文字、稳定 ID、连接绑定和语义证据都在这里 |
 | `*.svg` | 默认文档嵌入格式；保留文字及无外部资源的矢量图 |
 | `*.png` | 从同一 SVG 实际渲染的查看副本；固定本次字体与版面 |
 | `architecture-model.json` | 从图源 `customData` 提取的 renderer-neutral 模型索引，不单独编辑 |
@@ -55,3 +55,14 @@ git diff --check
 ```
 
 这些检查不能代替逐张看图；也不证明图中的参考部署已经存在。图像导出的具体验证记录和范围见[架构页](../architecture.md#维护再生成与已验证范围)。
+
+## 章节概念图：先读懂眼前这一件事
+
+这些小图是完整图集之外的入门视图，不代表已部署的机器或实时指标。九章各有一张，再为两种 SSH key、RAM / swap、迁移回退分界增加三张对照图。每张图聚焦一个读者问题；顺序箭头代表验证或操作顺序，网络图的三行代表独立路径，左右对照图不表示数据自动同步。
+
+- [chapter-maps.json](chapter-maps.json) 是可编辑语义模型：稳定 ID、对应章节和小节锚点、标题、解释、节点与阅读提示。事实来源是对应章节及其官方引用。
+- [render-chapter-maps.py](../../scripts/render-chapter-maps.py) 是标准库 renderer，维护图标与布局规则；运行 `python3 scripts/render-chapter-maps.py` 再生成全部 SVG。模型与 renderer 各管一个层面，不另存手改导出。
+- 普通 `.svg` 为 720px 横向或对照版，`.mobile.svg` 为 360px 纵排版；节点文字保持 16–18px。站点窄屏使用纵排，GitHub 使用普通图。宽度较窄时可以点原图。
+- 修改后检查文字是否仍在自己的节点内、顺序与并列关系是否正确，同时查看桌面和手机版。新图需要接入章节 Markdown；站点素材白名单从模型精确提取两份 SVG，不递归复制目录。
+
+概念图、模型与导出按原创图示的 CC BY-NC-SA 4.0 授权；renderer 按 SUL-1.0。它们与六张完整 Excalidraw 图有各自清晰的源文件，不互相覆盖。

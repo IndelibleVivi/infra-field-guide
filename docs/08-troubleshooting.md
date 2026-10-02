@@ -2,14 +2,24 @@
 
 [返回首页](../README.md) · [网络路径图](architecture.md)
 
+## 这一章帮你做什么
+
+写给机器出问题、但还不想乱动的人。前提：你能拿到症状（超时、502、卡死、命令找不到），并愿意先记录再改。读完你会得到：一张按症状选入口的对照表、把一条 HTTP 请求分段验证的顺序，以及 SSH 失败时保留返回路径的办法。
+
+![先分别测本机应用、origin 与公开入口，再定位从哪一段开始失败。 三段分别测；公开入口的 200 可能只是缓存。](diagrams/08-fault-layers.svg)
+
 先记录**时间、运行机器、请求目标、预期与实测**。一次只验证一个假设；修复前留下足够的错误证据，不要一遇到错误就把网络、认证、缓存和服务器一起重装。
+
+> [!NOTE]
+> **停下检查点：不要仅凭 exit 137 判断 OOM。**
+> shell 常见的 137 是 128 + 信号 9，但程序也可能自己以 137 退出，所以单看退出码不能断定 OOM。要结合 kernel OOM 日志里的 `Killed process`、cgroup 的 `memory.events`、systemd 的 `Result`/重启记录和当时的 PSI 一起判断。没搜到 `Out of memory` 也不证明没发生，可能只是日志没保留。
 
 ## 先从症状选入口
 
 | 症状 | 第一个有区分力的检查 | 接下来 |
 | --- | --- | --- |
 | SSH 和网站同时超时 | 服务商 console 是否可进入；机器是否启动、资源是否耗尽 | console 可用则查网络和监听；console 也失败则查 provider |
-| SSH 可以进，网站不可用 | 在服务所在机器请求 loopback origin | origin 失败查进程；成功再查反向代理/Tunnel/认证 |
+| SSH 可以进，网站不可用 | 在服务所在机器请求 loopback [origin](glossary.md#origin) | origin 失败查进程；成功再查反向代理/Tunnel/认证 |
 | 域名失效，IP 路径可达 | DNS 的 A、AAAA、CNAME 是否与预期相符 | IPv6、旧记录、代理状态和解析缓存分开查 |
 | 502 / 504 | 入口能否连接正确 origin 端口与协议 | `http`/`https` 配错、容器 localhost、进程退出、超时 |
 | 401 / 403 | 哪一层返回响应，认证是谁发起的 | Access、应用、API provider 和账号权限分别处理 |
@@ -17,7 +27,7 @@
 | 磁盘还有空间但写失败 | `df -h` 与 `df -i`；目标是否在另一挂载点 | inode、权限、只读挂载、quota、打开但未释放的日志 |
 | 迁完后偶尔读到旧内容 | DNS/Tunnel 多入口与两个 writer | 暂停有冲突的写入，核实状态 owner，勿直接切回旧库 |
 | VPS 能看到 Mac，但 SSH 不行 | tailnet 路径、TCP22、普通 SSH key 与用户逐层检查 | 走[私有远程访问](09-private-access.md) |
-| SSH 登录正常，agent 的 build 失败 | 用真实 worker 用户跑相同的非交互命令 | PATH、cwd、挂载盘、TCC、权限和 runtime；登录 shell 成功不够 |
+| SSH 登录正常，agent 的 build 失败 | 用真实 worker 用户跑相同的非交互命令 | [PATH](glossary.md#path)、cwd、挂载盘、TCC、权限和 runtime；登录 shell 成功不够 |
 | Claude 网页好，CLI 异常 | 实际 config directory 与认证来源 | 走[CC 环境清理与恢复](06-account-recovery.md) |
 
 ## 一条 HTTP 请求怎样分段验证

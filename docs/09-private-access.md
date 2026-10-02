@@ -1,14 +1,24 @@
 # 09 · 私有远程访问：让 VPS 上的 worker 连接自己的 Mac
 
+## 这一章帮你做什么
+
+写给想让 VPS 上的 worker 安全回到自己 Mac 处理项目的人。前提：你能操作两端设备、有 tailnet 管理权限、并愿意逐层验收。读完你会得到：一条不依赖家门口公网 IPv4 的私有路径，明确它只到“某个 Mac 用户 + TCP 22”，以及从真实 worker 用户出发的正向、反向和项目命令验收。
+
+![网络授权、SSH 身份与 macOS 文件权限共同决定 worker 能做什么。 路径可达 ≠ 有权登录 ≠ 能完成项目任务。](diagrams/09-private-access.svg)
+
 本章建立一条具体路径：**VPS 上某个真实 Linux 用户运行的 worker，通过 Tailscale 网络，使用专用 SSH key 登录 Mac 的普通 Remote Login/OpenSSH。** 它适合在得到授权后检查或处理 Mac 上的项目文件，不需要家里有公网 IPv4，也不要求把家用路由器的 TCP 22 转发到公网。
 
 这里的 `100.64.0.10`（VPS）与 `100.64.0.20`（Mac）是**合成示例**，来自 [RFC 6598 的 Shared Address Space](https://www.rfc-editor.org/rfc/pdfrfc/rfc6598.txt.pdf)，不是本书的 live 设备。部署时从自己的 Tailscale 设备列表逐项确认真实地址、节点与 owner 后替换。示例账户 `worker`、`macowner` 和项目 `example-project` 同样是占位。本文没有连接真实 Mac/VPS 做过复现；官方机制核验、示例语法检查与读者的端到端验收是不同证据。
+
+> [!NOTE]
+> **停下检查点：“网络能到”不等于“被授权”，更不等于“只有这个节点能连”。**
+> `tailscale ping` 成功只证明路径可达，不证明 TCP 22 被 [grant](glossary.md#grant) 放行，也不证明用户 key 或项目权限通过。反过来，新加的窄规则不会自动收窄已有的宽规则——新建 tailnet 的初始策略默认就允许设备广泛互通。
 
 ## 1. 先选择访问形态
 
 | 需求 | 较直接的方式 | 入口与权限边界 |
 | --- | --- | --- |
-| 自己的 VPS/电脑持续访问 Mac 的 SSH 或多个私有服务 | Tailscale 私有访问 | 设备加入 tailnet，grants/ACL 控制网络，SSH/应用另做认证 |
+| 自己的 VPS/电脑持续访问 Mac 的 SSH 或多个私有服务 | Tailscale 私有访问 | 设备加入 [tailnet](glossary.md#tailnet)，grants/ACL 控制网络，SSH/应用另做认证 |
 | 让指定用户只用浏览器访问一个 Web 工具 | Cloudflare Tunnel + Access | origin 主动连出去，public hostname 提供入口，Access 管理身份；Tunnel 路由本身不等于已受保护 |
 | 临时查看一台已能 SSH 登录的机器上的本机端口 | SSH `-L` | 本地端口经 SSH 转发，通常随 SSH 进程结束；它需要先有一条可达的 SSH 路径 |
 
@@ -218,6 +228,10 @@ ssh -F ~/.ssh/config-infra-guide mac-workbench \
 不同项目用它自身的命令替换，不能把示例的 `npm run check` 写进不存在的项目来让教程通过。接受标准是实际 worker 按真实运行方式完成所需工作，而不是单独输出一个 `echo ok`。
 
 ### 非交互 SSH 的 PATH 经常与本地 Terminal 不同
+
+> [!TIP]
+> **先记住这一点：本地终端能找到的命令，远程非交互 SSH 不一定找得到。**
+> zsh 的 `.zprofile` 面向 login shell，`.zshrc` 面向 interactive shell，一般 SSH command 两者都不读。验收时要让远程 shell 自己打印环境，再按查到的真实路径写明确 PATH，而不是把交互配置塞进 `.zshenv` 或假设机器架构。
 
 **运行位置：Mac 本地 Terminal，记录实际环境；只读。**
 

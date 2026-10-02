@@ -1,8 +1,18 @@
 # 07 · DNS、Tunnel 与代理：一条请求究竟走了哪里
 
+## 这一章帮你做什么
+
+写给分不清“入口”和“出口”、被 DNS / 代理 / VPN / Tunnel 一堆词绕晕的人。前提：你有一条自己的服务或一次访问要排障，愿意先画清楚请求路径。读完你会得到：把域名到 HTTPS 请求逐段拆开的方法，Cloudflare、Tailscale 与各种代理协议各自解决什么，以及“一次只改一段”的排障顺序。
+
+![管理连接、公开入口与应用出站分别配置，不能用其中一条推断另外两条。 Tunnel 接入应用入口，不自动改变应用的出口 IP。](diagrams/07-network-paths.svg)
+
 网络排障先问方向：是“别人访问我的服务”，还是“我的设备或 VPS 访问别的服务”？前者需要入口，后者涉及出口。域名解析、反向代理、设备组网、应用代理和 VPN 可能同时存在，但各自解决不同问题。把它们区分开，才能知道修改究竟会影响哪一段。
 
 本章使用 `app.example.com`、`192.0.2.10` 和 `2001:db8::10` 等文档示例；不是可直接使用的部署地址。命令用于你有权测试的服务，执行前替换目标。协议仅讨论管理自有系统、访问经授权网络与应用的用途；网络协议和出口 IP 都不能保证 AI 平台账号不受限制。
+
+> [!NOTE]
+> **停下检查点：Tunnel 改的是入口，不是应用的出口。**
+> 给 `app.example.com` 配 Tunnel，只说明访问者怎么到达你的 origin；它**不会**改变应用调用外部 API 时的[出口 IP](glossary.md#出口-ip)。要改出口，得单独配通用出口、WARP/Gateway 或专门 egress。这两件事经常被混为一谈。
 
 ## 住宅代理选项：Proxy-Cheap Dedicated
 
@@ -30,7 +40,7 @@
 
 ## 1. 从域名到一次 HTTPS 请求
 
-假设你访问 `https://app.example.com/`。客户端先解析域名，选择一个可用地址，连接目标端口，再完成 TLS 验证，然后才发送 HTTP 请求。任何一步都可能失败；DNS 返回一个地址不代表那个地址的 HTTPS 服务可用。
+假设你访问 `https://app.example.com/`。客户端先通过 [DNS](glossary.md#dns) 解析域名，选择一个可用地址，连接目标[端口](glossary.md#端口)，再完成 [TLS](glossary.md#tls) 验证，然后才发送 HTTP 请求。任何一步都可能失败；DNS 返回一个地址不代表那个地址的 HTTPS 服务可用。
 
 | 名称 | 意义 | 不能替你完成的事 |
 | --- | --- | --- |
@@ -65,9 +75,13 @@ curl --noproxy '*' -6 --connect-timeout 5 --max-time 15 -I https://app.example.c
 
 Cloudflare 记录为 **DNS-only** 时，DNS 返回 origin 的实际目标信息，客户端通常直接访问 origin。记录为 **Proxied** 时，解析结果通常是 Cloudflare edge 地址，支持的 HTTP/HTTPS 流量经过其反向代理。Cloudflare DNS proxy 不是随意 TCP/UDP 端口的通用转发开关；SSH、邮件、自定义协议要按各自支持的产品与端口处理。[Cloudflare proxy status](https://developers.cloudflare.com/dns/proxy-status/)、[proxy limitations](https://developers.cloudflare.com/dns/proxy-status/limitations/)
 
-这会产生两段连接：客户端到 edge，以及 edge 到 origin。TLS、缓存、访问控制和日志的边界都要分别考虑。启用代理后，origin 仍应有正确的认证和传输安全；隐藏一个地址不等于完成安全控制。一个缓存中的成功页面，也不证明 origin 此刻健康。
+这会产生两段连接：客户端到 edge，以及 [edge](glossary.md#edge) 到 [origin](glossary.md#origin)。TLS、缓存、访问控制和日志的边界都要分别考虑。启用代理后，origin 仍应有正确的认证和传输安全；隐藏一个地址不等于完成安全控制。一个缓存中的成功页面，也不证明 origin 此刻健康。
 
-**Cloudflare Tunnel** 则由 origin 上的 `cloudflared` 主动建立到 Cloudflare 的连接，访问者的请求再经该连接到达配置的本地服务。这样可以发布一个没有直接公网入站能力的服务，包括某些 NAT/CGNAT 后的服务。[Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/)
+> [!TIP]
+> **先记住这一点：入口的 200 可能来自缓存，不是 origin 的真实回应。**
+> 排障时把客户端→edge 和 edge→origin 当成两段分别测。先在 origin 本机请求 loopback，再用 `curl --resolve` 定向 origin 保留 SNI，最后才看公开入口。只看一个状态码，很容易把缓存命中误判成服务健康。
+
+**[Cloudflare Tunnel](glossary.md#tunnel)** 则由 origin 上的 `cloudflared` 主动建立到 Cloudflare 的连接，访问者的请求再经该连接到达配置的本地服务。这样可以发布一个没有直接公网入站能力的服务，包括某些 [NAT](glossary.md#nat)/CGNAT 后的服务。[Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/)
 
 这里必须区分两种“出站”：`cloudflared` 为了建立 tunnel 发起出站连接，不代表操作系统的其他请求都改走 Cloudflare。**为 `app.example.com` 配置 Tunnel ingress，并不会自动改变 VPS 调用外部 API 时的出口 IP。** 这是依据官方描述的连接模型作出的直接推论；通用出口、WARP/Gateway 或专门 egress 产品需要另外的路由配置和授权。
 
@@ -130,7 +144,7 @@ ssh -N -o ExitOnForwardFailure=yes \
 
 ## 6. 应用代理、DNS 解析与环境变量
 
-系统代理、浏览器代理、命令行的 `HTTP_PROXY`/`HTTPS_PROXY`/`ALL_PROXY` 和 VPN 路由不是同一层。有的软件读取环境变量，有的读取系统设置，有的都不读取；大小写、`NO_PROXY` 和优先级也由应用决定。给 shell 设置变量，不证明后台 systemd 服务或容器继承了它。
+系统代理、浏览器[代理](glossary.md#代理)、命令行的 `HTTP_PROXY`/`HTTPS_PROXY`/`ALL_PROXY` 和 VPN 路由不是同一层。有的软件读取[环境变量](glossary.md#环境变量)，有的读取系统设置，有的都不读取；大小写、`NO_PROXY` 和优先级也由应用决定。给 shell 设置变量，不证明后台 systemd 服务或容器继承了它。
 
 如果明确需要一个临时 SOCKS TCP 代理，可以在 **本地终端** 单独启动：
 

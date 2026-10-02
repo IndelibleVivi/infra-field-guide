@@ -1,9 +1,9 @@
 :root {
   --ink:#163a5f;
-  --body:#365775;
-  --muted:#5e7589;
+  --body:#243f53;
+  --muted:#526878;
   --sky:#e9f7fc;
-  --blue:#257aa4;
+  --blue:#196b92;
   --line:#d6e8ef;
   --gold:#e7c979;
   --paper:#fff;
@@ -563,9 +563,9 @@ kbd {
   display:flex;
   gap:11px;
   align-items:baseline;
-  font-size:12px;
+  font-size:13px;
   line-height:1.7;
-  padding:8px 9px;
+  padding:9px;
   border-radius:4px;
 }
 .sidebar a:hover,.mobile-nav a:hover {
@@ -596,7 +596,7 @@ kbd {
   margin-bottom:19px;
 }
 .article-header h1 {
-  font:600 33px/1.5 var(--serif);
+  font:600 38px/1.45 var(--serif);
   letter-spacing:.015em;
   margin:0 0 16px;
 }
@@ -629,8 +629,8 @@ kbd {
   overflow:auto;
   scrollbar-width:thin;
   padding:52px 0 30px;
-  font-size:11px;
-  line-height:1.8;
+  font-size:12px;
+  line-height:1.85;
 }
 .toc ul {
   padding-left:0;
@@ -655,7 +655,7 @@ kbd {
   display:none;
 }
 .prose {
-  font-size:16px;
+  font-size:17px;
   line-height:1.95;
   overflow-wrap:anywhere;
 }
@@ -669,14 +669,18 @@ kbd {
   color:var(--muted);
 }
 .prose h2 {
-  font-size:24px;
-  line-height:1.6;
-  font-weight:600;
-  margin:47px 0 22px;
+  font-size:26px;
+  line-height:1.55;
+  font-weight:650;
+  margin:58px 0 24px;
+  padding-top:22px;
+  border-top:1px solid var(--line);
   scroll-margin-top:110px;
 }
 .prose h3 {
-  font-size:18px;
+  font-size:20px;
+  border-left:3px solid var(--gold);
+  padding-left:12px;
   line-height:1.65;
   margin:30px 0 16px;
 }
@@ -736,7 +740,7 @@ kbd {
   line-height:1.8;
 }
 .prose pre code {
-  font:12px/1.8 var(--mono);
+  font:13px/1.8 var(--mono);
   color:inherit;
   background:none;
   padding:0;
@@ -788,9 +792,9 @@ kbd {
 .prose table {
   border-collapse:collapse;
   width:100%;
-  font-size:12px;
+  font-size:14px;
   line-height:1.85;
-  min-width:520px;
+  min-width:540px;
 }
 .prose th {
   background:#edf7fb;
@@ -808,7 +812,7 @@ kbd {
   border-bottom:0;
 }
 .prose table code {
-  font-size:11px;
+  font-size:12px;
 }
 .prose img {
   border:1px solid var(--line);
@@ -968,6 +972,55 @@ dialog::backdrop {
   font-size:14px;
   padding-block:11px;
 }
+/* Moonlight notes: semantic reading aids, with the same quiet blue-and-gold palette. */
+.brand-mark { flex:none; }
+.title-detail { display:block; margin-top:10px; font:400 24px/1.55 var(--sans); color:var(--body); letter-spacing:0; }
+.first-page-note { position:relative; display:flex; align-items:center; gap:44px; padding:28px 34px; margin:44px auto 0; max-width:1096px; background:#fffcf3; border:1px solid #eadfba; border-radius:3px 12px 12px 3px; box-shadow:3px 5px 0 #f5f0df; }
+.first-page-note h2 { font:600 25px/1.5 var(--serif); margin-bottom:8px; }
+.first-page-note p:not(.eyebrow) { max-width:710px; margin:0; font-size:15px; line-height:1.9; }
+.first-page-note .eyebrow { font-size:11px; color:#756039; margin-bottom:10px; }
+.first-page-note>a { flex:none; font-size:14px; }
+.pin { position:absolute; width:11px; height:11px; border:2px solid #bb9550; background:#efda9f; border-radius:50%; left:24px; top:-6px; box-shadow:1px 2px 0 #d6c5a3; }
+.pin::after { content:''; position:absolute; width:1px; height:9px; background:#9c8b69; top:7px; left:2px; transform:rotate(20deg); }
+.prose .chapter-orientation { margin:0 0 26px; padding:0 0 0 19px; border-left:3px solid #8ac6dc; }
+.prose .chapter-orientation h2 { border:0; padding:0; margin:0 0 9px; font-size:16px; }
+.prose .chapter-orientation p { font-size:15px; margin:0; line-height:1.95; }
+.prose .pinned-note { position:relative; margin:34px 0; padding:23px 25px 20px; background:#fffcf1; border:1px solid #e6d9b4; border-radius:3px 12px 12px 3px; box-shadow:3px 4px 0 #f5f0df; font-size:15px; line-height:1.9; }
+.prose .note-note { background:#f1f9fc; border-color:#c8e2ed; box-shadow:3px 4px 0 #e9f3f7; }
+.note-title { font-size:16px; font-weight:650; color:var(--ink); margin-bottom:9px; }
+.prose .pinned-note p { margin:0; }
+.prose .pinned-note p+p { margin-top:12px; }
+.prose .concept-map { margin:28px 0 36px; }
+.prose .concept-map img { margin:0; width:100%; border:0; border-radius:10px; }
+.concept-map figcaption { margin:11px 0 0; padding-inline:2px; display:flex; gap:20px; justify-content:space-between; font-size:13px; line-height:1.7; color:var(--body); }
+.concept-map figcaption>a { flex:none; white-space:nowrap; }
+.prose .term-link { text-decoration-style:dotted; text-decoration-thickness:1.5px; text-decoration-color:#5b91a9; text-underline-offset:5px; }
+.prose .term-link:hover { background:#e5f3f9; border-radius:2px; }
+.prose .table-hint { font-size:12px; color:var(--muted); margin:26px 0 -15px; }
+.prose tbody tr:nth-child(even) { background:#f7fbfd; }
+.prose tbody td:first-child { color:var(--ink); font-weight:550; }
+.term-dialog { width:min(520px,calc(100% - 36px)); padding:28px 30px; background:#fffdf7; border-color:#e6d9b4; }
+.term-dialog .eyebrow { color:#78643f; margin:0; font-size:10px; }
+.term-dialog h2 { font:600 30px/1.3 var(--serif); margin:18px 0; }
+.term-definition { font-size:17px; line-height:1.95; }
+.term-more { font-size:14px; }
+.article-end>span::before { content:'☾'; color:#b18e48; font-size:22px; margin-right:10px; vertical-align:middle; }
+@media(max-width:1100px) { .first-page-note { margin-inline:32px; } }
+@media(max-width:1000px) { .concept-map picture { display:block; max-width:420px; margin-inline:auto; } }
+@media(max-width:700px) {
+ .first-page-note { display:block; margin:32px 23px 0; padding:25px 23px; }
+ .first-page-note h2 { font-size:22px; }
+ .first-page-note>a { display:inline-block; margin-top:16px; }
+ .title-detail { font-size:20px; }
+ .prose .pinned-note { padding:23px 20px 20px; }
+ .prose .concept-map { margin-inline:-5px; }
+ .concept-map figcaption { display:block; padding-inline:5px; }
+ .concept-map figcaption>a { display:block; margin-top:6px; }
+ .term-dialog { padding:22px; }
+ .term-dialog .dialog-top { gap:10px; }
+ .term-dialog .eyebrow { font-size:9px; }
+ .term-definition { font-size:16px; }
+}
 @media(min-width:1600px) {
   .hero {
     padding-top:60px;
@@ -1033,7 +1086,7 @@ dialog::backdrop {
     padding-right:12px;
   }
   .sidebar a {
-    font-size:11px;
+    font-size:12px;
     gap:8px;
   }
   .hero h1 {
@@ -1086,7 +1139,7 @@ dialog::backdrop {
   .brand {
     gap:8px;
   }
-  .brand svg {
+  .brand-mark {
     width:27px;
   }
   .brand>span {
@@ -1214,7 +1267,7 @@ dialog::backdrop {
     font-size:14px;
   }
   .journey-strip small {
-    font-size:9px;
+    font-size:11px;
     line-height:1.7;
     max-width:90px;
   }
@@ -1263,7 +1316,7 @@ dialog::backdrop {
     margin-bottom:5px;
   }
   .chapter-row p {
-    font-size:11px;
+    font-size:13px;
   }
   .map-section {
     padding-block:36px;
@@ -1363,14 +1416,14 @@ dialog::backdrop {
     line-height:1.5;
   }
   .article-header .eyebrow {
-    font-size:9px;
+    font-size:11px;
     margin-bottom:16px;
   }
   .article-summary {
     font-size:13px;
   }
   .article-meta {
-    font-size:9px;
+    font-size:11px;
   }
   .article-header {
     padding-bottom:20px;
@@ -1381,7 +1434,7 @@ dialog::backdrop {
     padding:11px 14px;
   }
   .prose {
-    font-size:15px;
+    font-size:16px;
     line-height:1.95;
   }
   .prose h2 {
@@ -1396,7 +1449,7 @@ dialog::backdrop {
     padding-inline:15px;
   }
   .prose pre code {
-    font-size:11px;
+    font-size:12px;
   }
   .code-language {
     left:15px;

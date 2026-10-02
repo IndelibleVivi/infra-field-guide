@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 605" width="360" height="605" role="img" aria-labelledby="title desc">
+<title id="title">一台 VPS，先看四件事</title><desc id="desc">从任务出发，分别核对算力、容量、网络和恢复能力。 先写需求，再比套餐；“便宜”要连同恢复成本一起看。</desc>
+<rect width="360" height="605" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="20" y="40" font-size="19" font-weight="600" fill="#203e56">一台 VPS，先看四件事</text>
+<g id="step-1"><rect x="20" y="76" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h12v12H6z M9 1v4 M15 1v4 M9 19v4 M15 19v4 M1 9h4 M1 15h4 M19 9h4 M19 15h4"/></g>
+<text x="72" y="109" font-size="18" font-weight="600" fill="#203e56">算得动</text>
+<text x="36" y="143" font-size="16" font-weight="400" fill="#203e56">vCPU 处理任务</text>
+<text x="36" y="168" font-size="16" font-weight="400" fill="#203e56">RAM 容纳正在用的数据</text>
+</g>
+<g id="step-2"><rect x="20" y="209" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,224)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8l2 3h10v12H2z M2 6V3h8l2 3h8v3"/></g>
+<text x="72" y="242" font-size="18" font-weight="600" fill="#203e56">放得下</text>
+<text x="36" y="276" font-size="16" font-weight="400" fill="#203e56">磁盘存文件与数据库</text>
+<text x="36" y="301" font-size="16" font-weight="400" fill="#203e56">留出日志、更新的余量</text>
+</g>
+<g id="step-3"><rect x="20" y="342" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,357)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12 M12 2l3 3-3 3 M21 19H9 M12 16l-3 3 3 3 M3 5v10a4 4 0 0 0 4 4 M21 19V9a4 4 0 0 0-4-4"/></g>
+<text x="72" y="375" font-size="18" font-weight="600" fill="#203e56">连得上</text>
+<text x="36" y="409" font-size="16" font-weight="400" fill="#203e56">地区、IP、带宽与流量</text>
+<text x="36" y="434" font-size="16" font-weight="400" fill="#203e56">分别影响路径和用量</text>
+</g>
+<g id="step-4"><rect x="20" y="475" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,490)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5a5 5 0 1 1-4 8L3 20H1v-4l8-7 M4 15l3 3"/></g>
+<text x="72" y="508" font-size="18" font-weight="600" fill="#203e56">回得来</text>
+<text x="36" y="542" font-size="16" font-weight="400" fill="#203e56">console 应急进入</text>
+<text x="36" y="567" font-size="16" font-weight="400" fill="#203e56">异机备份 + 恢复演练</text>
+</g>
+</g>
+</svg>

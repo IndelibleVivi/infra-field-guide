@@ -6,7 +6,9 @@ import tempfile
 import unittest
 from urllib.parse import urlsplit, unquote
 
-from build import build, PAGES, ASSETS, render_markdown, resolve_link
+from build import build, PAGES, ASSETS, CHAPTER_MAPS, glossary, render_markdown, resolve_link
+import re
+from html import unescape
 
 
 class Document(HTMLParser):
@@ -19,7 +21,7 @@ class Document(HTMLParser):
         attributes = dict(attrs)
         if 'id' in attributes:
             self.ids.add(attributes['id'])
-        for attribute in ('href', 'src'):
+        for attribute in ('href', 'src', 'srcset'):
             if attribute in attributes:
                 self.links.append(attributes[attribute])
 
@@ -85,6 +87,47 @@ class SiteTests(unittest.TestCase):
         _, network, _ = render_markdown('docs/07-network-and-proxies.md', '/infra-field-guide/')
         self.assertIn('id="住宅代理选项proxy-cheap-dedicated"', network)
         self.assertIn('https://app.proxy-cheap.com/r/3zNHbA', network)
+
+    def test_reading_aids_keep_canonical_content_and_fallback_links(self):
+        terms = glossary()
+        self.assertEqual(len(terms), 29)
+        self.assertTrue(all(value['definition'] for value in terms.values()))
+        self.assertTrue(all('继续读：' not in value['definition'] for value in terms.values()))
+        for page in PAGES[:9]:
+            with self.subTest(chapter=page['source']):
+                _, content, _ = render_markdown(page['source'], '/infra-field-guide/')
+                self.assertIn('class="concept-map"', content)
+                self.assertIn('class="chapter-orientation"', content)
+                self.assertIn('aria-label="阅读便笺"', content)
+                self.assertNotIn('[!NOTE]', content)
+                self.assertNotIn('[!TIP]', content)
+                self.assertNotIn('配套示意图占位', content)
+                self.assertIn('class="term-link"', content)
+                self.assertRegex(content, r'href="/infra-field-guide/glossary/#[^"]+"')
+        _, content, _ = render_markdown('docs/03-operations.md', '/')
+        self.assertIn('href="/glossary/#systemd"', content)
+        self.assertIn('data-definition="' + terms['systemd']['definition'] + '"', content)
+
+    def test_all_concept_maps_have_mobile_and_desktop_compositions(self):
+        from xml.etree import ElementTree as ET
+        for item in CHAPTER_MAPS:
+            page = next(p for p in PAGES if p['source'] == 'docs/' + item['chapter'] + '.md')
+            html = (self.output / page['route'] / 'index.html').read_text(encoding='utf-8')
+            for suffix, width in (('', '720'), ('.mobile', '360')):
+                path = 'docs/diagrams/' + item['id'] + suffix + '.svg'
+                self.assertIn(path, html)
+                svg = ET.fromstring((self.output / path).read_text(encoding='utf-8'))
+                self.assertEqual(svg.get('width'), width)
+                self.assertEqual(len(svg.findall('.//{http://www.w3.org/2000/svg}g[@id]')), len(item['nodes']))
+
+    def test_fenced_commands_survive_new_reading_markup(self):
+        from build import ROOT
+        for page in PAGES[:9]:
+            raw = (ROOT / page['source']).read_text(encoding='utf-8')
+            expected = re.findall(r'^```[^\n]*\n(.*?)^```', raw, re.M | re.S)
+            _, content, _ = render_markdown(page['source'], '/')
+            actual = [unescape(block) for block in re.findall(r'<pre><code[^>]*>(.*?)</code></pre>', content, re.S)]
+            self.assertEqual(actual, expected, page['source'])
 
     def test_relative_links_work_at_root_or_project_prefix(self):
         self.assertEqual(resolve_link('../docs/03-operations.md#test', 'agents/first-server.md', '/'), '/guide/operations/#test')

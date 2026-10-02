@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 472" width="360" height="472" role="img" aria-labelledby="title desc">
+<title id="title">搬家，先让新家独立跑通</title><desc id="desc">本机仍负责正式服务时，先验证 VPS 的兼容性、恢复与服务管理。 Mac 的 GUI、钥匙串与本地路径，不会自动变成 Linux 服务。</desc>
+<rect width="360" height="472" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="20" y="40" font-size="19" font-weight="600" fill="#203e56">搬家，先让新家独立跑通</text>
+<g id="step-1"><rect x="20" y="76" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8l2 3h10v12H2z M2 6V3h8l2 3h8v3"/></g>
+<text x="72" y="109" font-size="18" font-weight="600" fill="#203e56">本机盘点</text>
+<text x="36" y="143" font-size="16" font-weight="400" fill="#203e56">源码、数据、依赖</text>
+<text x="36" y="168" font-size="16" font-weight="400" fill="#203e56">以及正在写数据的任务</text>
+</g>
+<path d="M180.0 188v17m-4-5 4 5 4-5" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-2"><rect x="20" y="209" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,224)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v7H3z M3 14h18v7H3z M6 6h1 M6 17h1 M11 6h7 M11 17h7"/></g>
+<text x="72" y="242" font-size="18" font-weight="600" fill="#203e56">VPS 候选</text>
+<text x="36" y="276" font-size="16" font-weight="400" fill="#203e56">独立配置和测试入口</text>
+<text x="36" y="301" font-size="16" font-weight="400" fill="#203e56">验证 systemd 与恢复</text>
+</g>
+<path d="M180.0 321v17m-4-5 4 5 4-5" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-3"><rect x="20" y="342" width="320" height="108" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(35,357)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12 M12 2l3 3-3 3 M21 19H9 M12 16l-3 3 3 3 M3 5v10a4 4 0 0 0 4 4 M21 19V9a4 4 0 0 0-4-4"/></g>
+<text x="72" y="375" font-size="18" font-weight="600" fill="#203e56">正式切换</text>
+<text x="36" y="409" font-size="16" font-weight="400" fill="#203e56">停写 → 最终同步</text>
+<text x="36" y="434" font-size="16" font-weight="400" fill="#203e56">切入口 → 唯一 writer</text>
+</g>
+</g>
+</svg>

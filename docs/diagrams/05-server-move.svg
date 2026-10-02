@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 258" width="720" height="258" role="img" aria-labelledby="title desc">
+<title id="title">切换的核心：谁能写数据</title><desc id="desc">预拷贝可以提前做，最终同步必须在所有正式 writer 冻结后进行。 新机一旦有新数据，回退前必须冻结、对账。</desc>
+<rect width="720" height="258" rx="12" fill="#f4fafc"/>
+<g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif">
+<text x="28" y="40" font-size="23" font-weight="600" fill="#203e56">切换的核心：谁能写数据</text>
+<g id="step-1"><rect x="28.0" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(43.0,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v7H3z M3 14h18v7H3z M6 6h1 M6 17h1 M11 6h7 M11 17h7"/></g>
+<text x="44.0" y="137" font-size="18" font-weight="600" fill="#203e56">旧机写入</text>
+<text x="44.0" y="171" font-size="17" font-weight="400" fill="#203e56">新机仅做候选验证</text>
+<text x="44.0" y="196" font-size="17" font-weight="400" fill="#203e56">预拷贝不等于最终状态</text>
+</g>
+<path d="M236.33333333333334 156.0h18m-5-4 5 4-5 4" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-2"><rect x="257.33333333333337" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(272.33333333333337,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v16 M16 4v16"/></g>
+<text x="273.33333333333337" y="137" font-size="18" font-weight="600" fill="#203e56">两端停写</text>
+<text x="273.33333333333337" y="171" font-size="17" font-weight="400" fill="#203e56">冻结任务与定时器</text>
+<text x="273.33333333333337" y="196" font-size="17" font-weight="400" fill="#203e56">完成最终同步及核对</text>
+</g>
+<path d="M465.66666666666674 156.0h18m-5-4 5 4-5 4" stroke="#477f9c" stroke-width="1.5" fill="none"/>
+<g id="step-3"><rect x="486.6666666666667" y="76" width="205.33333333333334" height="160" rx="8" fill="#ffffff" stroke="#c8dfe9"/>
+<g transform="translate(501.6666666666667,91)" fill="none" stroke="#296583" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L21 5 M21 12v8H3V3h12"/></g>
+<text x="502.6666666666667" y="137" font-size="18" font-weight="600" fill="#203e56">新机独写</text>
+<text x="502.6666666666667" y="171" font-size="17" font-weight="400" fill="#203e56">入口验收后开放写入</text>
+<text x="502.6666666666667" y="196" font-size="17" font-weight="400" fill="#203e56">旧机继续保持冻结</text>
+</g>
+</g>
+</svg>

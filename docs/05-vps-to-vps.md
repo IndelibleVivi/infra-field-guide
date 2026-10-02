@@ -1,10 +1,20 @@
 # 从旧 VPS 迁到另一家服务商
 
+## 这一章帮你做什么
+
+写给要换服务商、把一整台机器的服务搬到另一台的人。前提：你能盘点旧机上跑了什么，有另一台候选 VPS 可用。读完你会得到：迁移前必须做出的决定清单、找全隐性 writer 的方法、三条入口切换路径的取舍，以及“目标接受首次写入”之后才出现的回滚分界。
+
+![预拷贝可以提前做，最终同步必须在所有正式 writer 冻结后进行。 新机一旦有新数据，回退前必须冻结、对账。](diagrams/05-server-move.svg)
+
 把 Provider A 的服务迁到 Provider B，通常应新建独立候选机、迁应用与数据，再切入口。跨服务商整盘克隆会带来启动驱动、网络配置、machine identity 和运行副作用；本教程采用逐项重建的路线。目标是让旧机停止承担业务后仍有明确的数据恢复办法，而不是仅让新 IP 返回 200。
 
 示例 OS 是 **Ubuntu 24.04 + systemd**；Docker、Cloudflare Tunnel、Tailscale 和 Certbot 都是条件分支，只操作清单中实际存在的组件。本文为未执行的教程，官方资料查阅日期为 **2026-10-02**。`old-vps`、`new-vps`、`operator`、`app.example.com`、`203.0.113.20` 均为合成示例，最后一个属于文档地址范围，不是可用服务器。
 
 若源是 macOS/Windows，先读[本机迁移](04-local-to-vps.md)。填写[迁移工单](../examples/migration-plan.example.json)和[服务清单](../examples/service-inventory.example.csv)；真实 IP、账号 ID、备份位置与日志保存在自己的私人运维记录中，不提交到本仓库。
+
+> [!TIP]
+> **先记住这一点：同一个 Tunnel 的多个 connector 不是主备，而是一起接流量。**
+> 两个 connector 同时服务时，Cloudflare 按地理接近性选，不保证落到哪台。所以不能用“只启动新机、不改 DNS”就断定新机不会接请求，也不能把 replicas 当作受控主备。切换前先让候选保持隔离，具体入口路线（新独立 Tunnel、复用 Tunnel 短暂切换等）见本章“切入口有三条不同的路径”里的路径 B。
 
 ## 经验如何变成通用步骤
 
@@ -51,7 +61,7 @@ docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 docker volume ls
 ```
 
-需要逐个归属的项目包括：应用/API、数据库、queue consumer、scheduler、Docker restart policy、systemd timer、cron、webhook receiver、tunnel connector、mesh/subnet router、reverse proxy、证书续期、备份/同步器、监控、DNS 的 A/AAAA/CNAME，以及写死旧 IP、旧 mesh 名称或 URL 的客户端。还要查退订/回调、源 IP allowlist、external API egress allowlist；它们常常不在应用目录里。
+需要逐个归属的项目包括：应用/API、数据库、queue consumer、scheduler、Docker restart policy、systemd timer、cron、webhook receiver、tunnel connector、mesh/subnet router、reverse proxy、证书续期、备份/同步器、监控、[DNS](glossary.md#dns) 的 A/AAAA/CNAME，以及写死旧 IP、旧 mesh 名称或 URL 的客户端。还要查退订/回调、源 IP allowlist、external API egress allowlist；它们常常不在应用目录里。
 
 每个 writer 必须有停写与恢复动作。仅停止 API，后台 job 仍可能修改数据库；仅关闭网页入口，直连 IP、mesh 客户端仍可能写入。无法说清 writer 清单时，先停在盘点阶段。
 
@@ -155,7 +165,7 @@ cat "$HOME/migration-work/precopy-attempt-001/exit-code.txt"
 
 ### 先证明备份可以恢复
 
-在 B 的隔离数据库/目录恢复预备份，验证版本、schema、关键记录、附件和权限。在可丢弃的演练副本上完成一条合成写入并读回；关闭邮件、支付、webhook 等外发副作用。记录恢复时间和所需密钥/权限。Provider A 的整机 snapshot 可以保留，但跨服务商不可移植或没有恢复证明的 snapshot，不能当作唯一恢复路径。
+在 B 的隔离数据库/目录恢复预备份，验证版本、schema、关键记录、附件和权限。在可丢弃的演练副本上完成一条合成写入并读回；关闭邮件、支付、webhook 等外发副作用。记录恢复时间和所需密钥/权限。Provider A 的整机[快照](glossary.md#快照)可以保留，但跨服务商不可移植或没有恢复证明的快照，不能当作唯一恢复路径。
 
 至少保留一份不依赖 A 实例存活、也不随 B 出错消失的独立备份；如果它需要解密密钥，密钥的恢复途径也要验证。副本存在与恢复成功是两条不同证据。
 
@@ -272,6 +282,8 @@ sudo certbot renew --cert-name app.example.com --dry-run
 容量验收先使用正常的小量合成请求、已有资源监控和预拷贝/恢复耗时。不要为“证明带宽”对共享 VPS、第三方 API、CDN 或旧服务制造压力流量。需要 load test 时另列已授权环境、请求上限、时间窗和停止指标。
 
 ## 回滚分界：目标是否已经接受新写入
+
+![入口可以改回，已经产生的数据却不会随着 DNS 自动搬回。 不要让新旧两端同时成为未经设计的正式 writer。](diagrams/write-boundary.svg)
 
 | 当前状态 | 可以怎样恢复 | 必须保留的事实 |
 | --- | --- | --- |

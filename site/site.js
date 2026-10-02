@@ -1,6 +1,7 @@
 /* Progressive enhancements: document links and content work without JavaScript. */
 (() => {
   const searchDialog = document.querySelector('.search-dialog');
+  const termDialog = document.querySelector('.term-dialog');
   const menuDialog = document.querySelector('.menu-dialog');
   const searchTrigger = document.querySelector('.search-trigger');
   const menuTrigger = document.querySelector('.menu-trigger');
@@ -15,7 +16,7 @@
     dialog.showModal();
     document.body.style.overflow = 'hidden';
   }
-  for (const dialog of [searchDialog, menuDialog]) {
+  for (const dialog of [searchDialog, menuDialog, termDialog]) {
     dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
     dialog.addEventListener('keydown', event => {
       if (event.key === 'Escape') { event.preventDefault(); dialog.close(); }
@@ -36,9 +37,30 @@
   document.addEventListener('keydown', event => {
     if ((event.key === '/' || ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k')) &&
         !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) &&
-        !document.activeElement.isContentEditable && !menuDialog.open && !searchDialog.open) {
+        !document.activeElement.isContentEditable && !menuDialog.open && !searchDialog.open && !termDialog.open) {
       event.preventDefault(); show(searchDialog); input.focus();
     }
+  });
+
+  // Ordinary glossary links still work without JS and with modifier clicks.
+  document.querySelectorAll('.term-link').forEach(link => {
+    link.setAttribute('aria-haspopup', 'dialog');
+    link.addEventListener('click', event => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      termDialog.querySelector('#term-title').textContent = link.dataset.term;
+      termDialog.querySelector('.term-definition').textContent = link.dataset.definition;
+      termDialog.querySelector('.term-more').href = link.href;
+      show(termDialog);
+    });
+  });
+  termDialog.querySelector('.term-more').addEventListener('click', () => termDialog.close());
+  // A compact cue labels each existing comparison; no cell content is rewritten.
+  document.querySelectorAll('.table-scroll').forEach((table, i) => {
+    const hint = document.createElement('p');
+    hint.className = 'table-hint'; hint.id = `table-hint-${i}`;
+    hint.textContent = '▤ 对照着看 · 窄屏可左右滑动';
+    table.before(hint); table.setAttribute('aria-describedby', hint.id);
   });
 
   function highlighted(text, query) {
