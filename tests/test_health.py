@@ -4,6 +4,7 @@ import copy
 from datetime import datetime, timezone
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -22,6 +23,10 @@ MEMINFO = "MemTotal: 2048 kB\nMemFree: 50 kB\nMemAvailable: 512 kB\nSwapTotal: 1
 PSI = "some avg10=12.00 avg60=10.00 avg300=3.00 total=2000000\nfull avg10=2.00 avg60=1.00 avg300=0.50 total=300000\n"
 FS = SimpleNamespace(f_frsize=4096, f_blocks=1000, f_bfree=200, f_bavail=150,
                      f_files=1000, f_ffree=100, f_favail=50)
+CLI_ENV = {"PYTHONDONTWRITEBYTECODE": "1", "PYTHONUTF8": "1"}
+if os.name == "nt":
+    # Python 3.9 needs the Windows system directory during interpreter startup.
+    CLI_ENV["SystemRoot"] = os.environ["SystemRoot"]
 
 
 def demo():
@@ -198,14 +203,14 @@ class RenderingAndCliTests(unittest.TestCase):
             command = [sys.executable, str(ROOT / "tools/health.py")]
             for arguments in (["collect", "--demo", "-o", str(snapshot)],
                               ["render", str(snapshot), "-o", str(report)]):
-                result = subprocess.run(command + arguments, capture_output=True, text=True,
-                                        cwd=directory, env={"PYTHONDONTWRITEBYTECODE": "1"})
+                result = subprocess.run(command + arguments, capture_output=True, encoding="utf-8",
+                                        cwd=directory, env=CLI_ENV)
                 self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(json.loads(snapshot.read_text(encoding="utf-8")), demo())
             self.assertIn("合成演示数据", report.read_text(encoding="utf-8"))
             result = subprocess.run(command + ["render", str(snapshot), "-o", str(snapshot)],
-                                    capture_output=True, text=True, cwd=directory,
-                                    env={"PYTHONDONTWRITEBYTECODE": "1"})
+                                    capture_output=True, encoding="utf-8", cwd=directory,
+                                    env=CLI_ENV)
             self.assertEqual(result.returncode, 2)
             self.assertEqual(json.loads(snapshot.read_text(encoding="utf-8")), demo())
 
@@ -215,8 +220,8 @@ class RenderingAndCliTests(unittest.TestCase):
             output = Path(directory) / "report.html"
             snapshot.write_text('{"schema_version": NaN}', encoding="utf-8")
             result = subprocess.run([sys.executable, str(ROOT / "tools/health.py"), "render", str(snapshot), "-o", str(output)],
-                                    capture_output=True, text=True, cwd=directory,
-                                    env={"PYTHONDONTWRITEBYTECODE": "1"})
+                                    capture_output=True, encoding="utf-8", cwd=directory,
+                                    env=CLI_ENV)
             self.assertEqual(result.returncode, 2)
             self.assertIn("NaN", result.stderr)
             self.assertFalse(output.exists())

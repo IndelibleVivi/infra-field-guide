@@ -55,7 +55,8 @@ class DocumentationTests(unittest.TestCase):
                 with self.subTest(document=str(doc.relative_to(ROOT)), block=index):
                     # Preserve LF for Bash even when Python runs on Windows.
                     result = subprocess.run(['bash', '-n'], input=code.encode('utf-8'), capture_output=True)
-                    self.assertEqual(result.returncode, 0, result.stderr.decode('utf-8', errors='replace'))
+                    detail = (result.stdout + result.stderr).decode('utf-8', errors='replace')
+                    self.assertEqual(result.returncode, 0, detail)
 
     def test_examples_are_json_and_policy_is_narrow(self):
         for path in sorted((ROOT / 'examples').glob('*.json')):
