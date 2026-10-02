@@ -1,0 +1,206 @@
+{
+  "example_only": true,
+  "status": "not_executed",
+  "title": "合成示例：把 example-app 从源机器迁至独立候选 VPS",
+  "instructions": [
+    "这是供人和 agent 填写的记录，不是执行器、授权凭证或 JSON Schema。",
+    "复制到自己的私人运维目录后填写；不要把真实账号、主机身份、日志、客户数据或 secrets 提交到公共仓库。",
+    "null 表示尚未确认，not_observed 表示未取得现场证据；example 值不是已经存在的资源。",
+    "每次推进先读上一阶段证据；文件已复制、服务已启动、入口已切、业务已验收和费用已终止分别记录。"
+  ],
+  "owner": {
+    "decision_owner": "填写有权决定迁移的人或角色",
+    "execution_owner": "填写执行者或受控 agent",
+    "data_owner": "填写可确认数据完整性的人或角色",
+    "acceptance_owner": "填写真实客户端验收人",
+    "billing_owner": "填写有权终止资源的人或角色"
+  },
+  "targets": {
+    "source": {
+      "expected_role": "source-live",
+      "example_connection_alias": "old-vps",
+      "provider_or_local_os": "填写源提供商或本机 OS",
+      "exact_resource_reference": null,
+      "observed_role": null,
+      "identity_verified_at": null,
+      "identity_evidence_reference": null,
+      "data_paths": [],
+      "private_status_record": null
+    },
+    "candidate": {
+      "expected_role": "candidate-isolated",
+      "example_connection_alias": "new-vps",
+      "provider_or_local_os": "示例：Provider B / Ubuntu 24.04",
+      "exact_resource_reference": null,
+      "observed_role": null,
+      "identity_verified_at": null,
+      "identity_evidence_reference": null,
+      "independent_machine_id_confirmed": false,
+      "independent_ssh_host_keys_confirmed": false,
+      "independent_mesh_identity_confirmed": false,
+      "isolation_method": null,
+      "data_paths": [],
+      "private_status_record": null
+    },
+    "entrypoints": [
+      {
+        "kind": "https_hostname",
+        "example_value": "app.example.com",
+        "authority_owner": null,
+        "previous_value_private_reference": null,
+        "planned_value_private_reference": null,
+        "observed_state": "not_observed"
+      }
+    ]
+  },
+  "constraints": {
+    "migration_reason": null,
+    "source_os_and_architecture": null,
+    "target_os_and_architecture": null,
+    "runtime_and_database_versions": [],
+    "maximum_write_freeze_minutes": null,
+    "maximum_acceptable_data_loss_seconds": null,
+    "capacity_and_free_space_evidence": null,
+    "parallel_running_cost_limit": null,
+    "data_location_and_transfer_constraints": [],
+    "preserve_invariants": [
+      "正式数据任一时刻至多有一个授权 writer 集合。",
+      "候选测试不发送真实邮件、支付、webhook 或其他业务副作用。",
+      "不复制源 machine ID、SSH host keys 或 mesh node state。",
+      "保留源数据与至少一份不依赖源/目标实例存活的可恢复副本。",
+      "已批准迁移不自动授权退旧、删除、撤销密钥或取消费用资源。"
+    ],
+    "stop_conditions": [
+      "目标身份、路径、数据 owner 或执行权限无法核实。",
+      "出现未知 writer、源数据变化边界不明确或候选意外接收正式流量。",
+      "传输/快照/恢复返回错误、空间低于计划安全余量或业务验收失败。",
+      "冻结耗时超过预算，或下一步需要未批准的覆盖/删除。"
+    ]
+  },
+  "inventory": {
+    "template": "service-inventory.example.csv",
+    "private_completed_inventory_reference": null,
+    "processes_and_containers_reviewed": false,
+    "systemd_timers_and_all_relevant_cron_reviewed": false,
+    "local_os_schedulers_reviewed_or_not_applicable": false,
+    "tunnels_mesh_dns_and_client_endpoints_reviewed": false,
+    "backup_certificate_renewal_and_monitoring_owners_reviewed": false,
+    "items_remaining_local_or_retired_with_reasons": []
+  },
+  "mutation_authorizations": [
+    { "scope": "create_candidate_and_incur_cost", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "install_and_configure_candidate", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "transfer_selected_data_and_secrets", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "join_mesh_or_create_tunnel_and_test_route", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "freeze_source_writers_and_final_snapshot", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "cut_over_named_entrypoints", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "enable_candidate_writers_and_business_test", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "retire_old_services_or_resources", "status": "not_authorized", "approved_by": null, "evidence": null },
+    { "scope": "delete_retained_data_or_revoke_recovery_credentials", "status": "not_authorized", "approved_by": null, "evidence": null }
+  ],
+  "data_consistency": {
+    "strategy": null,
+    "databases_and_linked_files": [],
+    "backup_method_and_version": null,
+    "backup_destination_private_reference": null,
+    "independent_copy_private_reference": null,
+    "decryption_key_recovery_reference": null,
+    "restore_rehearsal": {
+      "status": "not_executed",
+      "isolated_target": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_minutes": null,
+      "business_checks": [],
+      "evidence_reference": null
+    },
+    "final_snapshot": {
+      "status": "not_executed",
+      "freeze_started_at": null,
+      "in_flight_transactions_drained_at": null,
+      "last_source_business_record_reference": null,
+      "queue_boundary_and_resume_rules": null,
+      "completed_at": null,
+      "restore_evidence_reference": null
+    }
+  },
+  "writer_state": {
+    "source": "not_observed",
+    "candidate": "not_observed",
+    "source_freeze_actions": [],
+    "source_reboot_and_scheduler_fencing": null,
+    "candidate_side_effect_isolation": null,
+    "candidate_first_production_write_at": null,
+    "candidate_first_production_write_evidence": null,
+    "current_authoritative_data_side": "not_confirmed"
+  },
+  "cutover": {
+    "selected_paths": [],
+    "dns_a_aaaa_cname_and_ttl_plan": null,
+    "tunnel_id_and_connector_strategy_private_reference": null,
+    "access_policy_allow_and_deny_checks": [],
+    "mesh_and_fixed_client_endpoint_plan": null,
+    "tls_and_renewal_owner": null,
+    "started_at": null,
+    "completed_at": null,
+    "read_back_evidence_reference": null
+  },
+  "rollback_and_data_boundary": {
+    "before_candidate_writes": "确认候选 writer 关闭，恢复旧入口，再按清单恢复源 writer；检查冻结期排队请求。",
+    "after_candidate_writes": "禁止只改回 DNS。先保存最新目标数据并控制写入，再选择目标 forward recovery 或经过对账的反向迁移。",
+    "accidental_dual_write": "暂停受影响的两侧 writer，分别保全数据，按业务规则对账；不覆盖任一侧。",
+    "chosen_forward_recovery_procedure": null,
+    "chosen_reverse_migration_procedure": null,
+    "recovery_owner": null,
+    "restoration_of_prior_schedule_and_entrypoints": null
+  },
+  "durable_progress": {
+    "job_owner_and_host": null,
+    "survival_envelope": null,
+    "private_log_directory": null,
+    "attempt_id": null,
+    "status_command": null,
+    "resume_command_or_runbook_reference": null,
+    "checkpoint_unit": "填写已完成并验证的文件组、快照或业务单元；扫描数和进程存在不算完成",
+    "completed_verified_units": [],
+    "exit_code_and_attempt_evidence": null,
+    "last_updated_at": null,
+    "next_safe_action": "填写目标与约束后完成只读盘点"
+  },
+  "acceptance": [
+    { "layer": "origin", "status": "not_verified", "expected": "目标版本、配置、依赖和数据可用", "evidence": null },
+    { "layer": "edge", "status": "not_verified", "expected": "正式路由、TLS、认证允许与拒绝路径正确", "evidence": null },
+    { "layer": "dns", "status": "not_verified", "expected": "权威记录和实际客户端解析已核对，A/AAAA 无遗漏", "evidence": null },
+    { "layer": "mesh", "status": "not_verified", "expected": "节点身份、策略与实际服务端口正确；不用时说明不适用", "evidence": null },
+    { "layer": "real_client", "status": "not_verified", "expected": "实际客户端登录、读取和授权的合成写入读回", "evidence": null },
+    { "layer": "scheduled_work", "status": "not_verified", "expected": "关键 job 和 certificate renewal 有明确且无重复的 owner", "evidence": null },
+    { "layer": "restore", "status": "not_verified", "expected": "新备份已在独立位置成功恢复并检查业务数据", "evidence": null }
+  ],
+  "observation": {
+    "required_business_and_schedule_cycles": [],
+    "started_at": null,
+    "planned_end_at": null,
+    "acceptance_owner_signoff": null,
+    "remaining_issues": []
+  },
+  "cleanup_separate_approval": {
+    "status": "not_authorized",
+    "exact_resources": [],
+    "retained_backups_and_retention": [],
+    "recovery_cost_and_lost_capabilities": null,
+    "approved_by": null,
+    "approval_evidence": null,
+    "provider_termination_read_back": null,
+    "volumes_snapshots_ips_and_other_billing_review": null,
+    "final_bill_or_billing_stop_evidence": null
+  },
+  "closure": {
+    "source_prepared": "not_executed",
+    "candidate_installed": "not_executed",
+    "runtime_activated": "not_executed",
+    "entrypoint_cutover": "not_executed",
+    "business_acceptance": "not_verified",
+    "old_resources_retired": "not_executed",
+    "billing_closed": "not_verified"
+  }
+}

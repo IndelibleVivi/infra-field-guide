@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-10-02T06:00:00Z",
+  "source": {
+    "kind": "synthetic",
+    "description": "完全合成的教学快照：展示低 RAM 余量、未配置 swap 和 inode 余量提示；不对应真实机器。"
+  },
+  "metrics": {
+    "cpu": {"load_1m": 1.32, "load_5m": 0.86, "load_15m": 0.54, "logical_cpus": 2},
+    "memory": {"available_bytes": 171798691, "total_bytes": 2147483648},
+    "swap": {"used_bytes": 0, "total_bytes": 0},
+    "root_bytes": {"available_bytes": 13958643712, "free_bytes": 16106127360, "total_bytes": 42949672960},
+    "root_inodes": {"available": 120000, "free": 130000, "total": 1000000},
+    "uptime": {"seconds": 218965.25},
+    "memory_psi": {
+      "some": {"avg10": 12.2, "avg60": 8.4, "avg300": 2.1, "total_us": 14000000},
+      "full": {"avg10": 1.4, "avg60": 0.4, "avg300": 0.08, "total_us": 800000}
+    }
+  }
+}

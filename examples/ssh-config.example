@@ -1,0 +1,20 @@
+# Reference: ../docs/09-private-access.md
+# Synthetic addresses only. Merge this Host block into the intended worker's
+# own SSH configuration, or save as a separate file and use ssh -F <file>.
+# Do not overwrite an existing SSH config. Verify the host key independently
+# before populating UserKnownHostsFile. This is ordinary OpenSSH over Tailscale.
+Host mac-workbench
+    HostName 100.64.0.20
+    User macowner
+    IdentityFile ~/.ssh/mac_worker_ed25519
+    UserKnownHostsFile ~/.ssh/known_hosts_infra_mac
+    StrictHostKeyChecking yes
+    IdentitiesOnly yes
+    BatchMode yes
+    PasswordAuthentication no
+    KbdInteractiveAuthentication no
+    ForwardAgent no
+    RequestTTY no
+    ControlMaster no
+    ControlPath none
+    ConnectTimeout 10
