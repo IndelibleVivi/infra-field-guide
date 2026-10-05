@@ -28,6 +28,9 @@
 | 加固后有人 SSH 进不去，旧会话还在 | 区分新连接失败位置、真实来源、凭据与最近策略改动 | 走[访问权限与恢复](access-control-recovery.md#已经有人进不去了)，保留当前入口 |
 | 时间不准、NTP 无响应、UDP 123 疑似被拦 | 当前校时服务、参考源/样本与实际请求回程 | 走[时间同步专题](time-synchronization.md)，不凭 clocksource 或 TCP 探测下结论 |
 | 换了 harness/机器后不知道原任务是否完成 | 原目标、job/unit 标识、状态与结果位置 | 走[跨机器任务恢复](multi-machine-operations.md#断线超时与原任务恢复)，查询原任务后决定后续动作 |
+| 终端运行正常，服务失败；配置改了没生效 | 启动用户、cwd、环境、实际 unit 与加载来源 | 走[配置与运行版本](configuration-and-runtime.md)，分别核对各层副本 |
+| 定时任务漏跑、重叠或结果未知 | 调度时区、原任务状态与该次产物 | 走[定时任务与恢复](scheduled-jobs.md)，查明补跑和重复副作用 |
+| 删除文件后磁盘仍满，数据库文件不缩小 | 实际文件系统、inode、打开的已删除文件与数据库模式 | 走[数据生命周期](data-lifecycle.md)，按数据 owner 和恢复条件处理 |
 | SSH 可以进，网站不可用 | 在服务所在机器请求 loopback [origin](glossary.md#origin) | origin 失败查进程；成功再查反向代理/Tunnel/认证 |
 | 域名失效，IP 路径可达 | DNS 的 A、AAAA、CNAME 是否与预期相符 | IPv6、旧记录、代理状态和解析缓存分开查 |
 | 502 / 504 | 入口能否连接正确 origin 端口与协议 | `http`/`https` 配错、容器 localhost、进程退出、超时 |

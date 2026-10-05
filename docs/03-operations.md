@@ -209,6 +209,8 @@ sudo journalctl -u example.service -n 80 --no-pager
 
 连接超时、更换 CLI 或交给另一只 agent 时，按[原任务恢复与交接](multi-machine-operations.md#断线超时与原任务恢复)继续查询和验收。日历定时、间隔与进程耗时的区别见[时间专题](time-synchronization.md#定时触发与经过时长)。
 
+终端里能用、作为服务却失败，或改完配置仍是旧行为时，读[配置生效与运行版本](configuration-and-runtime.md)，追踪实际启动环境和加载来源。周期性任务的漏跑、重叠与结果验收见[定时任务专题](scheduled-jobs.md)。
+
 ## 5. 日志与磁盘：先查增长来源，再限制
 
 **运行位置：VPS；只读。**
@@ -221,6 +223,8 @@ sudo du -xhd1 /var/log
 ```
 
 如果应用数据在单独卷，`df` 也要检查该实际挂载点。容量还有但写入报 `No space left on device` 时，检查 inodes；大量小文件也能耗尽它们。`du -xhd1 /var/log` 只查看一个相关目录，不先全盘扫描。若是容器镜像、数据库或备份目录增长，应使用各自的保留和清理机制；不要删除 Docker 内部目录或正在使用的数据库文件。
+
+删除路径后空间未释放、SQLite 文件没有缩小，或需要制定日志／缓存／备份保留策略时，继续读[数据生命周期专题](data-lifecycle.md)。先区分正在占用的对象与恢复责任，再决定具体维护动作。
 
 Journal 可以是内存中的 volatile storage，也可以持久化到磁盘。先用 `sudo systemd-analyze cat-config systemd/journald.conf` 看合成配置，用 `sudo journalctl --list-boots` 看是否有历史启动日志；只有本次启动记录不能自动证明配置错误，也可能尚无可保留历史。
 

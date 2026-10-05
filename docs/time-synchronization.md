@@ -69,6 +69,8 @@ RFC 3339 的数值偏移按“本地时间减 UTC”定义。`+08:00` 已足够�
 
 当地时间在夏令时切换附近可能不存在，也可能对应两个时刻。日历标准对这类情况有自己的规则，但 cron、systemd 与云调度器不能互相代替；按实际实现核对。定时任务还需约定上次未完成时怎么处理、补跑多少次，以及如何避免重复副作用。[RFC 5545](https://www.rfc-editor.org/rfc/rfc5545.html)
 
+具体的 `OnCalendar=` 时区、`Persistent=` 补跑、同 service 的并发边界和任务产物验收，见[定时任务专题](scheduled-jobs.md)。
+
 Linux 的 `CLOCK_REALTIME` 会受到系统改钟影响；`CLOCK_MONOTONIC` 不随墙上时间的跳变倒退，但不计入系统挂起时间，`CLOCK_BOOTTIME` 则计入。不同机器或不同启动的单调时钟数值没有通用的可比较起点。日志中的日历时刻、进程内的耗时、跨重启的截止日期，应分别选用适合的表示与恢复规则。[clock_gettime(3)](https://man7.org/linux/man-pages/man3/clock_gettime.3.html)
 
 ## 跨机器日志的时间

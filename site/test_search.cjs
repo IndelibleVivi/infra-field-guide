@@ -30,6 +30,19 @@ const queries = [
   ['加固后连不上', 'reference/access-control-recovery/#已经有人进不去了'],
   ['fail2ban', 'reference/access-control-recovery/#fail2ban-与定点恢复'],
   ['撤销 key', 'reference/access-control-recovery/#撤销-key-后还有什么没有结束'],
+  ['配置没生效', 'reference/configuration-and-runtime/#配置来自哪一层'],
+  ['终端能跑服务不行', 'reference/configuration-and-runtime/#shell-环境与-service-环境的差异'],
+  ['服务版本不一致', 'reference/configuration-and-runtime/#各层不是同一个版本'],
+  ['daemon-reload', 'reference/configuration-and-runtime/#daemon-reloadreload-与-restart'],
+  ['定时任务漏跑', 'reference/scheduled-jobs/#persistent-只作用-oncalendar'],
+  ['Persistent', 'reference/scheduled-jobs/#persistent-只作用-oncalendar'],
+  ['上次没跑完', 'reference/scheduled-jobs/#同-service-仍-active-时-timer-不重启它'],
+  ['cron 时区', 'reference/scheduled-jobs/#cron-还是-systemd-timer'],
+  ['删了磁盘没变', 'reference/data-lifecycle/#已删除但仍被打开的文件'],
+  ['SQLite DELETE', 'reference/data-lifecycle/#sqlitedeletevacuum-与-wal'],
+  ['VACUUM 空间', 'reference/data-lifecycle/#vacuum-的代价与替代'],
+  ['WAL 很大', 'reference/data-lifecycle/#wal-模式的边界'],
+  ['备份保留', 'reference/data-lifecycle/#日志journal-与备份的保留'],
 ];
 for (const [query, destination] of queries) test(`读者问法：${query}`, () => {
   const matches = search(index, query);

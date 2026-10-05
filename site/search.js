@@ -26,6 +26,18 @@
     { aliases: ['ssh 锁死', '加固后连不上', '只有机能登录'], groups: [['ssh'], ['旧', '新连接']], target: 'reference/access-control-recovery/#已经有人进不去了' },
     { aliases: ['fail2ban'], groups: [['fail2ban']], target: 'reference/access-control-recovery/#fail2ban-与定点恢复' },
     { aliases: ['撤销 key', '删除公钥', '撤掉 key'], groups: [['key', '公钥'], ['撤', '删除']], target: 'reference/access-control-recovery/#撤销-key-后还有什么没有结束' },
+    { aliases: ['配置没生效', '配置不生效', '改了配置没反应'], groups: [['配置'], ['来源', '读取']], target: 'reference/configuration-and-runtime/#配置来自哪一层' },
+    { aliases: ['服务找不到命令', '终端能跑服务不行'], groups: [['shell', 'path'], ['服务', 'service']], target: 'reference/configuration-and-runtime/#shell-环境与-service-环境的差异' },
+    { aliases: ['服务版本不一致', '改源码还是旧版本'], groups: [['版本'], ['进程', 'process']], target: 'reference/configuration-and-runtime/#各层不是同一个版本' },
+    { aliases: ['daemon-reload', 'reload restart 区别'], groups: [['reload'], ['restart']], target: 'reference/configuration-and-runtime/#daemon-reloadreload-与-restart' },
+    { aliases: ['定时任务漏跑', '关机补跑', 'persistent'], groups: [['persistent'], ['补跑']], target: 'reference/scheduled-jobs/#persistent-只作用-oncalendar' },
+    { aliases: ['定时任务重叠', '任务重复执行', '上次没跑完'], groups: [['service'], ['active', '重叠']], target: 'reference/scheduled-jobs/#同-service-仍-active-时-timer-不重启它' },
+    { aliases: ['cron 时区', 'cron timer 选择'], groups: [['cron'], ['时区', 'timer']], target: 'reference/scheduled-jobs/#cron-还是-systemd-timer' },
+    { aliases: ['删了磁盘没变', '删了空间没回来', 'deleted open'], groups: [['删除'], ['打开', '空间']], target: 'reference/data-lifecycle/#已删除但仍被打开的文件' },
+    { aliases: ['sqlite delete', '数据库删行不缩小'], groups: [['sqlite'], ['delete']], target: 'reference/data-lifecycle/#sqlitedeletevacuum-与-wal' },
+    { aliases: ['vacuum 空间', 'vacuum 代价'], groups: [['vacuum'], ['空间', '代价']], target: 'reference/data-lifecycle/#vacuum-的代价与替代' },
+    { aliases: ['wal 很大', 'wal 不缩小'], groups: [['wal'], ['checkpoint']], target: 'reference/data-lifecycle/#wal-模式的边界' },
+    { aliases: ['日志保留', '备份保留'], groups: [['保留'], ['日志', '备份']], target: 'reference/data-lifecycle/#日志journal-与备份的保留' },
   ];
 
   function search(index, input) {

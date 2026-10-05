@@ -15,6 +15,9 @@
 | 时间约定、hook 时间与 NTP / UDP 123 排查 | [时间同步](time-sync.md) | [机器时间专题](../docs/time-synchronization.md) |
 | 多人/agent 的访问变更、误封与恢复 | [共享访问变更](access-change.md) | [访问权限与恢复专题](../docs/access-control-recovery.md) |
 | 多个 harness 跨机器协作、长任务交接 | [跨机器运维](multi-machine-ops.md) | [执行位置与原任务恢复](../docs/multi-machine-operations.md) |
+| 配置来源与实际运行版本核对 | [配置与运行](config-runtime.md) | [配置生效专题](../docs/configuration-and-runtime.md) |
+| 定时、补跑、任务重叠与产物验收 | [定时任务](scheduled-job.md) | [调度与恢复专题](../docs/scheduled-jobs.md) |
+| 磁盘占用、保留策略与可恢复清理 | [数据生命周期](data-lifecycle.md) | [数据、日志、缓存与备份](../docs/data-lifecycle.md) |
 
 将工单复制到自己的 agent 会话，只填写需要的目标信息。私有主机名、真实 IP、账号和路径留在自己的本地 operation record；不要作为 PR 提交回来。密码、私钥和 token 不通过工单传递。
 
