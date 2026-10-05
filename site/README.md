@@ -22,6 +22,8 @@ python3 -m http.server 4178 --bind 127.0.0.1 --directory .local/preview
 
 本项目部署在 GitHub Pages 子路径；Google 读取的是主机根部的 `https://indeliblevivi.github.io/robots.txt`，项目目录内的同名文件不会控制抓取，因此这里不生成它。将 `https://indeliblevivi.github.io/infra-field-guide/sitemap.xml` 提交到对应 Search Console URL-prefix property，是独立账号操作；构建、push 或 Pages 部署不代表已经提交或收录。参见 [Google robots.txt 位置规则](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec)。
 
+`shell.html` 的 `google-site-verification` 是本项目 Search Console 所有权的公开验证标记，不是访问凭据或 analytics 脚本。正式站点须持续保留；重排模板时检查生成首页的 `<head>` 仍含该标记。fork 或更换站点所有者时移除原标记，并在自己的 Search Console 获取新的验证值。验证成功、提交 sitemap 与 Google 实际收录是独立状态。
+
 ## 文件职责与发布边界
 
 | 文件 | 职责 |
