@@ -89,8 +89,60 @@ class SiteTests(unittest.TestCase):
             self.assertTrue((self.output / asset).is_file())
         self.assertEqual(len(self.documents), len(PAGES) + 4)
         published = {p.relative_to(self.output).as_posix() for p in self.output.rglob('*') if p.is_file()}
-        allowed = set(self.documents) | set(ASSETS) | {'assets/site.css', 'assets/site.js', 'assets/search.js', 'assets/health.js', 'assets/health.css', 'health/demo/scenarios.json', 'assets/favicon.svg', 'search.json', '.nojekyll'}
+        allowed = set(self.documents) | set(ASSETS) | {'assets/site.css', 'assets/site.js', 'assets/search.js', 'assets/health.js', 'assets/health.css', 'health/demo/scenarios.json', 'assets/favicon.svg', 'search.json', 'sitemap.xml', '.nojekyll'}
         self.assertEqual(published, allowed)
+
+    def test_discovery_files_cover_the_public_canonical_routes(self):
+        import xml.etree.ElementTree as ET
+        base = 'https://indeliblevivi.github.io/infra-field-guide/'
+        tree = ET.parse(self.output / 'sitemap.xml')
+        namespace = '{http://www.sitemaps.org/schemas/sitemap/0.9}'
+        locs = [node.text for node in tree.getroot().iter(namespace + 'loc')]
+        self.assertEqual(len(locs), len(PAGES) + 2)
+        self.assertIn(base, locs)
+        for page in PAGES:
+            self.assertIn(base + page['route'], locs)
+        self.assertIn(base + 'health/demo/', locs)
+        self.assertNotIn(base + '404.html', locs)
+        self.assertEqual(len(locs), len(set(locs)))
+        # Each indexable reading page must actually be discoverable, including
+        # the separately rendered home and health demo.
+        for path in self.documents:
+            if path in {'404.html', 'health/snapshot/index.html'}:
+                continue
+            html = (self.output / path).read_text(encoding='utf-8')
+            canonical = re.search(r'<link rel="canonical" href="([^"]+)"', html)
+            self.assertIsNotNone(canonical, path)
+            self.assertIn(canonical.group(1), locs, path)
+        self.assertFalse((self.output / 'robots.txt').exists())
+
+    def test_every_published_page_has_unique_distinct_metadata(self):
+        # health/snapshot is a fixed offline renderer output (tools/health.py) with a
+        # restrictive CSP and no canonical; it is intentionally outside the reading-site
+        # head contract and is excluded from the sitemap too.
+        fixed_snapshot = {'health/snapshot/index.html'}
+        descriptions = {}
+        for path, document in self.documents.items():
+            html = (self.output / path).read_text(encoding='utf-8')
+            if path in fixed_snapshot:
+                continue
+            if path == '404.html':
+                self.assertIn('<meta name="robots" content="noindex">', html)
+                self.assertNotIn('rel="canonical"', html)
+                continue
+            self.assertNotIn('content="noindex"', html)
+            canonical = re.search(r'<link rel="canonical" href="([^"]+)"', html)
+            self.assertIsNotNone(canonical, path)
+            self.assertTrue(canonical.group(1).startswith('https://indeliblevivi.github.io/infra-field-guide/'), path)
+            self.assertIn(f'<meta property="og:url" content="{canonical.group(1)}">', html, path)
+            self.assertIn('<meta property="og:site_name" content="Infra Field Guide">', html, path)
+            self.assertIn('<meta name="twitter:card" content="summary_large_image">', html, path)
+            self.assertIn('<meta property="og:image" content="https://indeliblevivi.github.io/infra-field-guide/docs/assets/drinking-fawn.png">', html, path)
+            description = re.search(r'<meta name="description" content="([^"]+)"', html)
+            self.assertIsNotNone(description, path)
+            descriptions.setdefault(description.group(1), []).append(path)
+        repeated = {text: paths for text, paths in descriptions.items() if len(paths) > 1}
+        self.assertEqual(repeated, {}, repeated)
 
     def test_health_preview_is_a_rendered_synthetic_fixture(self):
         html = (self.output / 'health/snapshot/index.html').read_text(encoding='utf-8')

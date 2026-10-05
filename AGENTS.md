@@ -5,7 +5,7 @@
 ## 真源与执行范围
 
 - `README.md` 管中文读者入口与能力声明，`README.en.md` 是对应英文入口；`docs/` 管解释和 runbook；`agents/` 管可复用工单；`examples/` 管合成输入；`tools/` 与 `tests/` 管可执行行为。
-- `site/` 管独立阅读站的排版、路由与构建；正文仍由上面的 Markdown 管理。`site/pages.json` 与 `site/build.py` 的显式白名单定义 Pages 发布范围；`_site/` 是忽略的派生输出，不能手改、提交或扩大为整个仓库的复制。站点规则与预览命令见 `site/README.md`。
+- `site/` 管独立阅读站的排版、路由与构建；正文仍由上面的 Markdown 管理。`site/pages.json` 与 `site/build.py` 的显式白名单定义 Pages 发布范围；`_site/` 是忽略的派生输出，不能手改、提交或扩大为整个仓库的复制。逐页 metadata 由 `site/pages.json` 与 `site/shell.html` 管理；`site/health.html` 管模拟页 metadata。`site/build.py` 生成包含首页的 canonical sitemap，不生成无效的子路径 robots.txt。站点规则与预览命令见 `site/README.md`。
 - 示例使用 `example.com`、文档 IP、合成身份和占位符。OS 标准路径可用于教学；真实使用者的私人主机、账号、路径、凭据和笔记不得进入仓库。
 - 写教程不授权操作真实服务器、修改账号、购买、迁移、防火墙、SSH 或删除数据。编写和验证期间不执行教程中的真实环境变更命令。
 - 分开报告 source、测试、安装、service activation、网络可达性与真实客户端验收。只写实际验证过的结果。

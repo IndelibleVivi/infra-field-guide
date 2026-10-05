@@ -16,19 +16,23 @@ python3 -m http.server 4178 --bind 127.0.0.1 --directory .local/preview
 
 然后打开 `http://127.0.0.1:4178/infra-field-guide/`。预览服务只绑定 loopback；修改源后重新构建并刷新。临时前台服务器随终端退出停止。需要跨终端保留预览时，使用自己的受管会话并记录停止方式。
 
-`--base` 默认为 `/infra-field-guide/`，可以设为 `/` 用于根路径预览。该参数须以 `/` 开始和结束。发布目标固定为本项目 Pages；换仓库时须一并修改 canonical / Open Graph URL、公开站点链接和工作流配置。
+`--base` 默认为 `/infra-field-guide/`，可以设为 `/` 用于根路径预览。该参数须以 `/` 开始和结束。发布目标固定为本项目 Pages；换仓库时须一并修改 canonical / Open Graph URL、公开站点链接、`sitemap.xml` 和工作流配置。
+
+每个发布页都带唯一的 `title`、`description`、`canonical`、`og:*`（含 `og:url`、`og:site_name`、`og:image` 与 `og:image:alt`）和 `twitter:*`（`summary_large_image`）。`description` 来自 `pages.json` 的 `summary`，逐页不同；缺省只作兜底，不应长期复用。`sitemap.xml` 由 `build.py` 从显式发布路由生成：列出首页、`PAGES` 路由与 `health/demo/`，404 标 `noindex` 且不给 canonical。`health/snapshot/` 是 `tools/health.py` 的固定离线渲染，带 CSP 且不参与上述站点 head 契约，也不进入 sitemap。
+
+本项目部署在 GitHub Pages 子路径；Google 读取的是主机根部的 `https://indeliblevivi.github.io/robots.txt`，项目目录内的同名文件不会控制抓取，因此这里不生成它。将 `https://indeliblevivi.github.io/infra-field-guide/sitemap.xml` 提交到对应 Search Console URL-prefix property，是独立账号操作；构建、push 或 Pages 部署不代表已经提交或收录。参见 [Google robots.txt 位置规则](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec)。
 
 ## 文件职责与发布边界
 
 | 文件 | 职责 |
 | --- | --- |
 | `pages.json` | 发布的正文白名单、路径、章节序号与导航短标题；原文 h1 的文字与锚点保留；章节编号移到眉题，冒号后的说明单独一行 |
-| `build.py` | Markdown 渲染、链接去向分类、章节目录、分节搜索索引和显式素材白名单 |
+| `build.py` | Markdown 渲染、链接去向分类、章节目录、分节搜索索引、逐页 metadata、`sitemap.xml` 生成和显式素材白名单 |
 | `ui.py` | 原创线性 UI 图标，供标题、目录和链接标记共用 |
 | `home.html` / `shell.html` | 首页编辑排版与公共阅读界面 |
 | `site.css` / `site.js` | 响应式排版、原生 dialog 搜索／目录／术语解释、代码复制、表格滑动提示与目录当前位置 |
 | `search.js` / `test_search.cjs` | 本地多词检索、问题别名及真实问法回归；可同时在浏览器与 Node 测试中使用 |
-| `health_demo.py` / `health.html` / `health.css` / `health.js` | 生成合成场景、模拟仪表盘布局与本地时间回放；指标判断继续由 `tools/health.py` 管理 |
+| `health_demo.py` / `health.html` / `health.css` / `health.js` | 生成合成场景、模拟仪表盘布局与本地时间回放；`health.html` 头部自带该页的 description／canonical／社交 metadata；指标判断继续由 `tools/health.py` 管理 |
 | `test_build.py` | 全部生成页面的链接／锚点、搜索目标、发布文件白名单与 Markdown 关键结构 |
 | `../.github/workflows/pages.yml` | PR 只构建验证；main 推送验证后部署到 `github-pages` environment |
 

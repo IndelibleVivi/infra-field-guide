@@ -218,10 +218,16 @@ def navigation(base, current=''):
 def shell(body, base, page=None):
     page = page or {}
     title = page.get('title', '把自己的服务安顿好')
+    canonical = 'https://indeliblevivi.github.io' + base + page.get('route', '')
+    noindex = page.get('robots') == 'noindex'
     return Template((SITE / 'shell.html').read_text(encoding='utf-8')).substitute(
         body=body, base=base, title=escape(title), lang=page.get('lang', 'zh-CN'),
         description=escape(page.get('summary', '一本关于 VPS、迁移、网络与日常运维的实用手册。给人阅读，也给 agent 使用。')),
-        canonical='https://indeliblevivi.github.io' + base + page.get('route', ''),
+        canonical=canonical,
+        canonical_tag='' if noindex else f'<link rel="canonical" href="{escape(canonical)}">',
+        og_type='article' if page.get('route') else 'website',
+        locale='en_US' if page.get('lang') == 'en' else 'zh_CN',
+        robots='<meta name="robots" content="noindex">' if noindex else '',
         nav=navigation(base, page.get('source', '')), repo=REPO)
 
 
@@ -335,6 +341,7 @@ def build(output, base):
     for name in ('site.css', 'site.js', 'search.js', 'favicon.svg', 'health.css', 'health.js'):
         shutil.copyfile(SITE / name, output / 'assets' / name)
     (output / 'search.json').write_text(json.dumps(search, ensure_ascii=False), encoding='utf-8')
+    write_discovery(output, base)
     # Render only the explicit synthetic fixture; never call collect_snapshot or copy reports/.
     spec = importlib.util.spec_from_file_location('guide_health', ROOT / 'tools/health.py')
     health = importlib.util.module_from_spec(spec)
@@ -342,8 +349,26 @@ def build(output, base):
     build_demo(output, base, health)
     (output / '.nojekyll').touch()
     missing = '<main id="main" class="not-found"><p class="eyebrow">404 / 迷路了</p><h1>这条小径还没有通向页面。</h1><p>可以回到目录，或搜索你想读的内容。</p><a class="button primary" href="' + base + '">回到手册首页 →</a></main>'
-    (output / '404.html').write_text(shell(missing, base, {'title': '页面未找到'}), encoding='utf-8')
+    (output / '404.html').write_text(shell(missing, base, {'title': '页面未找到', 'robots': 'noindex'}), encoding='utf-8')
     print(f'Built {len(PAGES) + 4} pages, {len(search)} search sections → {output}')
+
+
+def write_discovery(output, base):
+    """Publish the canonical URL set for the reading site.
+
+    Only the home, explicit published routes and synthetic health demo are listed;
+    the fixed snapshot has no canonical URL and stays out, and 404 is excluded.
+    """
+    origin = 'https://indeliblevivi.github.io'
+    routes = [''] + [page['route'] for page in PAGES] + ['health/demo/']
+    namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9'
+    ET.register_namespace('', namespace)
+    urlset = ET.Element(f'{{{namespace}}}urlset')
+    for route in routes:
+        entry = ET.SubElement(urlset, f'{{{namespace}}}url')
+        ET.SubElement(entry, f'{{{namespace}}}loc').text = origin + base + route
+    xml = ET.tostring(urlset, encoding='unicode')
+    (output / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n' + xml + '\n', encoding='utf-8')
 
 
 if __name__ == '__main__':
