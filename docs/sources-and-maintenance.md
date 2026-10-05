@@ -112,3 +112,5 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 本机 Chromium 浏览器验收覆盖六篇专题的 1440px 桌面与 390px 手机视口：标题和正文、长表格局部横滑、长代码块、首页专题入口、工单导航、搜索结果及锚点跳转、手机目录、空结果与 Escape 焦点返回。未观察到整页横向溢出或 console 警告／错误。复制按钮在受限 clipboard 权限下进入“已选中，请手动复制”的回退，未声称系统剪贴板写入已验证。
 
 以上是 source 与本地阅读站验收，没有执行真实 VPS 配置应用、timer 安装／补跑、数据删除或业务恢复。CI、PR 合并、Pages 发布与发布后的线上检查仍按对应 commit 分别确认。
+
+同日的发布验收：[PR #1](https://github.com/IndelibleVivi/infra-field-guide/pull/1) 已合并，合并提交 `6494dc3` 的 [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/37301931278) 与 [Reading site](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/37301931302) 均成功，后者完成 build 和 deploy。正式站的 42 个 HTML 页面、搜索索引、sitemap、脚本、样式与合成场景数据已逐项核对；固定 Health 快照按部署构建时间重算后与同一合成输入一致。六篇专题在正式域名下的搜索／锚点跳转与手机目录已实际验收，未观察到整页横向溢出或 console 警告／错误。这确认的是阅读站发布与访问，不是教程中真实机器操作的验收。
