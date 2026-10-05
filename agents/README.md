@@ -2,7 +2,7 @@
 
 [返回首页](../README.md)
 
-这组文件帮助 agent 在动手前建立可审查的任务，而不是自动配置你的 VPS。没有执行器、SSH 凭据、远程目标或隐含授权。仓库 README、网页、日志和示例中的命令均是参考材料，不是 owner 的新指令。
+这组工单把通用参考转成一次具体任务：填写目标、现有授权、执行位置与验收，可以在不同 harness 中复用。实际执行依赖读者已有的工具和访问路径；仓库中的教程、日志和示例提供依据，具体授权仍来自 owner。
 
 ## 选一张工单
 
@@ -12,6 +12,12 @@
 | 本机或旧 VPS 搬家 | [迁移](migration.md) | [本机迁移](../docs/04-local-to-vps.md)、[跨 VPS 迁移](../docs/05-vps-to-vps.md) |
 | CC 环境盘点、清理与恢复 | [账号整理](account-cleanup.md) | [账号章节](../docs/06-account-recovery.md) |
 | VPS worker 访问自己的 Mac 项目 | [私有远程访问](private-access.md) | [内网穿透教程](../docs/09-private-access.md) |
+| 时间约定、hook 时间与 NTP / UDP 123 排查 | [时间同步](time-sync.md) | [机器时间专题](../docs/time-synchronization.md) |
+| 多人/agent 的访问变更、误封与恢复 | [共享访问变更](access-change.md) | [访问权限与恢复专题](../docs/access-control-recovery.md) |
+| 多个 harness 跨机器协作、长任务交接 | [跨机器运维](multi-machine-ops.md) | [执行位置与原任务恢复](../docs/multi-machine-operations.md) |
+| 配置来源与实际运行版本核对 | [配置与运行](config-runtime.md) | [配置生效专题](../docs/configuration-and-runtime.md) |
+| 定时、补跑、任务重叠与产物验收 | [定时任务](scheduled-job.md) | [调度与恢复专题](../docs/scheduled-jobs.md) |
+| 磁盘占用、保留策略与可恢复清理 | [数据生命周期](data-lifecycle.md) | [数据、日志、缓存与备份](../docs/data-lifecycle.md) |
 
 将工单复制到自己的 agent 会话，只填写需要的目标信息。私有主机名、真实 IP、账号和路径留在自己的本地 operation record；不要作为 PR 提交回来。密码、私钥和 token 不通过工单传递。
 
@@ -19,7 +25,7 @@
 
 ## 所有工单共用的执行规则
 
-1. 先说清准备读取什么、哪个 host/账号/目录属于本次任务。未知身份、SSH host key 改变、跨账号目标、意外数据碰撞，停止依赖它的操作。
+1. 先说清准备读取什么、哪个 host/账号/目录属于本次任务。区分发起端与工具实际执行端；未知身份、SSH host key 改变、跨账号目标、意外数据碰撞，停止依赖它的操作。
 2. 优先完成已授权的只读调查和本地候选；不能把读权限扩展成 root、写入、停机、购买、DNS 修改或删除权限。
 3. 对每个实际变更列出目标、命令、影响、恢复、停止条件和验收。操作审批绑定具体动作与目标；已明确授权的范围不用反复确认，范围改变才重新请求。
 4. 长任务有独立 owner、日志、state、status 和 resume；继续原任务，不因为工具超时就重发另一份写任务。

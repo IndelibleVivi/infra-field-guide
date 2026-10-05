@@ -22,6 +22,8 @@
 
 ## 1. 先选择访问形态
 
+涉及多个 CLI/harness 或第三方工具服务时，结合[跨机器运维专题](multi-machine-operations.md)定位每次调用的执行机器和资源。本章继续完成一条准确的 VPS → Mac 访问路径。
+
 | 需求 | 较直接的方式 | 入口与权限边界 |
 | --- | --- | --- |
 | 自己的 VPS/电脑持续访问 Mac 的 SSH 或多个私有服务 | Tailscale 私有访问 | 设备加入 [tailnet](glossary.md#tailnet)，grants/ACL 控制网络，SSH/应用另做认证 |
@@ -37,6 +39,8 @@ SSH `-L` 本身不会穿过一个完全不可达的 NAT 来找到 Mac；它可�
 网络层仅允许某台 VPS 连到 Mac 的 TCP 22，解决的是**来源设备与目的端口**。SSH key 决定可登录哪个 macOS 用户。成功登录现有 owner 用户后，worker 原则上具有该用户的文件与命令权限；写上 `cd ~/Projects/example-project` 只是指定工作目录，**不是单仓库沙箱**。
 
 如果需求是不让 worker 接触 owner 的其他目录，应先采用适当的独立系统用户、文件权限、隔离环境或受限命令入口，再安排项目访问；单独的 SSH `Host` alias、Tailscale grant 和 key 的 `from=` 都无法实现这一点。若接受使用既有 owner 用户，也应把这项权限事实写进 worker 的授权范围。不要从“SSH 已通”推导出可以读整个 home、提权、上传数据或操作账号。
+
+多个 agent/设备并用时，按真实任务决定是否共用管理账号；独立 key 方便撤销某个入口，系统用户与提权路径决定进入后的能力。新增入口、收回权限和避免锁死见[共享访问专题](access-control-recovery.md)。
 
 本章只新增 exact source → exact destination → TCP 22 规则，保留既有 HTTPS 等服务。不要为了一个 worker 改成全 tailnet 互通，也不把下面的 JSON 当成完整策略覆盖上传。
 
