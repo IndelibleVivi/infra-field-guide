@@ -27,6 +27,7 @@
 | SSH 和网站同时超时 | 服务商 console 是否可进入；机器是否启动、资源是否耗尽 | console 可用则查网络和监听；console 也失败则查 provider |
 | 加固后有人 SSH 进不去，旧会话还在 | 区分新连接失败位置、真实来源、凭据与最近策略改动 | 走[访问权限与恢复](access-control-recovery.md#已经有人进不去了)，保留当前入口 |
 | 时间不准、NTP 无响应、UDP 123 疑似被拦 | 当前校时服务、参考源/样本与实际请求回程 | 走[时间同步专题](time-synchronization.md)，不凭 clocksource 或 TCP 探测下结论 |
+| 换了 harness/机器后不知道原任务是否完成 | 原目标、job/unit 标识、状态与结果位置 | 走[跨机器任务恢复](multi-machine-operations.md#断线超时与原任务恢复)，查询原任务后决定后续动作 |
 | SSH 可以进，网站不可用 | 在服务所在机器请求 loopback [origin](glossary.md#origin) | origin 失败查进程；成功再查反向代理/Tunnel/认证 |
 | 域名失效，IP 路径可达 | DNS 的 A、AAAA、CNAME 是否与预期相符 | IPv6、旧记录、代理状态和解析缓存分开查 |
 | 502 / 504 | 入口能否连接正确 origin 端口与协议 | `http`/`https` 配错、容器 localhost、进程退出、超时 |

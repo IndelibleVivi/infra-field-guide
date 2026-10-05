@@ -6,6 +6,8 @@
 
 几个人、几台设备或几个 agent 一起维护服务器时，怎样让合法操作者持续能进入、各自获得所需权限，并在改坏规则后恢复。本页补充协作和排障判断；创建用户、安装 key、修改 SSH 与 UFW 的完整步骤继续使用第 02 章。
 
+不同 harness 分别运行在本地、VPS 或容器时，先用[跨机器运维专题](multi-machine-operations.md)定位实际执行端、共享配置与原任务；本页继续处理那些路径上的权限与访问变更。
+
 <details>
 <summary>适用环境与验证范围</summary>
 <p>以 Linux/OpenSSH 和普通个人 VPS 为主；服务名、防火墙后端、fail2ban jail 与恢复控制台按实际平台核实。Ubuntu 24.04 还需区分 ssh.service 与 ssh.socket 的监听职责。</p>

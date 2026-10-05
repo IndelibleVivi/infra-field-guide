@@ -22,6 +22,8 @@
 
 ## 1. 先选择访问形态
 
+涉及多个 CLI/harness 或第三方工具服务时，结合[跨机器运维专题](multi-machine-operations.md)定位每次调用的执行机器和资源。本章继续完成一条准确的 VPS → Mac 访问路径。
+
 | 需求 | 较直接的方式 | 入口与权限边界 |
 | --- | --- | --- |
 | 自己的 VPS/电脑持续访问 Mac 的 SSH 或多个私有服务 | Tailscale 私有访问 | 设备加入 [tailnet](glossary.md#tailnet)，grants/ACL 控制网络，SSH/应用另做认证 |

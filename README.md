@@ -8,9 +8,11 @@
 
 这是一套中文基础设施现场手册：先理解机器和网络，再部署、观察、备份、迁移，最后把旧资源收干净。你不需要先成为 Linux 专家，但需要知道每条命令在哪台机器运行、改变什么、失败后如何回来。
 
+内容结合一手资料、合成示例与注明适用条件的运维经验。读者可以按自己的机器、harness 和服务选择路线；专题提供日常约定、检查方法与解决思路。
+
 即使让 AI 帮你操作，也能逐渐看懂它准备改什么，以及它到底有没有做成。
 
-**九章教程、时间与访问恢复专题、agent 工单、配置示例、六张架构图，以及可运行的只读 health 工具。** 教程使用合成地址，实施时换成自己核实过的目标。
+**九章教程、时间／访问／跨机器协作专题、agent 工单、配置示例、六张架构图，以及可运行的只读 health 工具。** 教程使用合成地址，实施时换成自己核实过的目标。
 
 [教程导航](#从你的问题进入) · [完整架构](docs/architecture.md) · [Agent 入口](agents/README.md) · [检查状态](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
@@ -28,8 +30,9 @@
 | 想按 CC「转生」材料重整环境 | [06 · 备份、环境清理与恢复](docs/06-account-recovery.md) | 两套清单、具体路径、分层重置与选择性恢复 |
 | Tunnel、DNS、VPN、代理分不清 | [07 · 网络与代理](docs/07-network-and-proxies.md) / [架构图集](docs/architecture.md) | 说清请求从哪来、往哪去、由谁鉴权 |
 | 想让 VPS worker 回到 Mac 做项目 | [09 · 私有远程访问](docs/09-private-access.md) | Tailscale grant、OpenSSH、非交互环境与项目验收 |
-| 时间不准、NTP 无响应、UDP 123 疑似被拦 | [时间同步专题](docs/time-synchronization.md) | 分清 clocksource 与校时，验证往返并选择持续可用的时间源 |
+| UTC 与本地时间怎么配合，或 NTP/UDP 123 有异常 | [机器时间专题](docs/time-synchronization.md) | 时间戳、用户时区、hook 新鲜度、定时语义与持续校准 |
 | 多个人或 agent 共用 VPS，加固后有人进不来 | [访问权限与恢复专题](docs/access-control-recovery.md) | 可辨认的入口、实际执行权限、新连接验收与定点恢复 |
+| 多个 harness 在本地和远端协作，或需要接手长任务 | [跨机器运维专题](docs/multi-machine-operations.md) | 定位执行端、共享资源、运行配置和原任务状态 |
 | 想先看一眼自己的机器 | [health 工具与离线看板](tools/README.md) | 不上传数据的 Linux 资源快照和离线 HTML |
 | 想让 agent 帮我操作 | [给 agent 的入口](agents/README.md) | 明确范围、停机条件、证据与授权边界的工单 |
 
@@ -37,7 +40,7 @@
 
 第一次学建议顺序：**01 → 02 → 03 → 07**，再按需要选 04、05 或 09。遇到账号问题直接读 06，不必先买服务器。
 
-搜索可以直接输入「SSH 超时」「磁盘满」「公钥拒绝」「UDP123」「加固后连不上」等问题，也支持多个关键词。每章的适用环境与验证范围可展开查看，章末有一道理解题，答案默认折叠。
+搜索可以直接输入「SSH 超时」「磁盘满」「UDP123」「时间 hook」「多 harness」「任务超时重跑」等问题，也支持多个关键词。每章的适用环境与验证范围可展开查看，章末有一道理解题，答案默认折叠。
 
 ## 五分钟内先看见一个结果
 

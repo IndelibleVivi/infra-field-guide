@@ -8,7 +8,9 @@ For people choosing their first VPS, moving a local service online, or replacing
 
 Even with an AI agent doing the work, you can learn to understand what it is about to change and whether that change actually worked.
 
-**Nine chapters, time and access recovery references, reusable agent work orders, configuration examples, six architecture diagrams, and a working read-only health tool.** The full tutorials are written in Chinese with English technical terms; this English entry point maps the same capabilities. Examples use synthetic identities and documentation addresses.
+The guide combines primary documentation, synthetic examples, and operational experience with explicit conditions. Use the references to choose a route that fits your machines, harnesses, and services.
+
+**Nine chapters, time, access and multi-machine operations references, reusable agent work orders, configuration examples, six architecture diagrams, and a working read-only health tool.** The full tutorials are written in Chinese with English technical terms; this English entry point maps the same capabilities. Examples use synthetic identities and documentation addresses.
 
 [Reading paths](#start-with-your-task) · [Architecture atlas](docs/architecture.md) · [Agent entry](agents/README.md) · [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/workflows/check.yml)
 
@@ -26,8 +28,9 @@ Even with an AI agent doing the work, you can learn to understand what it is abo
 | Reorganize a Claude environment after account problems | [06 · Backup, cleanup and recovery](docs/06-account-recovery.md) | Two attributed approaches, concrete state locations and selective restoration |
 | Understand DNS, Tunnel, VPN and proxies | [07 · Networks and proxies](docs/07-network-and-proxies.md) | Separate ingress, administration and application egress |
 | Let a VPS worker reach a Mac project | [09 · Private remote access](docs/09-private-access.md) | Tailscale grants, ordinary OpenSSH and non-interactive environment checks |
-| Investigate incorrect time or missing UDP 123 replies | [Time synchronization reference](docs/time-synchronization.md) | Separate clocksource from synchronization, inspect the packet path and choose a sustainable time source |
+| Coordinate UTC and local time, or investigate NTP / UDP 123 | [Machine time reference](docs/time-synchronization.md) | Timestamps, user timezones, hook freshness, scheduling semantics and sustainable synchronization |
 | Share a VPS with people or agents without losing access | [Access and recovery reference](docs/access-control-recovery.md) | Distinct credentials, actual execution permissions, fresh connection checks and targeted recovery |
+| Coordinate local and remote harnesses or hand over a long task | [Multi-machine operations](docs/multi-machine-operations.md) | Locate execution, shared resources, runtime configuration and the original job |
 | Inspect resource headroom | [Health tool](tools/README.md) | A Linux resource snapshot and offline HTML report |
 | Work with an agent | [Agent work orders](agents/README.md) | Explicit scope, stop conditions, recovery and evidence |
 
@@ -35,7 +38,7 @@ Each chapter starts with a concept map; three additional comparisons explain SSH
 
 New readers can start with **01 → 02 → 03 → 07**, then choose a migration or private-access path. Account cleanup does not require buying a server.
 
-Local search recognizes common questions such as “SSH 超时”, “磁盘满”, “publickey”, “UDP123”, and “加固后连不上”, with multiple-keyword matching. Each chapter has an expandable environment and verification note, plus a comprehension question with a collapsed answer.
+Local search recognizes common questions such as “SSH 超时”, “磁盘满”, “UDP123”, “时间 hook”, “多 harness”, and “任务超时重跑”, with multiple-keyword matching. Each chapter has an expandable environment and verification note, plus a comprehension question with a collapsed answer.
 
 ## Run a synthetic example
 

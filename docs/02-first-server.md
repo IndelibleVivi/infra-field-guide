@@ -262,7 +262,7 @@ apt-config dump | grep -E 'APT::Periodic|Unattended-Upgrade'
 
 预期时钟与真实时间相符，时间同步服务状态可解释，磁盘/内存有可用余量，没有不明 failed unit。时区可以不同，但错误的绝对时间会影响 TLS、日志与定时任务。若未同步，先看当前使用的时间服务（如 systemd-timesyncd 或 chrony）及日志、DNS/出站条件，不并行启用多个时间客户端。`timedatectl` 的单个字段不代替对实际时间源的检查。
 
-遇到 `synchronized: no`、UDP 123 无响应或“宿主已同步”的说法，继续读[时间同步专题](time-synchronization.md)：先核实校时责任与当前偏差，再选择标准 NTP、服务商专用时间源或有条件的后备路径。
+服务器 UTC 与用户本地时间的配合、hook 时间和日程语义见[机器时间专题](time-synchronization.md)。遇到 `synchronized: no`、UDP 123 无响应或“宿主已同步”的说法，同页提供校时责任、当前偏差和后备路径的检查。
 
 **仍在 operator 会话，更新会安装软件并可能重启服务：**
 
