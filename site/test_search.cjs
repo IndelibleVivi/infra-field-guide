@@ -18,6 +18,13 @@ const queries = [
   ['swap', 'guide/operations/#3-swap-是缓冲不是-oom-的治疗方案'],
   ['备份 恢复', 'guide/operations/#7-备份至少要成功恢复一次'],
   ['DNS TTL', 'guide/vps-to-vps/#路径-a直接-dns-指向新-origin'],
+  ['时间不准', 'reference/time-synchronization/#只读检查时间服务'],
+  ['UDP123', 'reference/time-synchronization/#区分-udp-123-的请求与回包'],
+  ['NTP 不通', 'reference/time-synchronization/#区分-udp-123-的请求与回包'],
+  ['kvm-clock', 'reference/time-synchronization/#时钟源与校时服务'],
+  ['加固后连不上', 'reference/access-control-recovery/#已经有人进不去了'],
+  ['fail2ban', 'reference/access-control-recovery/#fail2ban-与定点恢复'],
+  ['撤销 key', 'reference/access-control-recovery/#撤销-key-后还有什么没有结束'],
 ];
 for (const [query, destination] of queries) test(`读者问法：${query}`, () => {
   const matches = search(index, query);

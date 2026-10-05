@@ -25,6 +25,8 @@
 | 症状 | 第一个有区分力的检查 | 接下来 |
 | --- | --- | --- |
 | SSH 和网站同时超时 | 服务商 console 是否可进入；机器是否启动、资源是否耗尽 | console 可用则查网络和监听；console 也失败则查 provider |
+| 加固后有人 SSH 进不去，旧会话还在 | 区分新连接失败位置、真实来源、凭据与最近策略改动 | 走[访问权限与恢复](access-control-recovery.md#已经有人进不去了)，保留当前入口 |
+| 时间不准、NTP 无响应、UDP 123 疑似被拦 | 当前校时服务、参考源/样本与实际请求回程 | 走[时间同步专题](time-synchronization.md)，不凭 clocksource 或 TCP 探测下结论 |
 | SSH 可以进，网站不可用 | 在服务所在机器请求 loopback [origin](glossary.md#origin) | origin 失败查进程；成功再查反向代理/Tunnel/认证 |
 | 域名失效，IP 路径可达 | DNS 的 A、AAAA、CNAME 是否与预期相符 | IPv6、旧记录、代理状态和解析缓存分开查 |
 | 502 / 504 | 入口能否连接正确 origin 端口与协议 | `http`/`https` 配错、容器 localhost、进程退出、超时 |
@@ -78,6 +80,8 @@ curl --noproxy '*' --connect-timeout 5 --max-time 15 \
 | 登录能成功，命令找不到 | 非交互环境与平时终端不同 | 显式 runtime 路径或受控 PATH，不让 agent 猜 profile 内容 |
 
 排查时保留当前已成功登录的 session，并确保 provider console 或 Mac 本地操作可用。`ssh -vv` 会显示主机和路径，日志不要原样贴公共 issue；也不要开启 `StrictHostKeyChecking=no` 把身份问题藏起来。
+
+旧会话持续可用、不同 key 登录同一用户、撤 key 后仍有任务运行，分别涉及连接生命周期和系统权限。[共享访问专题](access-control-recovery.md)提供这些情况的验收、fail2ban 核实与定点恢复方法。
 
 ## 资源检查与下一步
 

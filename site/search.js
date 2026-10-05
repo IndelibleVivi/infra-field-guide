@@ -15,6 +15,12 @@
     { aliases: ['内存爆了', '内存不足', '进程被杀', 'exit 137'], groups: [['oom', '内存'], ['137', '压力', '进程']], target: 'guide/operations/#2-应用慢进程消失先区分是哪一种压力' },
     { aliases: ['网站 502', '网站打不开', 'bad gateway'], groups: [['origin'], ['502', 'http', '网站']], target: 'guide/troubleshooting/#一条-http-请求怎样分段验证' },
     { aliases: ['command not found', '命令找不到', 'ssh 找不到命令'], groups: [['path'], ['非交互']], target: 'guide/private-access/#非交互-ssh-的-path-经常与本地-terminal-不同' },
+    { aliases: ['时间不准', '时间校准', 'synchronized no', 'ntpsynchronized'], groups: [['时间'], ['校时', '同步']], target: 'reference/time-synchronization/#只读检查时间服务' },
+    { aliases: ['udp123', 'udp 123', 'ntp 不通', 'ntp 无响应', '123 被封'], groups: [['udp'], ['123']], target: 'reference/time-synchronization/#区分-udp-123-的请求与回包' },
+    { aliases: ['kvm-clock', 'kvm clock'], groups: [['kvm-clock']], target: 'reference/time-synchronization/#时钟源与校时服务' },
+    { aliases: ['ssh 锁死', '加固后连不上', '只有机能登录'], groups: [['ssh'], ['旧', '新连接']], target: 'reference/access-control-recovery/#已经有人进不去了' },
+    { aliases: ['fail2ban'], groups: [['fail2ban']], target: 'reference/access-control-recovery/#fail2ban-与定点恢复' },
+    { aliases: ['撤销 key', '删除公钥', '撤掉 key'], groups: [['key', '公钥'], ['撤', '删除']], target: 'reference/access-control-recovery/#撤销-key-后还有什么没有结束' },
   ];
 
   function search(index, input) {

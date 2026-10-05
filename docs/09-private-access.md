@@ -38,6 +38,8 @@ SSH `-L` 本身不会穿过一个完全不可达的 NAT 来找到 Mac；它可�
 
 如果需求是不让 worker 接触 owner 的其他目录，应先采用适当的独立系统用户、文件权限、隔离环境或受限命令入口，再安排项目访问；单独的 SSH `Host` alias、Tailscale grant 和 key 的 `from=` 都无法实现这一点。若接受使用既有 owner 用户，也应把这项权限事实写进 worker 的授权范围。不要从“SSH 已通”推导出可以读整个 home、提权、上传数据或操作账号。
 
+多个 agent/设备并用时，按真实任务决定是否共用管理账号；独立 key 方便撤销某个入口，系统用户与提权路径决定进入后的能力。新增入口、收回权限和避免锁死见[共享访问专题](access-control-recovery.md)。
+
 本章只新增 exact source → exact destination → TCP 22 规则，保留既有 HTTPS 等服务。不要为了一个 worker 改成全 tailnet 互通，也不把下面的 JSON 当成完整策略覆盖上传。
 
 ## 3. 准备两端与恢复路径

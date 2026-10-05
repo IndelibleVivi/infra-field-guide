@@ -12,6 +12,8 @@
 | 本机或旧 VPS 搬家 | [迁移](migration.md) | [本机迁移](../docs/04-local-to-vps.md)、[跨 VPS 迁移](../docs/05-vps-to-vps.md) |
 | CC 环境盘点、清理与恢复 | [账号整理](account-cleanup.md) | [账号章节](../docs/06-account-recovery.md) |
 | VPS worker 访问自己的 Mac 项目 | [私有远程访问](private-access.md) | [内网穿透教程](../docs/09-private-access.md) |
+| 时间偏差、NTP 无响应与 UDP 123 排查 | [时间同步](time-sync.md) | [时间同步专题](../docs/time-synchronization.md) |
+| 多人/agent 的访问变更、误封与恢复 | [共享访问变更](access-change.md) | [访问权限与恢复专题](../docs/access-control-recovery.md) |
 
 将工单复制到自己的 agent 会话，只填写需要的目标信息。私有主机名、真实 IP、账号和路径留在自己的本地 operation record；不要作为 PR 提交回来。密码、私钥和 token 不通过工单传递。
 
