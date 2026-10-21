@@ -17,7 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        # setup-python publishes Python 3.9 builds for 24.04, not 26.04.
+        os: [ubuntu-24.04, windows-latest]
         python: ['3.9', '3.13']
     env:
       PYTHONUTF8: '1'

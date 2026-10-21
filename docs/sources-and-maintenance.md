@@ -120,3 +120,5 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 第 07、09 章增加 Signalbox 阅读站与既有 Tailnet-on-VPS 指南的相关入口，让服务端部署／管理与终端／路由器接法互相衔接。没有新增服务器操作步骤、依赖或网络能力声明。
 
 本地通过 21 项标准库测试、13 项站点测试与静态构建；内部链接和 Markdown 命令检查通过。本次只改变正文链接与说明，没有重新执行界面交互或真实机器验收。当前是 source branch 的候选变更，PR 合入和 Pages 发布仍是独立步骤，不能沿用旧发布记录认定新正文已上线。
+
+该候选的首次 hosted Checks 在安装 Python 3.9 时停止：实际 `ubuntu-latest` runner 为 Ubuntu 26.04，而官方安装清单只提供 3.9 的 Ubuntu 22.04／24.04 x64 构建。Linux job 因此固定为 `ubuntu-24.04`，保留原有 Linux／Windows、Python 3.9／3.13 四组验证与同一测试入口。依据是[失败 job 的记录](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/39680726618/job/119502202747)与 [actions/python-versions 清单](https://github.com/actions/python-versions/blob/main/versions-manifest.json)，查阅于 2026-10-22；最终 CI 结果按 PR 的最新 source head 查看。
