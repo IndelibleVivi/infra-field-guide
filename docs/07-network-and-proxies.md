@@ -111,6 +111,8 @@ Exit node 是另一个明确功能：设备宣布愿意作为出口，tailnet �
 
 “两端已加入 tailnet”“两端可建立 Tailscale 连接”“目的 TCP 端口被策略允许”“应用认证通过”是不同层。ACL/grants 仍决定哪个来源能访问哪个端口；不要把加入同一个 tailnet 当作所有设备互相信任。Mac Remote Login、普通 SSH 与 Tailscale SSH 的可用性和账号权限也应分开，具体操作见 [09 · 私有远程访问](09-private-access.md)。
 
+想把这个模型继续用到手机、旧 NAS 和旅行路由器，可以接着读姊妹项目 [Signalbox · 通信札记](https://indeliblevivi.github.io/signalbox-routing/)。它从终端与路由器这一侧讲选路、DNS、返回路径和身份；本手册继续负责 VPS、服务部署与管理访问。已有的 [Tailnet-on-VPS 札记](https://github.com/IndelibleVivi/signalbox-routing/blob/main/docs/human/40-tailnet-vps-private-ingress.zh-CN.md) 展示如何由专用网关承接指定私有应用，同时保留浏览器原来的 HTTPS 地址。
+
 ## 4. 协议、传输与加密分别比较
 
 **代理协议**描述客户端如何要求中间节点连接某个目标；**传输**描述两端之间怎样承载数据；**加密与认证**描述谁能读取或伪造这段通信。一个名字不足以说明三者。尤其要分清“能够转发 UDP 应用数据”和“代理自身在网络上用 UDP”——这不是同一件事。

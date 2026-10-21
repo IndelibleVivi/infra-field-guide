@@ -114,3 +114,9 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 以上是 source 与本地阅读站验收，没有执行真实 VPS 配置应用、timer 安装／补跑、数据删除或业务恢复。CI、PR 合并、Pages 发布与发布后的线上检查仍按对应 commit 分别确认。
 
 同日的发布验收：[PR #1](https://github.com/IndelibleVivi/infra-field-guide/pull/1) 已合并，合并提交 `6494dc3` 的 [Checks](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/37301931278) 与 [Reading site](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/37301931302) 均成功，后者完成 build 和 deploy。正式站的 42 个 HTML 页面、搜索索引、sitemap、脚本、样式与合成场景数据已逐项核对；固定 Health 快照按部署构建时间重算后与同一合成输入一致。六篇专题在正式域名下的搜索／锚点跳转与手机目录已实际验收，未观察到整页横向溢出或 console 警告／错误。这确认的是阅读站发布与访问，不是教程中真实机器操作的验收。
+
+### 2026-10-22 与 Signalbox 的阅读衔接
+
+第 07、09 章增加 Signalbox 阅读站与既有 Tailnet-on-VPS 指南的相关入口，让服务端部署／管理与终端／路由器接法互相衔接。没有新增服务器操作步骤、依赖或网络能力声明。
+
+本地通过 21 项标准库测试、13 项站点测试与静态构建；内部链接和 Markdown 命令检查通过。本次只改变正文链接与说明，没有重新执行界面交互或真实机器验收。当前是 source branch 的候选变更，PR 合入和 Pages 发布仍是独立步骤，不能沿用旧发布记录认定新正文已上线。
