@@ -303,6 +303,8 @@ Intel Homebrew、版本管理器或其他安装位置可能不同，应按查到
 
 验收必须覆盖未登录、获准用户、未获准用户、应用正常操作和 connector 重启后的结果；仅看到 Tunnel Healthy 不够。Token、服务凭据和访问日志按其敏感性保存。公开 hostname 可以受身份保护，但仍是公开可寻址入口；它与只对 tailnet 设备可达的私有 SSH 不相同，也不会赋予浏览器访问整台 Mac 文件系统的能力。非 HTTP 服务有额外的客户端和产品要求，不把 Web 教程直接套给 SSH。
 
+如果接下来关心的是“手机怎样日常打开这个私有 Web 应用”，可转到 [Signalbox 的 Tailnet-on-VPS 札记](https://github.com/IndelibleVivi/signalbox-routing/blob/main/docs/human/40-tailnet-vps-private-ingress.zh-CN.md)。它把路由器覆盖、专用 gateway、canonical HTTPS origin 与应用登录分别安排；本章的 worker → Mac OpenSSH 路径则继续承担机器管理。先按使用者的实际任务选择入口，再验证各自的授权和客户端行为。
+
 ## 12. 撤销与故障恢复
 
 结束授权时，按当时记录只移除本次 grant、Mac `authorized_keys` 中这把专用 key，以及不再需要的 VPS 专用配置/凭据；保留其他合法 key 与 policy。规则移除和 key 删除不一定终止已经建立的会话，需要终止在用会话时，先在 Mac 确认对应进程与任务，按任务的安全停止方式处理。
