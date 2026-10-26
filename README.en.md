@@ -39,7 +39,9 @@ The guide combines primary documentation, synthetic examples, and operational ex
 
 Each chapter starts with a concept map; three additional comparisons explain SSH keys, RAM / swap, and migration rollback boundaries. The [29-term glossary](docs/glossary.md) provides short definitions and links back to the relevant section. On the reading site, dotted-underlined terms open in place; pinned notes highlight common confusions. Link markers distinguish internal reading, definitions, this project’s GitHub repository, and external references, with an expandable key below the title.
 
-New readers can start with **01 → 02 → 03 → 07**, then choose a migration or private-access path. Account cleanup does not require buying a server.
+New readers can start with **01 → 02**. Once independent SSH login works, follow one small service through the practice below, then choose a migration or private-access path. Account cleanup does not require buying a server.
+
+**Manage the same small service:** [create `field-demo` in chapter 04, section 6](docs/04-local-to-vps.md#6-把一个-dev-命令交给-systemd-管理) → [inspect its service, process and logs in 03, section 4](docs/03-operations.md#4-谁负责让进程继续运行) → [reach it from your computer in 07, section 5](docs/07-network-and-proxies.md#5-最小实用练习用-ssh-访问自己服务器上的本机服务) → [update to v2, inspect a change that has not taken effect, and return to v1](docs/configuration-and-runtime.md#实操同一个服务的更新与回退). Start with just that section of 04, using the SSH target, user and key already verified in 02. Keep the service running while continuing; if you stopped it, follow that section to start it again and check the response on the VPS. Stop the experiment when finished. Return to resource and swap sections when a symptom calls for them. The practice is written in Chinese; real systemd and SSH acceptance remains separate from the repository checks.
 
 Local search recognizes common questions such as “SSH 超时”, “磁盘满”, “UDP123”, “时间 hook”, “多 harness”, “配置没生效”, “定时任务漏跑”, and “删了磁盘没变”, with multiple-keyword matching. Each chapter has an expandable environment and verification note, plus a comprehension question with a collapsed answer.
 

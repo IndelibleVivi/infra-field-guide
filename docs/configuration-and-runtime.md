@@ -11,7 +11,7 @@
 <details>
 <summary>适用环境与验证范围</summary>
 <p>以 Linux/systemd 上的常驻服务为主，读的是 systemd.exec(5)、systemctl、systemd 的配置语义；macOS、桌面 GUI 或各 harness 的具体配置文件位置和优先级按其当前官方文档核实后再给命令，本页不为未核实的平台编造路径。</p>
-<p>本页命令作静态说明与只读检查；仓库没有连接读者的机器，也没有运行任何服务重启、reload 或环境变更。示例文件名、路径和值都是合成占位符。</p>
+<p>前面的诊断以只读检查为主；“同一个服务的更新与回退”会创建合成目录、备份并编辑教学 unit、重载管理器和重启服务，需要对该实验的具体授权。仓库只核对文档与命令静态语法，未在真实 systemd 参考环境运行这组步骤；示例不包含读者的业务数据。具体范围见<a href="sources-and-maintenance.md">来源与维护</a>。</p>
 </details>
 
 ## 先读哪一段
@@ -22,6 +22,7 @@
 | 终端里能跑的命令，服务里找不到 | [shell 环境与 service 环境的差异](#shell-环境与-service-环境的差异) |
 | `which`、`node -v`、服务里报告的不一致 | [各层不是同一个版本](#各层不是同一个版本) |
 | 改了 unit 或环境，怎样让它真正生效？ | [daemon-reload、reload 与 restart](#daemon-reloadreload-与-restart) |
+| 想亲手观察“已经加载新定义，为什么还返回旧页面” | [同一个服务的更新与回退](#实操同一个服务的更新与回退) |
 | 怎么查而不打印秘密？ | [只读检查：显示配置来源而非值](#只读检查显示配置来源而非值) |
 | 改坏了怎么退回来？ | [变更与恢复边界](#变更与恢复边界) |
 
@@ -140,6 +141,131 @@ systemd 有两种管理器，检查对象必须对应到正确的一种：
 > **停下检查点：`reload` 成功不等于新配置已生效。**
 > `reload` 只说明服务接受了这个动作（或命令返回 0）。要证明新配置生效，应从**行为**上验证：一次真实请求的结果、日志里新配置载入的证据，或进程重新读取相关文件的记录。
 
+## 实操：同一个服务的更新与回退
+
+沿用 [04 第 6 节](04-local-to-vps.md#6-把一个-dev-命令交给-systemd-管理)刚创建的 `field-demo.service`。目标是在同一个服务上完成一次小更新：保留 v1、准备独立的 v2、观察尚未生效的改动、重启到 v2，再恢复 v1。无需先迁移真实应用，也不改 SSH、防火墙或正式业务。
+
+**运行位置：已经核验身份的 Ubuntu 24.04 VPS，普通 sudo 用户。** 所有 systemctl 都操作 system manager，不加 `--user`。前提是 04 的实验已经完成，目录只含合成页面，没有 symlink、secrets 或真实数据；若服务已 stop，先按 [04 的回来重启步骤](04-local-to-vps.md#继续练习在此结束与回来重启)启动。名称、路径、权限或服务身份与本实验不符时，停下确认，不把它套到同名业务。以下每段执行后先核对预期，失败或输出不符就停止推进。
+
+这里用 `public` 保留 v1，另建 `public-v2` 提供 v2。**不要直接改 v1 的 HTML 来演示旧进程。** Python 的静态服务器会在新请求时读取文件，原地改页面可能立刻改变响应。原 unit 还同时设置了 `WorkingDirectory` 和显式 `--directory`，后者决定提供哪个目录；只改工作目录，重启也不会切换页面。[Python 3.12 http.server](https://docs.python.org/3.12/library/http.server.html)只用于本次 loopback 教学，不提供生产服务所需的保护。
+
+### 1. 核对 v1，并留下四层观察
+
+**在 VPS 上只读检查。** 先看路径确实是本实验的普通文件／目录，再运行下面完整观察块。后面每次要求“重新观察”时，都重新执行这一块，重新取得 MainPID，不沿用旧的 shell 变量：
+
+```sh
+sudo ls -ld /etc/systemd/system/field-demo.service /srv/field-demo/public /srv/field-demo/public/index.html
+systemctl cat field-demo.service
+systemctl show field-demo.service -p FragmentPath -p DropInPaths -p User -p Group -p WorkingDirectory -p ExecStart -p MainPID -p ExecMainStartTimestamp -p ActiveState -p SubState
+pid=$(systemctl show --value -p MainPID field-demo.service)
+case "$pid" in
+  ''|0|*[!0-9]*) printf '%s\n' 'no running process; stop and check the service' ;;
+  *) ps -ww -p "$pid" -o pid=,lstart=,args=
+     sudo readlink -f "/proc/$pid/cwd" ;;
+esac
+sudo ss -lntp 'sport = :8080'
+curl --noproxy '*' --fail --max-time 5 http://127.0.0.1:8080/
+```
+
+起点应为：主 unit 是 `/etc/systemd/system/field-demo.service`、没有 drop-in，运行用户／组都是 `field-demo`；磁盘、manager 的两处目录和进程实际参数／cwd 均指向 `/srv/field-demo/public`；状态为 `active` / `running`、只监听 `127.0.0.1:8080`、正文为 `field-demo candidate`。这些是**要在参考环境核对的预期，不是实测终端记录**。
+
+在自己的运行记录中留下四层：磁盘定义、manager 属性、进程参数与启动时刻、直连响应。PID 数字可能复用，不要求它必然变化；结合启动时刻、运行参数和响应判断。若进程在观察中退出或重启，重读 MainPID 并查 journal，先解释变化，不把不一致硬记成通过。
+
+### 2. 留下 v1，准备新目录
+
+先确认下列**两个新路径都不存在**；`ls` 的不存在错误在这里可预期，任何已有文件、目录、symlink 或权限错误都先停：
+
+```sh
+sudo ls -ld /srv/field-demo/public-v2 /srv/field-demo/field-demo.service.v1
+```
+
+备份本次已经运行并核验的 v1 unit，检查复制结果，再新建 v2 目录。备份放在两个静态目录之外，不会被这个服务器提供：
+
+```sh
+sudo cp --no-clobber --preserve=mode,ownership,timestamps /etc/systemd/system/field-demo.service /srv/field-demo/field-demo.service.v1
+sudo cmp /etc/systemd/system/field-demo.service /srv/field-demo/field-demo.service.v1
+sudo ls -l /srv/field-demo/field-demo.service.v1
+sudo mkdir -m 0755 /srv/field-demo/public-v2
+printf '%s\n' 'field-demo v2' | sudo tee /srv/field-demo/public-v2/index.html >/dev/null
+sudo chmod 0644 /srv/field-demo/public-v2/index.html
+```
+
+预期 `cmp` 无输出且成功，备份内容与已核验的 v1 unit 一致；新目录和页面由 root 所有，教学用户可以读取。`mkdir` 遇到同名路径会失败，不复用失败后留下的目录继续写入。`public/index.html` 原样保留，此时请求仍应返回 v1。
+
+### 3. 只改磁盘定义，先不要重启
+
+```sh
+sudoedit /etc/systemd/system/field-demo.service
+```
+
+只把原 unit 中下面两行改为 v2，保留其余内容，尤其保留 loopback 绑定、用户与端口：
+
+```ini
+WorkingDirectory=/srv/field-demo/public-v2
+ExecStart=/usr/bin/python3 -m http.server 8080 --bind 127.0.0.1 --directory /srv/field-demo/public-v2
+```
+
+先做语法检查，再[重新观察四层](#1-核对-v1并留下四层观察)：
+
+```sh
+sudo systemd-analyze verify /etc/systemd/system/field-demo.service
+```
+
+`verify` 读取文件作检查，不把定义载入 manager，也不重启进程。此时 `systemctl cat` 应显示磁盘上的 v2；在没有其他重载或重启的前提下，`show` 中的目录仍是 v1，进程与响应也仍是 v1。若已有其他人或任务改动这个 unit，先查清，不继续覆盖。
+
+### 4. 让 manager 读到 v2，再看看请求
+
+```sh
+sudo systemctl daemon-reload
+```
+
+这会重读 manager 的 unit 配置与依赖关系；本次只编辑了教学 unit。随后[重新观察四层](#1-核对-v1并留下四层观察)：manager 的 `WorkingDirectory` 和 `ExecStart` 应已指向 `public-v2`，但原进程的参数／cwd 与启动时刻仍对应 v1，直连正文仍为 `field-demo candidate`。`daemon-reload` 没有替你执行服务的 restart。[Ubuntu Noble systemctl 手册](https://manpages.ubuntu.com/manpages/noble/man1/systemctl.1.html)
+
+**停一下：manager 已经显示 v2，curl 却返回 v1。下一项最有区分力的检查是什么？** 比较运行进程的参数，还是清浏览器缓存、开放防火墙？先作判断，再展开。
+
+<details>
+<summary>查看判断与解释</summary>
+<p>先看当前 MainPID 对应的进程参数、cwd 与启动时刻。manager 的新定义用于之后启动进程，当前进程仍带着旧的 <code>--directory</code>。这里用的是 VPS 本机 curl 直连，能够读到 v1 已经说明这条本机请求走通了；清浏览器缓存或开放公网端口不能解释进程的启动参数。若进程已经意外重启，先查 journal，不能继续假定它仍是原进程。</p>
+</details>
+
+### 5. 重启到 v2，核对行为
+
+```sh
+sudo systemctl restart field-demo.service
+```
+
+[重新观察四层](#1-核对-v1并留下四层观察)。预期进程是本次新启动的，参数与 cwd 均指向 `public-v2`，仍只监听 `127.0.0.1:8080`，响应正文变为 **`field-demo v2`**。这次新正文才是请求读到了 v2 的证据，不能只记 `active` 或 HTTP 200。若还保留着 07 的 SSH 转发，也可从本地刷新并核对同一标记；VPS 本机响应和转发后的响应分别记录。
+
+启动失败时停止继续试改，先用 `sudo systemctl stop field-demo.service` 停止失败重试，再读 `sudo journalctl -u field-demo.service -n 40 --no-pager`，沿下一步恢复已知有效的 v1。若修正后仍被启动频率限制拒绝，在确认配置已恢复后才对**这个 unit**执行 `sudo systemctl reset-failed field-demo.service` 并重新启动，不重置其他服务的失败状态。
+
+### 6. 恢复 v1，也要读回正文
+
+先比较备份和当前 unit：
+
+```sh
+sudo diff -u /srv/field-demo/field-demo.service.v1 /etc/systemd/system/field-demo.service
+```
+
+预期差异只有本次的两处目录，`diff` 因有差异返回 1 属正常；若还有不明修改，停止整体恢复，先协调 owner。确认备份仍是第 2 步保存的 v1 后，恢复这个教学文件：
+
+```sh
+sudo cp --preserve=mode,ownership,timestamps /srv/field-demo/field-demo.service.v1 /etc/systemd/system/field-demo.service
+sudo cmp /srv/field-demo/field-demo.service.v1 /etc/systemd/system/field-demo.service
+sudo systemd-analyze verify /etc/systemd/system/field-demo.service
+sudo systemctl daemon-reload
+sudo systemctl restart field-demo.service
+```
+
+再次[重新观察四层](#1-核对-v1并留下四层观察)：磁盘和 manager 回到 `public`，新启动进程的参数／cwd 指向 v1，loopback 监听符合预期，正文重新为 **`field-demo candidate`**。恢复过程任一步失败都先停并保留日志；复制成功不等于恢复已经生效。
+
+这个服务只有静态合成页面。退回旧 unit **不证明数据库升级、数据格式变更或新写入也能直接退回**；有状态应用仍按[迁移的数据边界](05-vps-to-vps.md#回滚分界目标是否已经接受新写入)制定恢复方案。
+
+### 7. 结束，或留待下一次
+
+全部练习结束后，关闭本地 SSH 转发，并按 [04 的收尾步骤](04-local-to-vps.md#继续练习在此结束与回来重启)在 VPS 停止服务，核对 `inactive` 与监听结束。本次没有 enable 开机启动；stop 后仍保留教学用户、unit、`public`、`public-v2` 和 v1 unit 备份。可以保留供检查，稍后只重启同一服务；要重新做从零练习或清理时，先逐项核对本次对象及其归属，不覆盖既有目录，也不递归删除未知内容。
+
+完整验收应在已授权的隔离 Ubuntu 环境走完 v1 → 仅改磁盘 → daemon-reload 后仍为 v1 → restart 后 v2 → 恢复 v1，并另走一次“上节已 stop、稍后回来重启”。记录 OS、systemd、Python、OpenSSH 与教材版本；真实操作和独立试读的未覆盖项见[维护记录](sources-and-maintenance.md#2026-10-26-同一个服务的连续实践候选)。
+
 ## 只读检查：显示配置来源而非值
 
 **运行位置：待检查的 Linux VPS；只读。** 目标 unit 用 `example-web.service` 占位，替换为你已确认的 unit。这些命令可能输出内联配置或含敏感路径，**输出只留在本机，不要整段贴到公开处**。
@@ -229,6 +355,8 @@ curl --noproxy '*' --connect-timeout 3 --max-time 10 -sS -o /dev/null \
 ## 来源与维护
 
 查阅日期：**2026-10-05**。systemd 示例按 Ubuntu 24.04 的 systemd 255.4 手册核对；未在真实主机运行服务重启、reload 或环境变更。文件语法检查、进程状态与客户端行为是不同的验证层。
+
+同一服务的更新／回退练习于 **2026-10-26** 按 Ubuntu Noble 的 systemctl 与 Python 3.12 http.server 官方文档重新核对；正文表述的是待实机核验的预期。只做过本机 Python 子进程的合成目录探针，真实 systemd 状态序列与 SSH 转发未验证，详见[维护记录](sources-and-maintenance.md#2026-10-26-同一个服务的连续实践候选)。
 
 - [systemd.exec(5)，Ubuntu 24.04](https://manpages.ubuntu.com/manpages/noble/man5/systemd.exec.5.html)：system manager 未设 `User=` 默认 root，普通 user manager 是该用户且不能切换其他身份；`Environment=` 等为进程属性，与磁盘上的文件不同。
 - [systemctl(1)，Ubuntu 24.04](https://manpages.ubuntu.com/manpages/noble/man1/systemctl.1.html)：`cat` 打印磁盘上的主文件与 drop-in，**并非合并后的有效配置**；未 `daemon-reload` 时可能与管理器理解不一致。

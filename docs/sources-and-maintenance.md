@@ -122,3 +122,15 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 本地通过 21 项标准库测试、13 项站点测试与静态构建；内部链接和 Markdown 命令检查通过。本次只改变正文链接与说明，没有重新执行界面交互或真实机器验收。当前是 source branch 的候选变更，PR 合入和 Pages 发布仍是独立步骤，不能沿用旧发布记录认定新正文已上线。
 
 该候选的首次 hosted Checks 在安装 Python 3.9 时停止：实际 `ubuntu-latest` runner 为 Ubuntu 26.04，而官方安装清单只提供 3.9 的 Ubuntu 22.04／24.04 x64 构建。Linux job 因此固定为 `ubuntu-24.04`，保留原有 Linux／Windows、Python 3.9／3.13 四组验证与同一测试入口。依据是[失败 job 的记录](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/39680726618/job/119502202747)与 [actions/python-versions 清单](https://github.com/actions/python-versions/blob/main/versions-manifest.json)，查阅于 2026-10-22；最终 CI 结果按 PR 的最新 source head 查看。
+
+### 2026-10-26 同一个服务的连续实践（候选）
+
+本轮把已有 `field-demo.service` 接入中英文 README、日常 Ops 与 SSH 转发的初学路径，沿用首日操作中已核验的连接目标、用户与密钥，明确继续运行、停止与回来重启三个分支。服务创建仍由第 04 章负责；[配置专题](configuration-and-runtime.md)承接同一服务的 v1 → 磁盘改为 v2 → manager 重载但旧进程仍服务 v1 → restart 后 v2 → 恢复 v1，其他章节与工单通过链接进入。
+
+教学基线仍为 Ubuntu 24.04、systemd 255.4。[Ubuntu Noble 的 systemctl 手册](https://manpages.ubuntu.com/manpages/noble/man1/systemctl.1.html)支持磁盘 unit、manager 加载定义与重启服务的区分；[Python 3.12 的 http.server 文档](https://docs.python.org/3.12/library/http.server.html)说明显式服务目录和教学服务器的限制，两者于 2026-10-26 重新查阅。实验同时切换 `WorkingDirectory` 与 `--directory`，保留独立的 v1／v2 目录，不把原地修改 HTML 描述成旧进程持有旧内容。
+
+本机 macOS、Python 3.13.3 的临时目录／loopback 子进程探针已观察到：显式 `--directory` 优先于进程工作目录；同一进程的新请求会读到刚修改的 HTML；新进程改用另一个目录后返回另一份正文。探针只使用合成文本，所建进程均已停止；它只验证 Python 行为，不能替代 systemd 实测。
+
+本地通过 21 项标准库测试、13 项站点测试和 46 项 Node 搜索测试，静态构建生成 42 个 HTML 页面、314 个搜索小节；相对链接、章节锚点、shell 语法与 `git diff --check` 通过，九章原有 119 个标题保持原文与顺序。浏览器实际走查首页／README → 04 实验 → 03 服务 → 07 转发 → 配置专题，检查了练习落点、折叠解释和回看观察块的锚点；1280px 桌面与 390px 手机视口中未观察到整页横向溢出，长代码块在自身区域横滑，手机目录可打开并导航。已走查页面没有 console 警告／错误。这是作者的阅读站走查，不是独立读者试读。
+
+本轮没有可用且已授权的隔离 Ubuntu 参考环境。真实 systemd 的完整状态序列、SSH 转发与“前节已停止、稍后回来”的操作分支，以及独立读者试读均**未验证**。后续验收需记录 OS／systemd／Python／OpenSSH 和教材版本，对照进程参数、启动时刻、loopback 监听及响应正文走完更新与恢复。当前为 source 候选；PR 合并、Pages 发布与线上正文验收分别确认。
