@@ -122,3 +122,33 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 本地通过 21 项标准库测试、13 项站点测试与静态构建；内部链接和 Markdown 命令检查通过。本次只改变正文链接与说明，没有重新执行界面交互或真实机器验收。当前是 source branch 的候选变更，PR 合入和 Pages 发布仍是独立步骤，不能沿用旧发布记录认定新正文已上线。
 
 该候选的首次 hosted Checks 在安装 Python 3.9 时停止：实际 `ubuntu-latest` runner 为 Ubuntu 26.04，而官方安装清单只提供 3.9 的 Ubuntu 22.04／24.04 x64 构建。Linux job 因此固定为 `ubuntu-24.04`，保留原有 Linux／Windows、Python 3.9／3.13 四组验证与同一测试入口。依据是[失败 job 的记录](https://github.com/IndelibleVivi/infra-field-guide/actions/runs/39680726618/job/119502202747)与 [actions/python-versions 清单](https://github.com/actions/python-versions/blob/main/versions-manifest.json)，查阅于 2026-10-22；最终 CI 结果按 PR 的最新 source head 查看。
+
+### 2026-10-26 同一个服务的连续实践（候选）
+
+本轮把已有 `field-demo.service` 接入中英文 README、日常 Ops 与 SSH 转发的初学路径，沿用首日操作中已核验的连接目标、用户与密钥，明确继续运行、停止与回来重启三个分支。服务创建仍由第 04 章负责；[配置专题](configuration-and-runtime.md)承接同一服务的 v1 → 磁盘改为 v2 → manager 重载但旧进程仍服务 v1 → restart 后 v2 → 恢复 v1，其他章节与工单通过链接进入。
+
+教学基线仍为 Ubuntu 24.04、systemd 255.4。[Ubuntu Noble 的 systemctl 手册](https://manpages.ubuntu.com/manpages/noble/man1/systemctl.1.html)支持磁盘 unit、manager 加载定义与重启服务的区分；[Python 3.12 的 http.server 文档](https://docs.python.org/3.12/library/http.server.html)说明显式服务目录和教学服务器的限制，两者于 2026-10-26 重新查阅。实验同时切换 `WorkingDirectory` 与 `--directory`，保留独立的 v1／v2 目录，不把原地修改 HTML 描述成旧进程持有旧内容。
+
+本机 macOS、Python 3.13.3 的临时目录／loopback 子进程探针已观察到：显式 `--directory` 优先于进程工作目录；同一进程的新请求会读到刚修改的 HTML；新进程改用另一个目录后返回另一份正文。探针只使用合成文本，所建进程均已停止；它只验证 Python 行为，不能替代 systemd 实测。
+
+本地通过 21 项标准库测试、13 项站点测试和 46 项 Node 搜索测试，静态构建生成 42 个 HTML 页面、314 个搜索小节；相对链接、章节锚点、shell 语法与 `git diff --check` 通过，九章原有 119 个标题保持原文与顺序。浏览器实际走查首页／README → 04 实验 → 03 服务 → 07 转发 → 配置专题，检查了练习落点、折叠解释和回看观察块的锚点；1280px 桌面与 390px 手机视口中未观察到整页横向溢出，长代码块在自身区域横滑，手机目录可打开并导航。已走查页面没有 console 警告／错误。这是作者的阅读站走查，不是独立读者试读。
+
+本轮没有可用且已授权的隔离 Ubuntu 参考环境。真实 systemd 的完整状态序列、SSH 转发与“前节已停止、稍后回来”的操作分支，以及独立读者试读均**未验证**。后续验收需记录 OS／systemd／Python／OpenSSH 和教材版本，对照进程参数、启动时刻、loopback 监听及响应正文走完更新与恢复。当前为 source 候选；PR 合并、Pages 发布与线上正文验收分别确认。
+
+### 2026-10-28 Restart-readiness 运维检查
+
+[日常运维的更新与重启章节](03-operations.md#重启前先做-restart-readiness-检查)新增当前健康与重启就绪的区别：启动 owner、地址/端口竞争、非交互配置与权限、canonical 数据与派生索引、备份恢复证据分别验收。内容从一次私有基础设施事故中提炼为通用机制和合成示例，不包含真实主机、账号、路径、服务数据或私有日志；公开教程本身不执行真实服务器变更。
+
+本地通过 21 项标准库测试、13 项站点测试和 46 项 Node 搜索测试。使用仓库已有 `.local/site-venv` 构建 42 个 HTML 页面和 316 个搜索小节，内部链接、章节锚点、shell 静态语法与 `git diff --check` 通过。首次以系统 Python 运行站点测试时缺少声明的 Markdown 依赖，改用项目虚拟环境后完成验证，未安装新包。新章节在本地预览完成 1440px 桌面与 360px 手机浏览器检查：标题、正文和目录锚点可达，未观察到整页横向溢出，表格保留自身区域的横向滚动与提示。本次只更新 source 与本地生成物；真实主机 audit、PR、Pages 发布和发布后阅读验收分别确认。
+
+### 2026-10-28 意外重启调查候选
+
+[排障的意外重启小节](08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障)把 boot 边界与 boot 后服务故障分开：按 UTC 时间和确切 boot ID 查阅上一/当前启动日志，以 `last -x`、更新活动、OOM/panic/watchdog/I/O 线索、启动后恢复记录及 provider 事件相互佐证。内容保留 confirmed/probable/unknown 的差别，明确日志缺失不等于排除原因、当前更新配置不等于历史配置、新 kernel 不等于更新导致重启；恢复路径复用[03 的 restart readiness](03-operations.md#重启前先做-restart-readiness-检查)，不把 read-only audit PASS 当作实际 reboot rehearsal。示例只有合成时间线、占位 ID 和通用机制，没有真实主机、账号或运行数据。
+
+于 **2026-10-28** 查阅 [Ubuntu Noble journalctl(1)](https://manpages.ubuntu.com/manpages/noble/man1/journalctl.1.html)、[last(1)](https://manpages.ubuntu.com/manpages/noble/man1/last.1.html)、[apt-config(8)](https://manpages.ubuntu.com/manpages/noble/man8/apt-config.8.html) 与 [Ubuntu automatic updates](https://documentation.ubuntu.com/server/how-to/software/automatic-updates/)。核对 boot ID、保留日志首末范围、UTC／ISO 时间输出、定点查询配置和自动重启默认值；配置查询未显示某键不代表该功能关闭。正文还补充跨实例时间对照与故障域边界：相近中断支持共同事件推断，不能仅凭地区、IP 或主备角色证明 node、存储、供电独立。
+
+本地通过 21 项标准库测试、13 项站点测试和 51 项 Node 搜索测试；用仓库已有 `.local/site-venv` 构建 42 个 HTML 页面和 320 个搜索小节。相对链接、章节锚点、shell 静态语法、`node --check site/search.js` 与 `git diff --check` 通过，且九章既有标题和代码块未被替换。公开示例未在真实主机逐条执行；另行授权的私有只读事故调查不等于教程的完整实机验收。本次未重启主机、清理日志、重建索引或部署服务，PR 合并与 Pages 发布分别确认。
+
+本地 Chromium 在 1440×1000 桌面与 390×844 手机尺寸完成新章节阅读和锚点验收，四种重启问法经实际搜索到达正文。手机长代码块和结论表格可在各自区域横向滚动，整页宽度保持视口宽度；已走查页面 console 无 warning/error。此结果不代表真实设备或正式 Pages 已更新。
+
+同日补充 guest 自动更新与 provider 宿主节点维护的层级区别：guest 的重启配置不能约束宿主维护；供应商针对具体事件的确认可以收口原因，但应注明证据来源，不能扩写为已独立核验内部记录或具体电源动作。公开正文只保留通用判断方法，不收录私人工单、供应商人员身份或回复原文。

@@ -145,6 +145,8 @@ rsync -rlt --itemize-changes --partial \
 
 ## 6. 把一个 dev 命令交给 systemd 管理
 
+**从初学路线直接来到这里：** 先完成 [02 · 首次建机](02-first-server.md#6-验证第二次独立登录与-sudo)，确认目标为 Ubuntu 24.04、PID 1 是 systemd，普通用户能独立 SSH 登录并使用 sudo；保留 console 恢复路径。沿用你已核验的主机、SSH 端口、用户与密钥，只做本节，不需要先做本章的文件迁移。`candidate-vps` 是前文迁移工单里的目标 alias，本练习不要求创建它。
+
 下面是**无 secrets、无写入、仅 loopback 的静态文件实验**，用来学习“启动命令 → service → 日志 → 停止”的过程。Python `http.server` 不适合作为生产 Web server；它不提供认证，而且会跟随文件 symlink。目录只放本次合成页面，不放代码仓库、私人文件或任何 symlink。真实应用应使用项目支持的 production server。[Python 3.12 `http.server`](https://docs.python.org/3.12/library/http.server.html)
 
 **在目标 Ubuntu VPS：**先确认 `/srv/field-demo`、`field-demo` 用户及 `field-demo.service` 都不是已有业务。若已有同名对象，停下选择另一套名称，不覆盖。
@@ -154,9 +156,11 @@ getent passwd field-demo
 getent group field-demo
 systemctl status field-demo.service --no-pager
 ls -ld /srv/field-demo
+ls -ld /etc/systemd/system/field-demo.service /etc/systemd/system/field-demo.service.d
+sudo ss -lntp 'sport = :8080'
 ```
 
-这一组在全新实验上预期显示不存在；若显示已有对象，不继续下面创建步骤。确认 `/usr/bin/python3` 存在且创建演示服务已获授权后：
+这一组在全新实验上预期用户、组、unit 与路径都不存在，8080 无监听。不存在的查询可返回非零；权限不足、同名对象、已有监听或不明错误都先停，不继续创建。确认 `/usr/bin/python3` 存在且创建演示服务已获授权后，逐段执行；任一步失败先处理该步，不继续启动：
 
 ```bash
 sudo useradd --system --user-group --no-create-home \
@@ -196,20 +200,40 @@ sudo systemd-analyze verify /etc/systemd/system/field-demo.service
 sudo systemctl daemon-reload
 sudo systemctl start field-demo.service
 systemctl status field-demo.service --no-pager
-journalctl -u field-demo.service -n 30 --no-pager
-ss -lntp 'sport = :8080'
+sudo journalctl -u field-demo.service -n 30 --no-pager
+sudo ss -lntp 'sport = :8080'
 curl --noproxy '*' --fail --max-time 5 http://127.0.0.1:8080/
 ```
 
 预期 verify 无 unit 错误、进程运行、只监听 `127.0.0.1:8080`，响应正文是 `field-demo candidate`。`active` 只证明进程存在；正文检查才能确认这次请求到了预期目录。若失败，先 `sudo systemctl stop field-demo.service`，检查 journal 中的路径、用户权限、端口占用，不开放防火墙来处理本地启动错误。`Type=exec`、重启策略和 journal 属于 systemd 的 service/执行语义。[systemd service 源文档](https://github.com/systemd/systemd/blob/v255/man/systemd.service.xml)、[systemd execution 源文档](https://github.com/systemd/systemd/blob/v255/man/systemd.exec.xml)
 
-**在管理电脑，已验证 `candidate-vps` SSH alias；保持此窗口打开：**
+现在可以回 [03 第 4 节](03-operations.md#4-谁负责让进程继续运行)看同一服务的 owner 和日志，再按 [07 第 5 节的完整 SSH 转发步骤](07-network-and-proxies.md#5-最小实用练习用-ssh-访问自己服务器上的本机服务)，从管理电脑访问 `http://127.0.0.1:18080/`。07 的命令沿用 02 的连接示例；替换成已核验的目标、用户、密钥和端口。管理电脑上的 `127.0.0.1:18080` 是转发入口，VPS 上的 `127.0.0.1:8080` 是服务监听；本机浏览器应读到同一正文。这里无需新增公网入站端口，也没有配置公网认证或 Tunnel。
+
+### 继续练习、在此结束与回来重启
+
+**继续这次实践：** 保持 loopback 服务运行，再做 [07 的转发](07-network-and-proxies.md#5-最小实用练习用-ssh-访问自己服务器上的本机服务)和[同一服务的更新与回退](configuration-and-runtime.md#实操同一个服务的更新与回退)。这次只执行 `start`，没有启用开机启动。转发窗口的 `Ctrl+C` 只关闭 SSH 通道，VPS service 继续运行。
+
+**在此结束或暂时离开：在 VPS 上**停止服务并确认状态：
 
 ```bash
-ssh -N -L 18080:127.0.0.1:8080 operator@candidate-vps
+sudo systemctl stop field-demo.service
+systemctl is-active field-demo.service
+sudo ss -lntp 'sport = :8080'
 ```
 
-在管理电脑浏览器打开 `http://127.0.0.1:18080/`，应看见同一正文。`Ctrl-C` 关闭的是本地 SSH 转发，VPS service 继续运行。这里无需新增公网入站端口，也没有配置公网认证或 tunnel。若只做实验，最后在目标执行 `sudo systemctl stop field-demo.service`；若明确决定保留并随开机启动，验收后才执行 `sudo systemctl enable field-demo.service`。`enable` 不替代一次真实的重启恢复验收；重启须安排窗口。
+预期 `inactive`（此时 `is-active` 返回非零属预期），且没有本实验的 8080 监听；若仍有监听，先识别 owner，不停止陌生进程。unit、用户和 `/srv/field-demo` 中的文件仍在，stop 不删除它们。可以保留供下次练习；想清理时先按本次实际创建对象逐项核实，删除文件、用户和 unit 是另一个动作，不套用递归清理。正式决定让自己的应用开机运行时，再另行安排 enable 与重启恢复验收。
+
+**稍后回来：** 沿用 02 已核验的连接进入同一台 VPS，先确认 unit 仍属于本实验，再启动同一个服务，不重做 useradd 或创建文件：
+
+```bash
+systemctl cat field-demo.service
+sudo systemctl start field-demo.service
+systemctl status field-demo.service --no-pager
+sudo ss -lntp 'sport = :8080'
+curl --noproxy '*' --fail --max-time 5 http://127.0.0.1:8080/
+```
+
+未做更新或已回退时，应读到 `field-demo candidate`；若上次停在 v2，先到[更新与回退](configuration-and-runtime.md#实操同一个服务的更新与回退)确认当前阶段，不能把 v2 当成未知服务重建。确认 VPS 本机响应之后，再开本地转发，避免把尚未启动的服务误判成网络故障。
 
 真实应用沿用同样的 owner、绝对路径和日志思路，但从自己的 runbook 填写 `ExecStart`、数据目录和 secrets。不要把 `.env` 上传到静态目录。若应用只能读取 environment file，单独放在受限目录，限制读取权限；service 环境不是 secret vault，别把密码拼进命令行、日志或 Git。
 

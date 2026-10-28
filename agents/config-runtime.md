@@ -2,6 +2,8 @@
 
 依据：[配置如何生效](../docs/configuration-and-runtime.md)、[跨机器运维](../docs/multi-machine-operations.md)与[共用执行规则](README.md#所有工单共用的执行规则)。
 
+需要隔离练习时，复用[同一个 field-demo 服务的更新与回退](../docs/configuration-and-runtime.md#实操同一个服务的更新与回退)：先核对 04 创建的 unit，保留 v1，切换两处目录，分别观察磁盘、manager、进程与正文，再恢复。该教程不授予真实机器写入权限；未经对目标实验的具体授权，只读检查或审阅候选步骤。真实 systemd、SSH 与读者验收的范围见[维护记录](../docs/sources-and-maintenance.md#2026-10-26-同一个服务的连续实践候选)。
+
 ```text
 目标：<准确机器/服务；VPS 可使用已核实的 SSH alias>
 现象：<改了配置没生效 / 服务找不到命令 / 版本不一致 / reload 或 restart 后行为不变 / 其他>
