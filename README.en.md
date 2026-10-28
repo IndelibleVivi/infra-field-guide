@@ -23,6 +23,7 @@ The guide combines primary documentation, synthetic examples, and operational ex
 | Understand plans before buying | [01 · VPS basics](docs/01-vps-basics.md) | A workload, resource, network and budget checklist |
 | Set up a new server | [02 · First day](docs/02-first-server.md) | Recovery access, independent login, limited exposure |
 | Deal with memory pressure or full disks | [03 · Operations](docs/03-operations.md), [08 · Troubleshooting](docs/08-troubleshooting.md) | Layered diagnosis, swap/OOM context and recovery |
+| A VPS rebooted unexpectedly and services failed afterward | [08 · Reboot investigation](docs/08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障), [03 · Restart readiness](docs/03-operations.md#重启前先做-restart-readiness-检查) | Establish the boot boundary and evidence, then separate the reboot trigger from post-boot failures |
 | Move a local service to a VPS | [04 · Local → VPS](docs/04-local-to-vps.md) | Candidate deployment, data transfer, ingress and client checks |
 | Switch servers or providers | [05 · VPS → VPS](docs/05-vps-to-vps.md) | One active writer and a data-aware cutover/recovery plan |
 | Reorganize a Claude environment after account problems | [06 · Backup, cleanup and recovery](docs/06-account-recovery.md) | Two attributed approaches, concrete state locations and selective restoration |
@@ -43,7 +44,7 @@ New readers can start with **01 → 02**. Once independent SSH login works, foll
 
 **Manage the same small service:** [create `field-demo` in chapter 04, section 6](docs/04-local-to-vps.md#6-把一个-dev-命令交给-systemd-管理) → [inspect its service, process and logs in 03, section 4](docs/03-operations.md#4-谁负责让进程继续运行) → [reach it from your computer in 07, section 5](docs/07-network-and-proxies.md#5-最小实用练习用-ssh-访问自己服务器上的本机服务) → [update to v2, inspect a change that has not taken effect, and return to v1](docs/configuration-and-runtime.md#实操同一个服务的更新与回退). Start with just that section of 04, using the SSH target, user and key already verified in 02. Keep the service running while continuing; if you stopped it, follow that section to start it again and check the response on the VPS. Stop the experiment when finished. Return to resource and swap sections when a symptom calls for them. The practice is written in Chinese; real systemd and SSH acceptance remains separate from the repository checks.
 
-Local search recognizes common questions such as “SSH 超时”, “磁盘满”, “UDP123”, “时间 hook”, “多 harness”, “配置没生效”, “定时任务漏跑”, and “删了磁盘没变”, with multiple-keyword matching. Each chapter has an expandable environment and verification note, plus a comprehension question with a collapsed answer.
+Local search recognizes common questions such as “SSH 超时”, “磁盘满”, “昨晚重启了”, “自动更新重启”, “重启后服务没起来”, “UDP123”, “时间 hook”, “多 harness”, “配置没生效”, “定时任务漏跑”, and “删了磁盘没变”, with multiple-keyword matching. Each chapter has an expandable environment and verification note, plus a comprehension question with a collapsed answer.
 
 ## Run a synthetic example
 

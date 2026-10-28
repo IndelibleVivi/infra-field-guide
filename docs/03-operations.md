@@ -324,6 +324,8 @@ sudo ss -lntup
 
 audit 本身也要按真实 owner 验收。带 sudo 的交互终端能运行，不代表 user systemd 也有同样权限；非交互环境可能缺少 TTY、agent、PATH 或 supplementary group。至少手动执行一次对应 service，读它的 `Result`、退出码和 journal。timer 留下 failed unit 只证明本地有可见记录，不证明已经收到外部告警；没有实际重启，也不能把 audit PASS 写成 reboot rehearsal 通过。
 
+如果是已经发生且原因未知的意外重启，先从 [08 的 boot 边界调查](08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障)固定上一/当前 boot ID、UTC 时间线与 provider 侧证据；再回来按上面的 readiness 项检查启动后故障。不要把重启后暴露的端口竞争或派生状态问题，反推成 reboot 的触发原因。
+
 ## 7. 备份至少要成功恢复一次
 
 先定义两件事：你最多能接受丢掉多久的数据（RPO），多久必须恢复使用（RTO）。一天一次备份可能丢掉一天数据；某个压缩包下载要半天，也就不可能满足一小时恢复目标。备份内容要包含应用数据、可重建的配置和必要版本信息，密钥单独受控保存；凭据不能因为“在备份里”就变成公开材料。

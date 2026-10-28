@@ -37,11 +37,107 @@
 | 502 / 504 | 入口能否连接正确 origin 端口与协议 | `http`/`https` 配错、容器 localhost、进程退出、超时 |
 | 401 / 403 | 哪一层返回响应，认证是谁发起的 | Access、应用、API provider 和账号权限分别处理 |
 | 机器卡死、exit 137 | kernel OOM、cgroup 内存限制、人工 kill、PSI | exit 137 本身不证明 OOM；读[Ops](03-operations.md) |
+| 机器昨夜自己重启，或重启后服务没起来 | 先固定 boot 边界与 UTC 时间；重启触发和 boot 后故障分开查 | 读[意外重启调查](#vps-突然重启先分开-boot-边界与启动后故障) |
 | 磁盘还有空间但写失败 | `df -h` 与 `df -i`；目标是否在另一挂载点 | inode、权限、只读挂载、quota、打开但未释放的日志 |
 | 迁完后偶尔读到旧内容 | DNS/Tunnel 多入口与两个 writer | 暂停有冲突的写入，核实状态 owner，勿直接切回旧库 |
 | VPS 能看到 Mac，但 SSH 不行 | tailnet 路径、TCP22、普通 SSH key 与用户逐层检查 | 走[私有远程访问](09-private-access.md) |
 | SSH 登录正常，agent 的 build 失败 | 用真实 worker 用户跑相同的非交互命令 | [PATH](glossary.md#path)、cwd、挂载盘、TCC、权限和 runtime；登录 shell 成功不够 |
 | Claude 网页好，CLI 异常 | 实际 config directory 与认证来源 | 走[CC 环境清理与恢复](06-account-recovery.md) |
+
+## VPS 突然重启：先分开 boot 边界与启动后故障
+
+“机器自己重启”其实是两个问题：它为什么离开上一个 boot，以及新 boot 后为什么有服务没起来。先建立一条 **UTC 时间线**，不要把“日志在启动前结束”“换了一个 kernel”“启动后端口冲突”混成同一个因果结论。
+
+**运行位置：VPS；以下均为只读检查。**
+
+```sh
+timedatectl
+date --utc --iso-8601=seconds
+sudo env TZ=UTC journalctl --list-boots --no-pager
+```
+
+`timedatectl` 同时显示本机时区与 UTC 状态；记录事件时写清原时区，交换日志前统一换成 UTC，并核对输出实际标注的时区。`--list-boots` 给出仍有日志的 boot ID 与保留记录的首末时间，第一条可能只是轮转后的最早保留记录，不能直接当作开机时刻；发生下一次重启后，`-b -1` 指向的对象也会改变。把**同一次调查**要比较的当前与可疑上一 boot ID 固定下来；下面的 `REPLACE_WITH_...` 是占位符，先替换为输出中的 ID，再执行查询：
+
+```sh
+PREV_BOOT='REPLACE_WITH_PREVIOUS_BOOT_ID'
+CURRENT_BOOT='REPLACE_WITH_CURRENT_BOOT_ID'
+uname -r
+sudo journalctl -k -b "$PREV_BOOT" --utc --no-pager -o short-iso-precise --grep='Linux version'
+sudo journalctl -k -b "$CURRENT_BOOT" --utc --no-pager -o short-iso-precise --grep='Linux version'
+sudo journalctl -b "$PREV_BOOT" --utc -n 40 --no-pager -o short-iso-precise
+sudo journalctl -b "$PREV_BOOT" --utc -k -n 40 --no-pager -o short-iso-precise
+sudo journalctl -b "$CURRENT_BOOT" --utc -n +40 --no-pager -o short-iso-precise
+```
+
+一条 `Linux version` 记录可能缺失；那只会让该 boot 的 kernel 版本变成 unknown，不等于这条调查命令失败。一种值得记录的合成证据模式是：上一 boot 的末尾记录在 `T1Z` 突然停止，看到的最后 kernel 版本是 A；下一个 boot 的 ID 不同，并在更晚的 `T2Z` 以 kernel 版本 B 启动。它**确认**了 boot 边界和两段日志之间的 gap，也可能说明没有留下完整 orderly shutdown；它不能确认故障从 `T1Z` 精确开始、中间持续了多久，也不能仅凭 kernel 改变判定 OOM、provider reset 或自动更新重启动。上一条日志的服务时间不等于最后一个成功客户端请求的时间。
+
+`last -x` 可以补充 shutdown、reboot 与 runlevel 记录：
+
+```sh
+env TZ=UTC last -x --time-format iso -n 12 reboot shutdown runlevel
+```
+
+shutdown 记录可以佐证曾进入关机流程；单独一条 reboot 记录只佐证启动，不保证此前正常关机。没有记录则可能是轮转、wtmp 未保留、记录方式不同或系统确实没有写下，不能单独排除任何原因。输出仍可能含主机信息，不要原样贴到公共 issue。
+
+### 更新、崩溃与启动后恢复各看什么
+
+先查上一 boot 是否恰有自动更新动作，但把“任务运行过”与“它要求或执行了 reboot”分开：
+
+```sh
+sudo journalctl -b "$PREV_BOOT" --utc --no-pager -o short-iso-precise \
+  -u apt-daily.service -u apt-daily-upgrade.service \
+  -u unattended-upgrades.service -u systemd-logind.service
+apt-config shell IFG_UPDATE_ENABLED APT::Periodic::Unattended-Upgrade \
+  IFG_AUTO_REBOOT Unattended-Upgrade::Automatic-Reboot \
+  IFG_REBOOT_TIME Unattended-Upgrade::Automatic-Reboot-Time \
+  IFG_REBOOT_WITH_USERS Unattended-Upgrade::Automatic-Reboot-WithUsers
+```
+
+`apt-config shell` 只打印这四个键的赋值文本，无需 `eval`。它反映**此刻**合并后的配置，不是事件当时的快照；机器可能在调查前改过配置。某个键没有输出，只表示此配置层没有显式值，还要查安装版本的默认值；Ubuntu 官方说明的 `Automatic-Reboot` 默认是 false。
+
+检查 `/var/log/unattended-upgrades/`、`/var/log/apt/history.log` 及其轮转文件，对齐日志原时区、实际升级包、完成时间和明确的 reboot 请求。新 kernel 已经运行，只说明本次 boot 使用了它；它可能多日前已安装，不能反过来证明更新触发了 reboot。
+
+再从上一 boot 搜异常结束线索，保留前后文与时间，不复制整份 journal：
+
+```sh
+sudo journalctl -b "$PREV_BOOT" --utc --no-pager -o short-iso-precise \
+  --grep='Out of memory|oom-kill|Killed process|Kernel panic|watchdog|I/O error|hung task|BUG:|MCE' --case-sensitive=no
+```
+
+命中 OOM、panic、watchdog、I/O error 等关键词只是 clue，也要读同一时刻的上下文；没有命中可能只是日志未保留。若 `--list-boots` 缺历史，先用准确的 UTC `--since`/`--until` 复查仍有保留的窗口，并检查 journal 存储与保留范围。不要为了“再看看”而硬重启、restart 服务、vacuum 或清 journal、重建索引；这些动作会改变状态或消耗原始证据。
+
+新 boot 开始后的恢复消息，可以帮助解释文件系统、应用或服务为何启动较慢：
+
+```sh
+sudo journalctl -b "$CURRENT_BOOT" --utc --no-pager -o short-iso-precise \
+  --grep='recover|replay|fsck|orphan|dirty|remount|read-only|unclean|corrupt' --case-sensitive=no
+```
+
+出现 recovery、replay 或 fsck 线索，说明 boot 后曾做过恢复或检查；它不证明数据完整，也不说明是哪种事件造成。启动后服务的端口竞争、环境、派生索引和备份问题，按[重启就绪检查](03-operations.md#重启前先做-restart-readiness-检查)恢复；当前 read-only audit 通过，也不能说实际 reboot rehearsal 已通过。
+
+最后检查 provider 侧的 tasks、power、node、migration 与 maintenance 事件。保存事件时间（含原时区并换算 UTC）、类型、实例标识和 support 回复编号；必要时请 provider 说明该窗口是否发生 host power cycle、node reset 或维护迁移。任务显示 `Boot` 只说明有启动任务，未显示发起者时不能判断是用户、operator 还是自动恢复；任务的完成状态与 guest 实际启动也要分别核对。控制面板当前 Running 不还原历史动作，provider 记录也不能单独解释启动后的服务错误。
+
+若另有已授权可查的实例，可以比较同一 UTC 窗口的末条日志、unclean recovery 和 Boot 任务。多台实例相近时刻异常中断，支持共同基础设施事件的推断；同一地区、不同 IP 或主备角色都不能证明物理 node、存储和供电相互独立。请 provider 确认实际故障域，别把同地区两台 VPS 自动算成独立备份。公开材料使用合成标识；向 provider 的私人工单只提供定位事件所需的实例标识和脱敏证据，不附凭据或业务数据。
+
+### 把结论写成 confirmed、probable 与 unknown
+
+| 状态 | 可以这样写 | 不能这样写 |
+| --- | --- | --- |
+| confirmed | “`BOOT_X` 保留的最后日志是 `T1Z`，`BOOT_Y` 的首条是 `T2Z`；可查到两者 kernel 为 A/B。” | “`BOOT_X` 正好在 `T1Z` 崩溃。” |
+| probable | “更新任务、provider 事件与 shutdown 记录在同一 UTC 窗口内对齐，最可能是某种 orderly reboot。” | “配置已开启自动重启，所以这次一定是更新重启。” |
+| unknown | “历史 journal 只保留当前 boot；provider 无事件记录；触发原因未知。” | “没看到 OOM，所以不是 OOM。” |
+
+最小私人证据包只保留足以复核时间线与结论的材料：
+
+```text
+事件窗口（UTC；原始时区另注）：
+上一/当前 BOOT ID，上一 boot 最后一条/当前首条时间：
+上一/当前 kernel：
+orderly shutdown、更新、provider 事件各自看到了什么：
+OOM/panic/watchdog/I/O/postboot recovery 线索及时间：
+当前 boot 的 failed units 与最初用户症状：
+缺少的记录、权限限制与已经做过的动作：
+```
 
 ## 一条 HTTP 请求怎样分段验证
 
@@ -120,7 +216,7 @@ journalctl -k --since '1 hour ago' --no-pager
 希望执行的下一步及授权范围：
 ```
 
-来源与参数核对日期：**2026-10-02**。HTTP/代理参数依据 [curl 官方手册](https://curl.se/docs/manpage.html)；SSH 依据 [OpenSSH 手册](https://man.openbsd.org/ssh.1)。各子系统的版本来源与恢复步骤链接在对应章节。
+HTTP/SSH 来源与参数核对日期：**2026-10-02**，依据 [curl 官方手册](https://curl.se/docs/manpage.html)和 [OpenSSH 手册](https://man.openbsd.org/ssh.1)。意外重启小节于 **2026-10-28** 核对 [Ubuntu Noble journalctl(1)](https://manpages.ubuntu.com/manpages/noble/man1/journalctl.1.html)、[last(1)](https://manpages.ubuntu.com/manpages/noble/man1/last.1.html)、[apt-config(8)](https://manpages.ubuntu.com/manpages/noble/man8/apt-config.8.html) 与 [Ubuntu automatic updates](https://documentation.ubuntu.com/server/how-to/software/automatic-updates/)，验证范围见[来源与维护](sources-and-maintenance.md#2026-10-28-意外重启调查候选)。各子系统的版本来源与恢复步骤链接在对应章节。
 
 **想一想：进程以 137 退出，是否可以直接判定为内存不够？**
 

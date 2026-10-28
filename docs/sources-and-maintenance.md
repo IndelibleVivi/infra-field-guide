@@ -140,3 +140,13 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 [日常运维的更新与重启章节](03-operations.md#重启前先做-restart-readiness-检查)新增当前健康与重启就绪的区别：启动 owner、地址/端口竞争、非交互配置与权限、canonical 数据与派生索引、备份恢复证据分别验收。内容从一次私有基础设施事故中提炼为通用机制和合成示例，不包含真实主机、账号、路径、服务数据或私有日志；公开教程本身不执行真实服务器变更。
 
 本地通过 21 项标准库测试、13 项站点测试和 46 项 Node 搜索测试。使用仓库已有 `.local/site-venv` 构建 42 个 HTML 页面和 316 个搜索小节，内部链接、章节锚点、shell 静态语法与 `git diff --check` 通过。首次以系统 Python 运行站点测试时缺少声明的 Markdown 依赖，改用项目虚拟环境后完成验证，未安装新包。新章节在本地预览完成 1440px 桌面与 360px 手机浏览器检查：标题、正文和目录锚点可达，未观察到整页横向溢出，表格保留自身区域的横向滚动与提示。本次只更新 source 与本地生成物；真实主机 audit、PR、Pages 发布和发布后阅读验收分别确认。
+
+### 2026-10-28 意外重启调查候选
+
+[排障的意外重启小节](08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障)把 boot 边界与 boot 后服务故障分开：按 UTC 时间和确切 boot ID 查阅上一/当前启动日志，以 `last -x`、更新活动、OOM/panic/watchdog/I/O 线索、启动后恢复记录及 provider 事件相互佐证。内容保留 confirmed/probable/unknown 的差别，明确日志缺失不等于排除原因、当前更新配置不等于历史配置、新 kernel 不等于更新导致重启；恢复路径复用[03 的 restart readiness](03-operations.md#重启前先做-restart-readiness-检查)，不把 read-only audit PASS 当作实际 reboot rehearsal。示例只有合成时间线、占位 ID 和通用机制，没有真实主机、账号或运行数据。
+
+于 **2026-10-28** 查阅 [Ubuntu Noble journalctl(1)](https://manpages.ubuntu.com/manpages/noble/man1/journalctl.1.html)、[last(1)](https://manpages.ubuntu.com/manpages/noble/man1/last.1.html)、[apt-config(8)](https://manpages.ubuntu.com/manpages/noble/man8/apt-config.8.html) 与 [Ubuntu automatic updates](https://documentation.ubuntu.com/server/how-to/software/automatic-updates/)。核对 boot ID、保留日志首末范围、UTC／ISO 时间输出、定点查询配置和自动重启默认值；配置查询未显示某键不代表该功能关闭。正文还补充跨实例时间对照与故障域边界：相近中断支持共同事件推断，不能仅凭地区、IP 或主备角色证明 node、存储、供电独立。
+
+本地通过 21 项标准库测试、13 项站点测试和 51 项 Node 搜索测试；用仓库已有 `.local/site-venv` 构建 42 个 HTML 页面和 320 个搜索小节。相对链接、章节锚点、shell 静态语法、`node --check site/search.js` 与 `git diff --check` 通过，且九章既有标题和代码块未被替换。公开示例未在真实主机逐条执行；另行授权的私有只读事故调查不等于教程的完整实机验收。本次未重启主机、清理日志、重建索引或部署服务，PR 合并与 Pages 发布分别确认。
+
+本地 Chromium 在 1440×1000 桌面与 390×844 手机尺寸完成新章节阅读和锚点验收，四种重启问法经实际搜索到达正文。手机长代码块和结论表格可在各自区域横向滚动，整页宽度保持视口宽度；已走查页面 console 无 warning/error。此结果不代表真实设备或正式 Pages 已更新。
