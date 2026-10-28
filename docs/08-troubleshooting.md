@@ -117,6 +117,8 @@ sudo journalctl -b "$CURRENT_BOOT" --utc --no-pager -o short-iso-precise \
 
 最后检查 provider 侧的 tasks、power、node、migration 与 maintenance 事件。保存事件时间（含原时区并换算 UTC）、类型、实例标识和 support 回复编号；必要时请 provider 说明该窗口是否发生 host power cycle、node reset 或维护迁移。任务显示 `Boot` 只说明有启动任务，未显示发起者时不能判断是用户、operator 还是自动恢复；任务的完成状态与 guest 实际启动也要分别核对。控制面板当前 Running 不还原历史动作，provider 记录也不能单独解释启动后的服务错误。
 
+**区分 guest 更新与宿主节点维护。** VPS 内的 `unattended-upgrades` 管理 guest OS；provider 为宿主节点安装 kernel security updates 而做的维护属于另一层，关闭 guest 的自动重启不能阻止这类中断。若 provider 在对应工单中确认节点维护导致了该次 VPS 中断，可以将原因写成“供应商确认的节点维护”，并注明来源；这不等于已独立核验其内部记录，也不自动确定具体 CVE、断电方式或每个 Boot 任务的发起者。后续仍须分别验收 guest 启动和业务恢复。
+
 若另有已授权可查的实例，可以比较同一 UTC 窗口的末条日志、unclean recovery 和 Boot 任务。多台实例相近时刻异常中断，支持共同基础设施事件的推断；同一地区、不同 IP 或主备角色都不能证明物理 node、存储和供电相互独立。请 provider 确认实际故障域，别把同地区两台 VPS 自动算成独立备份。公开材料使用合成标识；向 provider 的私人工单只提供定位事件所需的实例标识和脱敏证据，不附凭据或业务数据。
 
 ### 把结论写成 confirmed、probable 与 unknown
