@@ -28,6 +28,7 @@
   {"source":"agents/config-runtime.md","route":"agents/config-runtime/","title":"工单 · 配置与运行","summary":"核对配置来源、启动环境与运行副本，在准确授权内验证变更是否真正生效。"},
   {"source":"agents/scheduled-job.md","route":"agents/scheduled-job/","title":"工单 · 定时任务","summary":"确认调度、补跑和重叠策略，先查原任务，再按实际状态验收或恢复。"},
   {"source":"agents/data-lifecycle.md","route":"agents/data-lifecycle/","title":"工单 · 数据生命周期","summary":"定位空间账单与数据 owner，保留恢复证据，再按具体授权处理保留和清理。"},
+  {"source":"agents/reboot-recovery.md","route":"agents/reboot-recovery/","title":"工单 · 重启恢复","summary":"从 boot 边界开始，只读核对 service、container、依赖、入口与客户端，再单独申请重启演练。"},
   {"source":"docs/sources-and-maintenance.md","route":"sources/","title":"来源与维护","summary":"这本手册依据什么、适用于哪里，以及如何持续校正。","group":"关于手册"},
   {"source":"README.md","route":"about/","title":"关于这本手册","group":"关于手册","summary":"九章教程、协作与日常运维专题、agent 工单和只读 health 工具的读者入口。"},
   {"source":"README.en.md","route":"en/","title":"English introduction","lang":"en","summary":"The English entry point to the guide's chapters, agent work orders and health tool."},

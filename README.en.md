@@ -23,7 +23,7 @@ The guide combines primary documentation, synthetic examples, and operational ex
 | Understand plans before buying | [01 · VPS basics](docs/01-vps-basics.md) | A workload, resource, network and budget checklist |
 | Set up a new server | [02 · First day](docs/02-first-server.md) | Recovery access, independent login, limited exposure |
 | Deal with memory pressure or full disks | [03 · Operations](docs/03-operations.md), [08 · Troubleshooting](docs/08-troubleshooting.md) | Layered diagnosis, swap/OOM context and recovery |
-| A VPS rebooted unexpectedly and services failed afterward | [08 · Reboot investigation](docs/08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障), [03 · Restart readiness](docs/03-operations.md#重启前先做-restart-readiness-检查) | Establish the boot boundary and evidence, then separate the reboot trigger from post-boot failures |
+| A VPS rebooted unexpectedly and services failed afterward | [08 · Reboot investigation](docs/08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障), [03 · Cold-boot recovery](docs/03-operations.md#冷启动恢复从-boot-到-readiness-的只读路径), [agent work order](agents/reboot-recovery.md) | Establish the boot boundary, then check service, container, dependency, ingress and real-client recovery layer by layer |
 | Move a local service to a VPS | [04 · Local → VPS](docs/04-local-to-vps.md) | Candidate deployment, data transfer, ingress and client checks |
 | Switch servers or providers | [05 · VPS → VPS](docs/05-vps-to-vps.md) | One active writer and a data-aware cutover/recovery plan |
 | Reorganize a Claude environment after account problems | [06 · Backup, cleanup and recovery](docs/06-account-recovery.md) | Two attributed approaches, concrete state locations and selective restoration |

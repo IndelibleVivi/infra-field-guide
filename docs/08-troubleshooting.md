@@ -113,7 +113,7 @@ sudo journalctl -b "$CURRENT_BOOT" --utc --no-pager -o short-iso-precise \
   --grep='recover|replay|fsck|orphan|dirty|remount|read-only|unclean|corrupt' --case-sensitive=no
 ```
 
-出现 recovery、replay 或 fsck 线索，说明 boot 后曾做过恢复或检查；它不证明数据完整，也不说明是哪种事件造成。启动后服务的端口竞争、环境、派生索引和备份问题，按[重启就绪检查](03-operations.md#重启前先做-restart-readiness-检查)恢复；当前 read-only audit 通过，也不能说实际 reboot rehearsal 已通过。
+出现 recovery、replay 或 fsck 线索，说明 boot 后曾做过恢复或检查；它不证明数据完整，也不说明是哪种事件造成。启动后的 system/user service、Docker daemon 与 container、网络/挂载依赖、端口、派生索引和备份问题，按[冷启动恢复的只读路径](03-operations.md#冷启动恢复从-boot-到-readiness-的只读路径)逐层取证；当前 read-only audit 通过，也不能说实际 reboot rehearsal 已通过。
 
 最后检查 provider 侧的 tasks、power、node、migration 与 maintenance 事件。保存事件时间（含原时区并换算 UTC）、类型、实例标识和 support 回复编号；必要时请 provider 说明该窗口是否发生 host power cycle、node reset 或维护迁移。任务显示 `Boot` 只说明有启动任务，未显示发起者时不能判断是用户、operator 还是自动恢复；任务的完成状态与 guest 实际启动也要分别核对。控制面板当前 Running 不还原历史动作，provider 记录也不能单独解释启动后的服务错误。
 

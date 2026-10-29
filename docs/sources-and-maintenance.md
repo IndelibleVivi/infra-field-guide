@@ -152,3 +152,15 @@ systemd 示例按 Ubuntu 24.04 的 255.4 手册核对，说明磁盘配置、管
 本地 Chromium 在 1440×1000 桌面与 390×844 手机尺寸完成新章节阅读和锚点验收，四种重启问法经实际搜索到达正文。手机长代码块和结论表格可在各自区域横向滚动，整页宽度保持视口宽度；已走查页面 console 无 warning/error。此结果不代表真实设备或正式 Pages 已更新。
 
 同日补充 guest 自动更新与 provider 宿主节点维护的层级区别：guest 的重启配置不能约束宿主维护；供应商针对具体事件的确认可以收口原因，但应注明证据来源，不能扩写为已独立核验内部记录或具体电源动作。公开正文只保留通用判断方法，不收录私人工单、供应商人员身份或回复原文。
+
+### 2026-10-29 冷启动恢复路径
+
+[日常运维的冷启动恢复](03-operations.md#冷启动恢复从-boot-到-readiness-的只读路径)把重启后的检查收束成一条只读路径：固定 boot ID，分别检查 system/user manager、Docker daemon 与 container、boot 网络/挂载依赖、端口地址族与 TCP/UDP、应用 readiness、入口和真实客户端。另加[重启恢复 agent 工单](../agents/reboot-recovery.md)，明确只读 preflight 与实际 reboot 演练必须分开授权。双语 README、agent 索引和搜索问法同步加入该入口。
+
+旧有内容继续承担专项说明：[restart-readiness 检查面](03-operations.md#重启前先做-restart-readiness-检查)与 canonical 数据边界、[意外重启归因](08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障)、[timer 补跑](scheduled-jobs.md#persistent-只作用-oncalendar)、[备份恢复](03-operations.md#7-备份至少要成功恢复一次)以及 [HTTP/SSH 分层验收](08-troubleshooting.md#一条-http-请求怎样分段验证)继续保留。新增路径同时区分容器 policy 与实际恢复 owner、外部解锁 controller 的依赖条件，以及一次补齐索引和后续写入维护的区别。
+
+**2026-10-29** 已实际查阅 [systemd.service](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html)、[systemd.unit](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)、[systemd.special](https://www.freedesktop.org/software/systemd/man/latest/systemd.special.html)、[loginctl](https://www.freedesktop.org/software/systemd/man/latest/loginctl.html)、[systemd.timer](https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html)、[Docker container restart policies](https://docs.docker.com/engine/containers/start-containers-automatically/) 与 [findmnt(8)](https://man7.org/linux/man-pages/man8/findmnt.8.html)，核对依赖与排序、linger、重启/手动停止、启动网络、timer 和挂载查询的语义。上游 latest 手册会继续变化；这里没有把新版本专用选项加入旧发行版示例，目标机的 unit 与实际恢复结果仍需单独验收。
+
+本地验证使用标准库文档/工具测试、站点测试、实际构建后的 Node 搜索测试、相对链接与章节锚点检查、shell 静态语法和 JavaScript 语法检查。原有章节标题与既有围栏保留。教程验证只使用合成材料，没有在读者环境执行 systemd、Docker、挂载、备份恢复或 reboot；源码交付与 Pages 发布分别报告。
+
+独立教程候选通过 21 项标准库测试、13 项站点测试和 59 项搜索测试，生成 43 个 HTML 页面、324 个搜索小节。Headless Chromium 实看了 1440px 桌面与 390px 手机的正文、新工单回链和四组搜索问法；锚点可达，没有整页横向溢出或 console warning/error。本条记录对应源码候选，未合入 main、未发布 Pages，也不代表真实读者 VPS 的冷启动演练。

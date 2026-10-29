@@ -18,6 +18,7 @@
 | 配置来源与实际运行版本核对 | [配置与运行](config-runtime.md) | [配置生效专题](../docs/configuration-and-runtime.md) |
 | 定时、补跑、任务重叠与产物验收 | [定时任务](scheduled-job.md) | [调度与恢复专题](../docs/scheduled-jobs.md) |
 | 磁盘占用、保留策略与可恢复清理 | [数据生命周期](data-lifecycle.md) | [数据、日志、缓存与备份](../docs/data-lifecycle.md) |
+| VPS 重启后服务未恢复，或准备一次重启演练 | [重启恢复](reboot-recovery.md) | [意外重启与冷启动恢复](../docs/03-operations.md#冷启动恢复从-boot-到-readiness-的只读路径) |
 
 将工单复制到自己的 agent 会话，只填写需要的目标信息。私有主机名、真实 IP、账号和路径留在自己的本地 operation record；不要作为 PR 提交回来。密码、私钥和 token 不通过工单传递。
 

@@ -324,6 +324,108 @@ sudo ss -lntup
 
 audit 本身也要按真实 owner 验收。带 sudo 的交互终端能运行，不代表 user systemd 也有同样权限；非交互环境可能缺少 TTY、agent、PATH 或 supplementary group。至少手动执行一次对应 service，读它的 `Result`、退出码和 journal。timer 留下 failed unit 只证明本地有可见记录，不证明已经收到外部告警；没有实际重启，也不能把 audit PASS 写成 reboot rehearsal 通过。
 
+### 冷启动恢复：从 boot 到 readiness 的只读路径
+
+已经发生重启、或准备安排重启演练时，按下面的顺序收集证据。每一步只读，不启用 unit、不启动 container、不重置 failed 状态、不重建索引，也不通过重试把原错误覆盖掉。读到第一处失败就保留现场；后面的层仍可继续做无副作用检查。
+
+**运行位置：重启后的 VPS；只读。** 先用一个本次调查固定的 boot ID 和启动时间，避免后续再次重启后 `-b`、`-b -1` 指向别的对象：
+
+```sh
+cat /proc/sys/kernel/random/boot_id
+uptime -s
+systemctl --version
+systemctl is-system-running
+systemctl --failed --no-pager
+```
+
+`systemctl is-system-running` 的 `starting`、`degraded` 与非零返回都是有意义的结果，不要为了得到 `running` 而重置状态。再对一个实际服务分别读 manager 的配置关系、当前运行状态与启动历史。`example.service` 只是占位名：
+
+```sh
+systemctl is-enabled example.service
+systemctl is-active example.service
+systemctl show example.service \
+  -p ActiveState -p SubState -p UnitFileState -p Result \
+  -p NRestarts -p ExecMainStatus -p ActiveEnterTimestamp
+systemctl list-dependencies example.service --all --no-pager
+sudo journalctl -b -u example.service -n 80 --no-pager
+```
+
+`enabled` 与 `active` 回答不同问题：前者是 manager 的启动接入关系，后者是本次 boot 或当前运行状态；`static` 也可能是被别的 target、socket 或 timer 合理拉起，不能只为统一输出而改写它。`Requires=`/`Wants=` 管是否把另一个 unit 拉入事务，`After=`/`Before=` 管排序；这些关系都不能单独证明远端服务、挂载或应用数据已经 ready，仍要分别观察。
+
+还要找到真正负责恢复的 owner。容器的 `restart=no` 可能由已启用的 systemd service 管理；加密数据卷上的服务也可能刻意保持 disabled，等另一台设备上的 controller 解锁挂载后再启动。这些情况不能只凭一个字段判定失败，更不能直接全部 enable。沿实际启动链核对 controller 的持久注册、最近执行结果、数据卷状态和依赖条件；如果恢复依赖另一台设备在线、用户登录或钥匙可用，就把这些条件写进恢复边界。
+
+**systemd user service 要查对应的 user manager。** 用实际运行该 unit 的 Linux 用户执行。若服务账户不适合日常登录，则只读读取 `/var/lib/systemd/linger/`（或该发行版实际使用的 linger 标记位置）和 user unit 文件；真实的 `--user` 状态需要经授权在已有用户会话或用户 bus 中读取，不能从 system manager 猜测：
+
+```sh
+loginctl show-user "$USER" -p Linger
+systemctl --user is-enabled example.service
+systemctl --user is-active example.service
+systemctl --user show example.service \
+  -p ActiveState -p SubState -p UnitFileState -p Result -p NRestarts
+journalctl --user-unit example.service -b -n 80 --no-pager
+```
+
+只查 system manager 不会证明 user unit 是否接入启动。没有 linger 时，最后一个 session 结束与 user manager 的生命周期有关；即使有 linger，也要验证 unit 的启用关系、用户 bus 和实际进程。是否启用 linger 是账号/登录策略变更，先记录现有值并取得明确授权；不要把开启 linger 当作本节的只读修复。
+
+**Docker 要同时查 daemon 与 container。** Docker daemon 本身是否有 boot owner，和 container 的 restart policy 是两层；policy 的名字也不是“本次 boot 已恢复”的证据：
+
+```sh
+systemctl is-enabled docker.service
+systemctl is-active docker.service
+docker context show
+docker version --format '{{.Server.Version}}'
+docker ps -a --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+docker inspect --format '{{.Name}} state={{.State.Status}} exit={{.State.ExitCode}} restart={{.HostConfig.RestartPolicy.Name}}' example-container
+```
+
+确认 `docker context show` 指向预期的本机 daemon；本地 CLI 的 context 指向别处时，这组状态属于另一台机器。container 可能处于 stopped、restarting 或 exited，而 daemon 仍显示 active。手动停止的 container 与 policy 允许自动恢复的 container 不能只凭“有 restart policy”合并判断；要读当前状态、退出码、本次启动时间和容器日志。启动 daemon/container 或修改 restart policy 都是有状态变更，不在只读阶段执行。
+
+重建配方也要核对。container label 中记录的 Compose 路径可能已经过期；检查实际配置文件、所需变量和数据卷选择是否仍可取得，再对照当前容器的挂载来源、命令与环境。不要照抄旧命令，把新建的空 volume 误当成原来的持久数据。配置能渲染、数据卷身份正确与容器已恢复，是不同证据。
+
+**boot 网络、挂载与依赖顺序**不要靠 unit 文件里出现过某个 target 就判定成功：
+
+```sh
+systemctl status network-online.target --no-pager
+findmnt -T /srv/example
+findmnt --verify --verbose
+systemctl --failed --no-pager
+```
+
+`network-online.target` 的在线判断不等于 DNS、公网入口或远端应用已经 ready；它只参与启动时的等待，不持续监控网络。需要它的 unit 还应把依赖对象与顺序写清楚。`After=` 只影响 manager 启动事务里的排序，不是远端就绪握手。挂载失败可能让服务读到空目录、写进挂载点下原本的目录，或直到运行时才报权限错误；`findmnt -T` 会返回承载该路径的文件系统，即使预期的数据卷没有挂载也可能成功，因此必须核对返回的来源与类型。必要时对照实际 unit 的 mount/automount 关系与 journal。`/srv/example` 是占位路径，不能直接套到真实业务。
+
+容器宿主的网络路径还要看 published port 与 bind mount 落在 daemon 所在机器。`docker context show` 指向远端时，本机路径和本机网络未必进入该 container；若要检查一个已存在容器，先按 `docker inspect` 的当前配置确认挂载来源和端口映射，再记录实际暴露面。不要为了取得一份端口状态而重启 daemon、重建 container 或重置网络。这里无法列全每条 Docker firewall backend 的差异；若 UFW/nftables 与 published port 结果不一致，按[首日操作的 Docker 防火墙说明](02-first-server.md#7-读取有效配置再收紧认证)从宿主机和授权外部客户端分别取证。
+
+**端口证据要带上 transport、address family 和 bind address。** 下面是合成 TCP/UDP 443 检查：
+
+```sh
+sudo ss -ltnp 'sport = :443'
+sudo ss -lunp 'sport = :443'
+```
+
+比较端口、TCP/UDP、IPv4/IPv6，以及 `0.0.0.0:443` 通配地址、具体 public 地址或 mesh/Tailnet 地址。TCP 与 UDP 是不同命名空间；HTTP/3 占用的 UDP 443 不能仅凭“443 已占用”推断 TLS TCP 443 也坏了。反过来说，一个应用占用通配监听时，另一个想绑定 public 或 mesh 地址也可能受 socket/IPv6 选项与实际内核行为影响。不要只记“443 冲突”；应记录哪一协议、哪一地址族的哪个 socket，再从相应入口实际验证。
+
+最后才是应用 readiness 与真实路径。先找应用文档定义的、无副作用的 readiness 请求，再分别验证本机 listener、入口与本机之外的客户端：
+
+```sh
+curl --noproxy '*' --connect-timeout 3 --max-time 10 \
+  --silent --show-error --output /dev/null \
+  --write-out 'origin HTTP %{http_code}\n' http://127.0.0.1:8080/ready
+```
+
+`/ready` 和 `8080` 是占位值；应用没有 readiness endpoint 时，用文档允许的只读请求。HTTP 200 可能来自默认页、缓存或一个只检查进程的 health endpoint，因此要匹配预期正文或业务特征。进程、listener、origin 和入口都要分开取证；随后按[从主机到真实客户端的分层验收](#8-监控从主机走到真实客户端)完成 SSH、公网或 mesh 入口、鉴权与真实客户端检查。SSH 新连接、代理到 origin、域名入口和用户操作不能用同一个 `active` 状态代替。
+
+短暂依赖不可用的服务，应观察应用自己的 retry 与 systemd 的 `Restart=`、`RestartSec=`、`NRestarts` 和 start-limit 记录，而不是持续手动 restart 覆盖错误。进程型 `Restart=` 不会自动修复错误的数据、失败挂载或远端协议错误；人工 stop 后也不应被 restart policy 悄悄拉起。若达到 start limit，先读 `Result`、完整启动日志和依赖状态；清除 failed/start-limit 记录本身是状态变更，只能在原因明确且获准后做。
+
+定时器同样要单独验收：`list-timers` 的 `LAST`/`NEXT`、错过关机后的补跑规则与任务产物，见[定时任务专题](scheduled-jobs.md)。备份 timer 成功或备份文件存在，也不能证明最近备份已送达独立故障域或能恢复；按[备份恢复验收](#7-备份至少要成功恢复一次)读取新鲜度、完成结果与一次隔离 restore。若启动检查发现索引或 projection 异常，保留 canonical 数据与校验证据，按应用支持的方式先只读 verify/dry-run；修复派生索引需要相应写入授权，不能通过清空数据或放宽校验掩盖问题。一次补齐之后，还要核对正常新增、修订后的索引维护路径；否则当前运行的进程可能显示健康，下次启动却再次因为索引落后而失败。
+
+本节机制于 **2026-10-29** 对照 [systemd unit 依赖](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)、[service 重启](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html)、[network-online.target](https://www.freedesktop.org/software/systemd/man/latest/systemd.special.html)、[loginctl linger](https://www.freedesktop.org/software/systemd/man/latest/loginctl.html)、[Docker restart policies](https://docs.docker.com/engine/containers/start-containers-automatically/) 与 [findmnt(8)](https://man7.org/linux/man-pages/man8/findmnt.8.html) 核对；具体发行版和服务仍以目标机版本与实际执行证据为准。
+
+### 只读 preflight 与实际 reboot 演练分开授权
+
+上面的检查可以证明“当前配置与状态支持哪些恢复路径”，不能证明机器在冷启动时会按预期恢复。真正的 reboot 演练会产生停机、连接中断、启动副作用和新的日志；执行授权需要覆盖精确目标、时间窗、console 路径、writer 停止方案、备份与回滚条件。已有明确授权覆盖这些影响时按计划执行，缺少授权时先提交具体候选。
+
+只读 preflight 至少记录：当前 boot ID、manager/systemd 与 Docker 版本、system service/user service/container 的 boot owner、挂载与网络依赖、监听四元组、健康与真实客户端结果、timer/备份新鲜度、failed units、未知项和 owner。演练结束后使用一个新 boot ID 重走同一张表，并验证新 SSH 连接、进程、listener、入口和真实客户端。preflight 全绿不表示重启恢复已经验收。
+
 如果是已经发生且原因未知的意外重启，先从 [08 的 boot 边界调查](08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障)固定上一/当前 boot ID、UTC 时间线与 provider 侧证据；再回来按上面的 readiness 项检查启动后故障。不要把重启后暴露的端口竞争或派生状态问题，反推成 reboot 的触发原因。
 
 ## 7. 备份至少要成功恢复一次
@@ -398,6 +500,7 @@ cat "$HOME/infra-backup-lab/restored/note.txt"
 - [Ubuntu findmnt(8)](https://manpages.ubuntu.com/manpages/noble/man8/findmnt.8.html)：挂载识别与 fstab 校验。
 - [Linux VM sysctl](https://docs.kernel.org/admin-guide/sysctl/vm.html)：swappiness 的含义。
 - [Ubuntu systemd.service(5)](https://manpages.ubuntu.com/manpages/noble/man5/systemd.service.5.html)：服务 owner 与恢复策略。
+- [systemd.service(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html)、[systemd.unit(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)、[systemd.special(7)](https://www.freedesktop.org/software/systemd/man/latest/systemd.special.html)、[loginctl(1)](https://www.freedesktop.org/software/systemd/man/latest/loginctl.html)、[systemd.timer(5)](https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html) 与 [Docker container restart policies](https://docs.docker.com/engine/containers/start-containers-automatically/)：**2026-10-29** 已在线核对的冷启动机制来源；具体行为仍须以目标机实际版本、manager 输出和恢复证据验收。
 - [Ubuntu journald.conf(5)](https://manpages.ubuntu.com/manpages/noble/man5/journald.conf.5.html)、[journalctl(1)](https://manpages.ubuntu.com/manpages/noble/man1/journalctl.1.html)：日志持久化、限额与清理范围。
 - [Ubuntu security updates](https://documentation.ubuntu.com/security/security-updates/)：更新边界与自动更新。
 

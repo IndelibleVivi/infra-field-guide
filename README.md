@@ -25,7 +25,7 @@
 | 还没买 VPS，看不懂套餐 | [01 · VPS 101](docs/01-vps-basics.md) | 一份按用途、预算、资源和网络选择的购买清单 |
 | 刚收到一台机器 | [02 · 新机检查与首日操作](docs/02-first-server.md) | 能恢复、能独立登录、最小暴露面的基础环境 |
 | 服务老掉线、内存爆、磁盘满 | [03 · 日常 Ops](docs/03-operations.md) / [排障入口](docs/08-troubleshooting.md) | 分层定位与可验证的修复路径 |
-| VPS 突然重启，重启后服务没起来 | [08 · 意外重启调查](docs/08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障) / [03 · 重启就绪](docs/03-operations.md#重启前先做-restart-readiness-检查) | 先固定 boot 边界与证据，再把 reboot 触发和启动后故障分开 |
+| VPS 突然重启，重启后服务没起来 | [08 · 意外重启调查](docs/08-troubleshooting.md#vps-突然重启先分开-boot-边界与启动后故障) / [03 · 冷启动恢复](docs/03-operations.md#冷启动恢复从-boot-到-readiness-的只读路径) / [agent 工单](agents/reboot-recovery.md) | 先固定 boot 边界与证据，再逐层核对 service、container、依赖、入口和真实客户端 |
 | 本机服务想常驻 VPS | [04 · 本机 → VPS](docs/04-local-to-vps.md) | 候选部署、数据迁移、入口与客户端验收 |
 | VPS 涨价、配置不够、准备换商家 | [05 · VPS → VPS](docs/05-vps-to-vps.md) | 单一 writer 的切换与数据边界清楚的恢复方案 |
 | 想按 CC「转生」材料重整环境 | [06 · 备份、环境清理与恢复](docs/06-account-recovery.md) | 两套清单、具体路径、分层重置与选择性恢复 |

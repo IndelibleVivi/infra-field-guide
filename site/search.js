@@ -5,6 +5,7 @@
   const ssh = 'guide/troubleshooting/#ssh-失败时保留能返回的路';
   const resources = 'guide/operations/#5-日志与磁盘先查增长来源再限制';
   const reboot = 'guide/troubleshooting/#vps-突然重启先分开-boot-边界与启动后故障';
+  const coldBoot = 'guide/operations/#冷启动恢复从-boot-到-readiness-的只读路径';
   // A small editorial vocabulary: symptoms route to existing answers, never new advice.
   const problems = [
     { aliases: ['ssh 超时', '连接超时', 'ssh timeout', 'connection timed out'], groups: [['ssh'], ['timeout', '超时']], target: ssh },
@@ -15,6 +16,10 @@
     { aliases: ['磁盘满', '磁盘空间不足', '空间不足', 'no space left', 'no space left on device', '磁盘还有空间但写不了'], groups: [['磁盘', '文件系统'], ['空间', '余量', 'inode']], target: resources },
     { aliases: ['内存爆了', '内存不足', '进程被杀', 'exit 137'], groups: [['oom', '内存'], ['137', '压力', '进程']], target: 'guide/operations/#2-应用慢进程消失先区分是哪一种压力' },
     { aliases: ['昨晚重启了', 'vps突然重启', '自动更新重启', '重启后服务没起来'], groups: [['boot'], ['重启', 'reboot']], target: reboot },
+    { aliases: ['docker 重启后没起来', '容器开机不自启', 'docker restart policy'], groups: [['docker'], ['restart', '重启', '开机']], target: coldBoot },
+    { aliases: ['用户服务开机没启动', 'systemd user service', 'linger'], groups: [['user'], ['systemd', 'service']], target: coldBoot },
+    { aliases: ['network-online 不等于 ready', 'network-online', '重启后端口占用'], groups: [['network-online']], target: coldBoot },
+    { aliases: ['重启前检查', 'cold boot readiness', '冷启动恢复'], groups: [['boot', '重启'], ['ready', '恢复']], target: coldBoot },
     { aliases: ['网站 502', '网站打不开', 'bad gateway'], groups: [['origin'], ['502', 'http', '网站']], target: 'guide/troubleshooting/#一条-http-请求怎样分段验证' },
     { aliases: ['command not found', '命令找不到', 'ssh 找不到命令'], groups: [['path'], ['非交互']], target: 'guide/private-access/#非交互-ssh-的-path-经常与本地-terminal-不同' },
     { aliases: ['时间不准', '时间校准', 'synchronized no', 'ntpsynchronized'], groups: [['时间'], ['校时', '同步']], target: 'reference/time-synchronization/#只读检查时间服务' },

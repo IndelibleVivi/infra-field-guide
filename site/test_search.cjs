@@ -7,6 +7,7 @@ const index = JSON.parse(readFileSync(new URL('../_site/search.json', `file://${
 const ssh = 'guide/troubleshooting/#ssh-失败时保留能返回的路';
 const disk = 'guide/operations/#5-日志与磁盘先查增长来源再限制';
 const reboot = 'guide/troubleshooting/#vps-突然重启先分开-boot-边界与启动后故障';
+const coldBoot = 'guide/operations/#冷启动恢复从-boot-到-readiness-的只读路径';
 const queries = [
   ['SSH 超时', ssh], ['SSH timeout', ssh], ['连接超时', ssh], ['SSH 连不上', ssh],
   ['磁盘满', disk], ['空间不足', disk], ['No space left on device', disk],
@@ -16,6 +17,10 @@ const queries = [
   ['exit 137', 'guide/operations/#2-应用慢进程消失先区分是哪一种压力'],
   ['昨晚重启了', reboot], ['VPS突然重启', reboot],
   ['自动更新重启', reboot], ['重启后服务没起来', reboot],
+  ['Docker 重启后没起来', coldBoot], ['容器开机不自启', coldBoot],
+  ['用户服务开机没启动', coldBoot], ['linger', coldBoot],
+  ['network-online 不等于 ready', coldBoot], ['重启后端口占用', coldBoot],
+  ['重启前检查', coldBoot], ['冷启动恢复', coldBoot],
   ['网站 502', 'guide/troubleshooting/#一条-http-请求怎样分段验证'],
   ['command not found', 'guide/private-access/#非交互-ssh-的-path-经常与本地-terminal-不同'],
   ['swap', 'guide/operations/#3-swap-是缓冲不是-oom-的治疗方案'],
