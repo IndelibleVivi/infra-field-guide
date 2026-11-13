@@ -30,6 +30,7 @@
 | VPS 涨价、配置不够、准备换商家 | [05 · VPS → VPS](docs/05-vps-to-vps.md) | 单一 writer 的切换与数据边界清楚的恢复方案 |
 | 想按 CC「转生」材料重整环境 | [06 · 备份、环境清理与恢复](docs/06-account-recovery.md) | 两套清单、具体路径、分层重置与选择性恢复 |
 | Tunnel、DNS、VPN、代理分不清 | [07 · 网络与代理](docs/07-network-and-proxies.md) / [架构图集](docs/architecture.md) | 说清请求从哪来、往哪去、由谁鉴权 |
+| 想在自己的 VPS 上搭 HY2，或连上却不稳定 | [Hysteria 2 实用教程](docs/hysteria2.md) | 官方安装、DNS／UDP／证书、两类客户端、真实请求验收与维护 |
 | 想让 VPS worker 回到 Mac 做项目 | [09 · 私有远程访问](docs/09-private-access.md) | Tailscale grant、OpenSSH、非交互环境与项目验收 |
 | UTC 与本地时间怎么配合，或 NTP/UDP 123 有异常 | [机器时间专题](docs/time-synchronization.md) | 时间戳、用户时区、hook 新鲜度、定时语义与持续校准 |
 | 多个人或 agent 共用 VPS，加固后有人进不来 | [访问权限与恢复专题](docs/access-control-recovery.md) | 可辨认的入口、实际执行权限、新连接验收与定点恢复 |

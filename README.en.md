@@ -28,6 +28,7 @@ The guide combines primary documentation, synthetic examples, and operational ex
 | Switch servers or providers | [05 · VPS → VPS](docs/05-vps-to-vps.md) | One active writer and a data-aware cutover/recovery plan |
 | Reorganize a Claude environment after account problems | [06 · Backup, cleanup and recovery](docs/06-account-recovery.md) | Two attributed approaches, concrete state locations and selective restoration |
 | Understand DNS, Tunnel, VPN and proxies | [07 · Networks and proxies](docs/07-network-and-proxies.md) | Separate ingress, administration and application egress |
+| Set up HY2 on a VPS or investigate an unstable connection | [Hysteria 2 tutorial](docs/hysteria2.md) (Chinese) | Official installation, DNS / UDP / certificates, two client formats, real-request checks and maintenance |
 | Let a VPS worker reach a Mac project | [09 · Private remote access](docs/09-private-access.md) | Tailscale grants, ordinary OpenSSH and non-interactive environment checks |
 | Coordinate UTC and local time, or investigate NTP / UDP 123 | [Machine time reference](docs/time-synchronization.md) | Timestamps, user timezones, hook freshness, scheduling semantics and sustainable synchronization |
 | Share a VPS with people or agents without losing access | [Access and recovery reference](docs/access-control-recovery.md) | Distinct credentials, actual execution permissions, fresh connection checks and targeted recovery |

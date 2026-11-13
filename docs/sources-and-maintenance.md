@@ -42,6 +42,14 @@
 
 教程与 health 工具不会自动安装监控、创建 VPS 或修改账号。仓库的 `Reading site` workflow 会在 main 推送验证通过后发布独立阅读站；这是文档发布，不会部署教程描述的服务。真实机器验证、公开远程仓库、CI 执行与 owner 验收应分别记录，不互相替代。
 
+### 2026-11-13 Hysteria 2 实用教程
+
+新增可独立转发的 [Hysteria 2 教程](hysteria2.md)，接入双语 README、第 07 章与阅读站白名单。主线为 Ubuntu 24.04 / systemd、官方 installer、password auth、UDP/443 与内置 ACME HTTP-01；提供原生客户端与完整 Mihomo 测试 profile，区分真实请求、出口、进程与端口观察，并说明 Docker / 外部证书路线的差异。使用合成域名、密码占位符、回环地址和标准 Linux 部署路径，不含私人机器路径、主机清单、配置原件、凭据或诊断日志。
+
+**2026-11-13** 实际查阅 Hysteria 官方 [安装器说明](https://v2.hysteria.network/docs/getting-started/Server-Installation-Script/)、[服务端配置](https://v2.hysteria.network/docs/advanced/Full-Server-Config/)、[客户端配置](https://v2.hysteria.network/docs/advanced/Full-Client-Config/)、[Performance](https://v2.hysteria.network/docs/advanced/Performance/)、[Troubleshooting](https://v2.hysteria.network/docs/advanced/Troubleshooting/) 与 [CDN 边界](https://v2.hysteria.network/docs/misc/CDN/)，以及 [sing-box HY2 outbound](https://sing-box.sagernet.org/configuration/outbound/hysteria2/)、[Mihomo Hysteria2](https://wiki.metacubex.one/en/config/proxies/hysteria2/)、[systemd.service](https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html)。核对 HTTP-01 的 TCP/80、TLS / ACME 互斥、两端配置、证书文件热读取、拥塞控制与内核 TCP BBR 的区别；不新增只适用于较新版本的调参字段。
+
+本地检查覆盖相对链接与锚点、shell 静态语法、三个 YAML 示例的解析与字段配对、构建后搜索、发布白名单和页面生成。官方资料核对不等于实际安装或连通验收；本轮未在读者 VPS 上运行安装器、修改 DNS / firewall、申请证书、部署客户端或测速。本文为源码候选；Git 分支推送不代表 main 合入或 Pages 发布，真实客户端与续期仍需按教程单独验证。
+
 ## 验证记录（2026-10-02）
 
 - 标准库测试：20 项通过，包括合成采集、schema／阈值／unknown、HTML 转义、CLI roundtrip、现有输出保护，以及文档链接／章节锚点、shell 语法和 JSON 示例。

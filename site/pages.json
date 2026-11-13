@@ -9,6 +9,7 @@
   {"source":"docs/08-troubleshooting.md","route":"guide/troubleshooting/","title":"故障先分层，再改动","summary":"从一个症状出发，把问题缩小到可以验证的一段路径。","group":"连接与排障","number":"08"},
   {"source":"docs/09-private-access.md","route":"guide/private-access/","title":"让 VPS worker 回到 Mac","summary":"用 Tailscale 与 OpenSSH 建立有边界的私有远程访问。","group":"连接与排障","number":"09"},
   {"source":"docs/time-synchronization.md","route":"reference/time-synchronization/","title":"机器时间、时区与同步","summary":"理解 UTC、用户时区、hook 时间与定时语义，再检查时钟校准和 UDP 123 路径。","group":"随手查阅"},
+  {"source":"docs/hysteria2.md","route":"reference/hysteria2/","title":"Hysteria 2 部署与维护","summary":"从 DNS、UDP/443 与证书开始，搭建 HY2 节点、连接客户端并验收真实请求。","group":"随手查阅"},
   {"source":"docs/access-control-recovery.md","route":"reference/access-control-recovery/","title":"共享访问与防锁死","summary":"让人和 agent 各有可辨认的入口，验证实际权限并保留独立恢复路径。","group":"随手查阅"},
   {"source":"docs/multi-machine-operations.md","route":"reference/multi-machine-operations/","title":"多机器与多 harness 运维","summary":"定位真正的执行机器、共享配置和资源，断线或更换 agent 后继续原任务。","group":"随手查阅"},
   {"source":"docs/configuration-and-runtime.md","route":"reference/configuration-and-runtime/","title":"配置生效与运行版本","summary":"追踪配置从哪里加载，确认终端、服务、安装副本和实际进程使用了哪一份。","group":"随手查阅"},
