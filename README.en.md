@@ -72,6 +72,12 @@ This demo uses a fixed synthetic fixture. It does not SSH, access accounts, inst
 
 [Open the full-size overview SVG](docs/diagrams/infrastructure-overview.svg). The [architecture atlas](docs/architecture.md) includes overview, control access, public ingress, outbound access, migration state and repository/health data flow. Editable source and rendered diagrams are included. Deployment nodes are illustrative options; the repository does not provision them. Administration, incoming service traffic and outgoing application traffic have different routing and authentication boundaries.
 
+## Companion project: Lintel
+
+Sometimes your local Claude Code environment needs as much care as your servers. The same author's independent **[Lintel](https://lintel.page/)** ([GitHub repository](https://github.com/IndelibleVivi/lintel-cc)) offers a macOS app and standalone CLI to inspect configuration and authentication sources, preserve instructions and sessions in encrypted archives, review supported cleanup or recovery operations before approval, and verify results. It offers an optional tool-based route alongside [Chapter 06: environment cleanup and recovery](docs/06-account-recovery.md); the guide's manual procedures remain self-contained.
+
+Lintel is currently in **Preview**. Check its [releases](https://github.com/IndelibleVivi/lintel-cc/releases) and [documentation](https://github.com/IndelibleVivi/lintel-cc/blob/main/docs/index.en.md) for actual platform support, signatures and capabilities. It is not bundled with IFG and cannot replace platform-account appeals or server-side verification.
+
 ## The author's service choices and referrals
 
 **VPS: GreenCloud Budget KVM Sale.** After moving from Hetzner to GreenCloud, the author recommends considering this annual plan for small personal services and remote workers. Chapter 01 retains the [GreenCloud referral, ordinary product link and dated plan comparison](docs/01-vps-basics.md#作者选择greencloud-budget-kvm-sale). Choose based on your region, workload and billing commitment; check prices, resources and stock at purchase time.
