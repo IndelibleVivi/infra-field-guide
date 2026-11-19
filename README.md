@@ -74,6 +74,12 @@ python3 tools/health.py render reports/health-demo.json -o reports/health-demo.h
 
 [打开总览 SVG 放大阅读](docs/diagrams/infrastructure-overview.svg)。这是供读者按需组合的参考架构，图中节点不代表仓库替你部署了服务。管理连接、公网入口和应用出站是不同路径；迁移时还要单独追踪数据 writer。进入[完整架构图集](docs/architecture.md)查看六张图、边界说明及可编辑源：总览、控制访问、公网入口、出站访问、迁移状态、仓库与 health 数据流。
 
+## 相关作品：Lintel
+
+管理 VPS 与服务之外，有时也要安顿好本机的 Claude Code 工作环境。同一作者的独立项目 **[Lintel](https://lintel.page/)**（[GitHub 仓库](https://github.com/IndelibleVivi/lintel-cc)）提供 macOS App 与独立 CLI，帮助你盘点配置和认证来源、加密保全指令与会话，审阅受支持的清理／恢复操作，并在执行后核对结果。它为 [06 · CC 环境清理与恢复](docs/06-account-recovery.md)提供一条可选的工具路径；IFG 的原理、手工检查与恢复步骤仍可独立使用。
+
+Lintel 当前为 **Preview**。安装、签名、平台支持和实际能力请核对其 [发布页](https://github.com/IndelibleVivi/lintel-cc/releases)与[使用文档](https://github.com/IndelibleVivi/lintel-cc/blob/main/docs/index.md)。Lintel 不随 IFG 安装，也不能代替平台账号申诉或服务端状态核验。
+
 ## 作者的服务选择与 referral
 
 **VPS：GreenCloud Budget KVM Sale。** 作者从 Hetzner 搬到 GreenCloud 后，愿意推荐这一年付方案给个人小服务与远程 worker 使用。选购章保留了[GreenCloud referral、普通入口与带日期的套餐对照](docs/01-vps-basics.md#作者选择greencloud-budget-kvm-sale)；先按自己的地区、用途与账期选配置。
