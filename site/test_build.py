@@ -40,6 +40,18 @@ class SiteTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.temp.cleanup()
 
+    def test_lintel_companion_entry_points_are_visible(self):
+        home = (self.output / 'index.html').read_text(encoding='utf-8')
+        chapter = (self.output / 'guide/account-recovery/index.html').read_text(encoding='utf-8')
+        about = (self.output / 'about/index.html').read_text(encoding='utf-8')
+        english = (self.output / 'en/index.html').read_text(encoding='utf-8')
+        for page in (home, chapter, about, english):
+            self.assertIn('https://lintel.page/', page)
+        self.assertIn('class="sister-project"', home)
+        self.assertIn('https://github.com/IndelibleVivi/lintel-cc', home)
+        self.assertEqual(link_kind('https://github.com/IndelibleVivi/lintel-cc', '/infra-field-guide/'),
+                         'external')
+
     def test_complete_internal_link_graph(self):
         for path, document in self.documents.items():
             for value in document.links:
