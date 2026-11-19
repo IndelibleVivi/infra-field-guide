@@ -22,6 +22,9 @@
 > **停下检查点：删本地缓存不等于退出登录，也不等于消除服务端记录。**
 > macOS 和 Linux 的凭据存放位置不同，`CLAUDE_CONFIG_DIR` 只隔离一部分状态，Console profile 登录还可能另有存储。清理前先分清“我要重置本地环境”和“我要处理平台账号”，两者可以分别进行，别把一个当成另一个的验收结果。
 
+> [!TIP]
+> **希望用工具辅助盘点、保全和本地清理？** 同一作者的独立项目 [Lintel](https://lintel.page/) 提供 macOS App 和独立 CLI，可以检查 Claude Code 配置与部分认证来源、选择要加密保全的工作材料，并在明确审阅与批准后执行所支持的本地操作，再独立复查结果。它目前是 [Preview](https://github.com/IndelibleVivi/lintel-cc/releases)，使用前请核对[实际平台、安装与能力边界](https://github.com/IndelibleVivi/lintel-cc/blob/main/docs/index.md)。Lintel 不覆盖本章全部 A/B 清理步骤，也不能代替完整私有备份、各层账号核对或平台申诉。
+
 ## 1. 先看材料之间的分歧
 
 以下是对使用者提供材料的重新组织，不是作者亲历复述，也不是截图转载。已读材料包括三页《Claude Code 封号自救指南》、另一套《Claude Code 旧账号痕迹清理清单／最终清理报告》、备份及执行回报，共八张附件及配套文字。第一套截图署名为「有趣的灵魂董菲同学」（CoolGc）；另一套原作者及原帖链接尚未核实。
